@@ -51,4 +51,30 @@ class SearchResourceTest {
             .statusCode(200)
             .body("$", hasSize(lessThanOrEqualTo(1)));
     }
+
+    @Test
+    void domainFilterReturnsOnlyMatchingDomain() {
+        given()
+            .queryParam("q", "lazy loading transaction boundary")
+            .queryParam("domain", "jvm")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            // REST Assured GPath returns null (not []) when findAll yields no results
+            .body("$.findAll { it.domain != 'jvm' }", anyOf(nullValue(), hasSize(0)));
+    }
+
+    @Test
+    void domainFilterExcludesOtherDomains() {
+        given()
+            .queryParam("q", "collection metadata cache")
+            .queryParam("domain", "tools")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            // REST Assured GPath returns null (not []) when findAll yields no results
+            .body("$.findAll { it.domain == 'jvm' }", anyOf(nullValue(), hasSize(0)));
+    }
 }

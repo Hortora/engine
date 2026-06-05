@@ -24,7 +24,7 @@ Single-module Maven project (`io.hortora:garden-engine`).
 
 **`GardenIndexer`** — `@Observes StartupEvent`. Walks garden directory, parses all `.md` files with frontmatter, embeds body+title via `EmbeddingModel`, upserts to `EmbeddingStore` with metadata payload (domain, type, score, title).
 
-**`SearchResource`** — `GET /search?q=&domain=&limit=`. Embeds query, searches `EmbeddingStore`, filters domain post-retrieval. Returns `List<SearchResult>`.
+**`SearchResource`** — `GET /search?q=&domain=&limit=`. Embeds query, builds `EmbeddingSearchRequest` with optional `IsEqualTo("domain", domain)` payload pre-filter, searches `EmbeddingStore`. Returns `List<SearchResult>`. Pre-filtering ensures `limit` is respected correctly regardless of domain distribution in the corpus.
 
 **`GardenMcpTools`** — `@Tool`-annotated CDI bean. `garden_search` calls `SearchResource.searchFor()` and formats full entry text for LLM consumption. `garden_status` returns index count and garden path.
 

@@ -5,6 +5,8 @@ import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.store.embedding.filter.Filter;
+import dev.langchain4j.store.embedding.filter.comparison.IsEqualTo;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -39,15 +41,18 @@ public class SearchResource {
 
         int maxResults = limit != null && limit > 0 ? limit : 8;
 
+        Filter domainFilter = (domain != null && !domain.isBlank())
+                ? new IsEqualTo("domain", domain)
+                : null;
+
         Embedding queryEmbedding = embeddingModel.embed(query).content();
         var request = EmbeddingSearchRequest.builder()
                 .queryEmbedding(queryEmbedding)
                 .maxResults(maxResults)
+                .filter(domainFilter)
                 .build();
 
         List<SearchResult> results = embeddingStore.search(request).matches().stream()
-                .filter(m -> domain == null || domain.isBlank()
-                        || domain.equals(m.embedded().metadata().getString("domain")))
                 .map(m -> new SearchResult(
                         m.embedded().metadata().getString("title"),
                         m.embedded().metadata().getString("domain"),
