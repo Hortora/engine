@@ -18,7 +18,7 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 - **Qdrant** — vector store (Dev Services in test/dev mode)
 - **Ollama** — dense embedding model (`nomic-embed-text`, 768-dim)
 - **MCP server** — `quarkus-mcp-server-http` (long-running, SSE/HTTP transport)
-- **Java 21**
+- **Java 25**
 
 ## Key Design Decisions
 
@@ -32,7 +32,7 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 
 ```bash
 ./mvnw verify                          # JVM tests
-./mvnw verify -Pnative                 # native image (requires GraalVM 21)
+./mvnw verify -Pnative                 # native image (requires GraalVM 25)
 ./mvnw quarkus:dev                     # dev mode with live reload + Dev Services
 ```
 
