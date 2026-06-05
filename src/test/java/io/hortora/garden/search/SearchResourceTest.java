@@ -54,6 +54,11 @@ class SearchResourceTest {
 
     @Test
     void domainFilterReturnsOnlyMatchingDomain() {
+        // Note: the limit-correctness motivation for this filter (Qdrant pre-filter ensures
+        // `limit` is respected when domain entries are sparse in the corpus) cannot be
+        // demonstrated with the in-memory TestEmbeddingStore — it lacks the "wasted slots"
+        // problem that motivated moving the filter server-side. These tests verify correct
+        // domain isolation; limit-correctness is a Qdrant-specific guarantee.
         given()
             .queryParam("q", "lazy loading transaction boundary")
             .queryParam("domain", "jvm")
@@ -61,6 +66,7 @@ class SearchResourceTest {
             .get("/search")
         .then()
             .statusCode(200)
+            .body("$", not(empty()))
             // REST Assured GPath returns null (not []) when findAll yields no results
             .body("$.findAll { it.domain != 'jvm' }", anyOf(nullValue(), hasSize(0)));
     }
@@ -74,6 +80,7 @@ class SearchResourceTest {
             .get("/search")
         .then()
             .statusCode(200)
+            .body("$", not(empty()))
             // REST Assured GPath returns null (not []) when findAll yields no results
             .body("$.findAll { it.domain == 'jvm' }", anyOf(nullValue(), hasSize(0)));
     }
