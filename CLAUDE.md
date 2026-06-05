@@ -42,8 +42,19 @@ CI runs two jobs: JVM (every push, fast) and native image (push to main only, ~1
 
 In dev and test mode, Quarkus Dev Services starts Qdrant and Ollama automatically. No local setup needed.
 
+## Project Artifacts
+
+Paths that are project content (not workspace noise).
+
+| Path | What it is |
+|------|------------|
+| `CLAUDE.md` | Project conventions (build, test, naming) |
+| `docs/adr/` | Architecture decision records |
+| `docs/DESIGN.md` | Design document |
+| `docs/superpowers/specs/` | Design specs |
+
 ## Work Tracking
 
-**Issue tracking:** enabled
-**GitHub repo:** Hortora/garden-engine
-**All commits reference an issue** — `Refs #N` (ongoing) or `Closes #N` (done).
+Issue tracking: enabled
+GitHub repo: Hortora/garden-engine
+All commits reference an issue — `Refs #N` (ongoing) or `Closes #N` (done).
