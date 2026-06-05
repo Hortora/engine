@@ -32,9 +32,11 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 
 ```bash
 ./mvnw verify                          # JVM tests
-./mvnw verify -Pnative                 # native image (requires GraalVM)
+./mvnw verify -Pnative                 # native image (requires GraalVM 21)
 ./mvnw quarkus:dev                     # dev mode with live reload + Dev Services
 ```
+
+CI runs two jobs: JVM (every push, fast) and native image (push to main only, ~15 min). Native is the production deployment artifact.
 
 ## Dev Services
 
