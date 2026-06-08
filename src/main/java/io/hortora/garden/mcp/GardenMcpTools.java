@@ -30,7 +30,8 @@ public class GardenMcpTools {
             @ToolArg(description = "Optional: filter by domain (e.g. jvm, tools, python). Leave empty to search all domains.", required = false) String domain,
             @ToolArg(description = "Maximum number of entries to return (default 8)", required = false) Integer limit) {
 
-        List<SearchResult> results = searchResource.searchFor(query, domain, limit);
+        List<SearchResult> results = searchResource.searchFor(query,
+                domain != null && !domain.isBlank() ? List.of(domain) : null, limit);
 
         if (results.isEmpty()) {
             return "No relevant garden entries found for: " + query;

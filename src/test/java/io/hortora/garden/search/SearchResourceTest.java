@@ -84,4 +84,33 @@ class SearchResourceTest {
             // REST Assured GPath returns null (not []) when findAll yields no results
             .body("$.findAll { it.domain == 'jvm' }", anyOf(nullValue(), hasSize(0)));
     }
+
+    @Test
+    void multiDomainFilterReturnsBothDomains() {
+        // With 2 fixture entries (jvm + tools), ?domain=jvm&domain=tools must return both
+        given()
+            .queryParam("q", "developer gotchas")
+            .queryParam("domain", "jvm")
+            .queryParam("domain", "tools")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            .body("$", hasSize(2));
+    }
+
+    @Test
+    void multiDomainFilterExcludesUnrequestedDomain() {
+        // Only jvm + nonexistent requested — tools entry must not appear
+        given()
+            .queryParam("q", "developer gotchas")
+            .queryParam("domain", "jvm")
+            .queryParam("domain", "nonexistent")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            .body("$", hasSize(1))
+            .body("[0].domain", equalTo("jvm"));
+    }
 }

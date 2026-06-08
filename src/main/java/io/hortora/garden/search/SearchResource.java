@@ -7,6 +7,7 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.filter.Filter;
 import dev.langchain4j.store.embedding.filter.comparison.IsEqualTo;
+import dev.langchain4j.store.embedding.filter.comparison.IsIn;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -30,7 +31,7 @@ public class SearchResource {
     @GET
     public Response search(
             @QueryParam("q") String query,
-            @QueryParam("domain") String domain,
+            @QueryParam("domain") List<String> domains,
             @QueryParam("limit") Integer limit) {
 
         if (query == null || query.isBlank()) {
@@ -40,41 +41,42 @@ public class SearchResource {
         }
 
         int maxResults = limit != null && limit > 0 ? limit : 8;
+        return Response.ok(doSearch(query, domains, maxResults)).build();
+    }
 
-        Filter domainFilter = (domain != null && !domain.isBlank())
-                ? new IsEqualTo("domain", domain)
-                : null;
+    public List<SearchResult> searchFor(String query, List<String> domains, Integer limit) {
+        int maxResults = limit != null && limit > 0 ? limit : 8;
+        return doSearch(query, domains, maxResults);
+    }
 
+    private List<SearchResult> doSearch(String query, List<String> domains, int maxResults) {
         Embedding queryEmbedding = embeddingModel.embed(query).content();
         var request = EmbeddingSearchRequest.builder()
                 .queryEmbedding(queryEmbedding)
                 .maxResults(maxResults)
-                .filter(domainFilter)
+                .filter(buildDomainFilter(domains))
                 .build();
 
-        List<SearchResult> results = embeddingStore.search(request).matches().stream()
+        return embeddingStore.search(request).matches().stream()
                 .map(m -> new SearchResult(
                         m.embedded().metadata().getString("title"),
                         m.embedded().metadata().getString("domain"),
                         m.embedded().metadata().getString("type"),
-                        parseScore(m.embedded().metadata().getString("score")),
+                        parseCurationScore(m.embedded().metadata().getString("score")),
                         m.embedded().text(),
                         m.score()))
                 .toList();
-
-        return Response.ok(results).build();
     }
 
-    public List<SearchResult> searchFor(String query, String domain, Integer limit) {
-        var response = search(query, domain, limit);
-        if (response.getStatus() != 200) {
-            return List.of();
-        }
-        //noinspection unchecked
-        return (List<SearchResult>) response.getEntity();
+    private static Filter buildDomainFilter(List<String> domains) {
+        if (domains == null || domains.isEmpty()) return null;
+        List<String> nonBlank = domains.stream().filter(d -> d != null && !d.isBlank()).toList();
+        if (nonBlank.isEmpty()) return null;
+        if (nonBlank.size() == 1) return new IsEqualTo("domain", nonBlank.get(0));
+        return new IsIn("domain", nonBlank);
     }
 
-    private static int parseScore(String s) {
+    private static int parseCurationScore(String s) {
         try {
             return s != null ? Integer.parseInt(s) : 0;
         } catch (NumberFormatException e) {
