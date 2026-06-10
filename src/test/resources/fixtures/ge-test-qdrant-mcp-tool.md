@@ -9,5 +9,5 @@ submitted: "2026-06-05"
 
 When a Qdrant collection is deleted and recreated with the same name, an active
 MCP tool session may return stale cached results for several seconds. The Qdrant
-client caches collection metadata. Restart the garden-engine service after
+client caches collection metadata. Restart the engine service after
 recreating collections to force a fresh connection.

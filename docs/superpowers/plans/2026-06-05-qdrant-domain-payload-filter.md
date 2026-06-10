@@ -33,14 +33,14 @@ submitted: "2026-06-05"
 
 When a Qdrant collection is deleted and recreated with the same name, an active
 MCP tool session may return stale cached results for several seconds. The Qdrant
-client caches collection metadata. Restart the garden-engine service after
+client caches collection metadata. Restart the engine service after
 recreating collections to force a fresh connection.
 ```
 
 - [ ] **Step 2: Verify the fixture parses**
 
 ```bash
-mvn -f /Users/mdproctor/claude/hortora/garden-engine/pom.xml test -Dtest=GardenEntryParserTest -q
+mvn -f /Users/mdproctor/claude/hortora/engine/pom.xml test -Dtest=GardenEntryParserTest -q
 ```
 
 Expected: `Tests run: 8, Failures: 0` — existing parser tests still pass, confirming the new fixture format is valid (parser tests cover the fixture directory indirectly via the indexer path, but the parser itself is exercised directly).
@@ -96,7 +96,7 @@ import static org.hamcrest.Matchers.*;
 - [ ] **Step 2: Run the new tests to establish baseline**
 
 ```bash
-mvn -f /Users/mdproctor/claude/hortora/garden-engine/pom.xml test -Dtest=SearchResourceTest -q 2>&1 | grep -E "Tests run|FAIL|ERROR"
+mvn -f /Users/mdproctor/claude/hortora/engine/pom.xml test -Dtest=SearchResourceTest -q 2>&1 | grep -E "Tests run|FAIL|ERROR"
 ```
 
 Expected: Tests run: 6 (4 existing + 2 new), all pass or the domain tests reveal the truncation bug — either outcome is acceptable. The important thing is the tests compile and run cleanly.
@@ -177,7 +177,7 @@ The post-retrieval `.filter()` call is removed. `domainFilter` is `null` when no
 - [ ] **Step 3: Run the full test suite**
 
 ```bash
-mvn -f /Users/mdproctor/claude/hortora/garden-engine/pom.xml test 2>&1 | grep -E "Tests run|BUILD|FAIL|ERROR"
+mvn -f /Users/mdproctor/claude/hortora/engine/pom.xml test 2>&1 | grep -E "Tests run|BUILD|FAIL|ERROR"
 ```
 
 Expected:
@@ -219,17 +219,17 @@ New:
 - [ ] **Step 2: Commit**
 
 ```bash
-git -C /Users/mdproctor/claude/hortora/garden-engine add \
+git -C /Users/mdproctor/claude/hortora/engine add \
   src/test/resources/fixtures/ge-test-qdrant-mcp-tool.md \
   src/test/java/io/hortora/garden/search/SearchResourceTest.java \
   src/main/java/io/hortora/garden/search/SearchResource.java \
   docs/DESIGN.md
 
-git -C /Users/mdproctor/claude/hortora/garden-engine commit -m "perf: Qdrant payload pre-filter for domain — replaces post-retrieval Java filter  Closes #2"
+git -C /Users/mdproctor/claude/hortora/engine commit -m "perf: Qdrant payload pre-filter for domain — replaces post-retrieval Java filter  Closes #2"
 ```
 
 - [ ] **Step 3: Push**
 
 ```bash
-git -C /Users/mdproctor/claude/hortora/garden-engine push -u origin issue-2-qdrant-domain-payload-filter
+git -C /Users/mdproctor/claude/hortora/engine push -u origin issue-2-qdrant-domain-payload-filter
 ```

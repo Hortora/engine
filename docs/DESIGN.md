@@ -1,4 +1,4 @@
-# garden-engine — Design
+# engine — Design
 
 ## Architecture
 
@@ -6,7 +6,7 @@ Quarkus native image service. Indexes garden entries into Qdrant on startup, exp
 
 ## Module Structure
 
-Single-module Maven project (`io.hortora:garden-engine`).
+Single-module Maven project (`io.hortora:engine`).
 
 | Package | Purpose |
 |---------|---------|

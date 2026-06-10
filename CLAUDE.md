@@ -6,7 +6,7 @@
 
 ## Repository Purpose
 
-**garden-engine** — the Hortora garden retrieval service. A Quarkus LangChain4j application that indexes garden entries into Qdrant and exposes them via a MCP server for AI assistant consumption.
+**engine** — the Hortora garden retrieval service. A Quarkus LangChain4j application that indexes garden entries into Qdrant and exposes them via a MCP server for AI assistant consumption.
 
 Phase 1 (current): dense-only retrieval — LangChain4j + Qdrant + Ollama + MCP HTTP server.
 Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-encoder reranking via `casehubio/onnx-inference` once that module is available.
@@ -56,5 +56,5 @@ Paths that are project content (not workspace noise).
 ## Work Tracking
 
 Issue tracking: enabled
-GitHub repo: Hortora/garden-engine
+GitHub repo: Hortora/engine
 All commits reference an issue — `Refs #N` (ongoing) or `Closes #N` (done).

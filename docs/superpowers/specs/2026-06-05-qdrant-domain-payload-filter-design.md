@@ -2,8 +2,8 @@
 
 **Date:** 2026-06-05  
 **Status:** Approved  
-**Issue:** Hortora/garden-engine#2  
-**Deferred:** Hortora/garden-engine#3 (multi-domain `IsIn` variant)
+**Issue:** Hortora/engine#2  
+**Deferred:** Hortora/engine#3 (multi-domain `IsIn` variant)
 
 ---
 
