@@ -1,6 +1,7 @@
 package io.hortora.garden.mcp;
 
 import io.hortora.garden.config.GardenConfig;
+import io.hortora.garden.federation.FederationConfig;
 import io.hortora.garden.index.GardenIndexer;
 import io.hortora.garden.search.SearchResource;
 import io.hortora.garden.search.SearchResult;
@@ -24,6 +25,9 @@ public class GardenMcpTools {
     @Inject
     GardenConfig config;
 
+    @Inject
+    FederationConfig federationConfig;
+
     @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption.")
     String gardenSearch(
             @ToolArg(description = "Natural language description of the problem, symptom, or topic to search for") String query,
@@ -38,12 +42,19 @@ public class GardenMcpTools {
         }
 
         return results.stream()
-                .map(r -> "## " + r.title() + "\n\n" + r.body())
+                .map(r -> "## " + provenanceLabel(r) + " " + r.title() + "\n\n" + r.body())
                 .collect(Collectors.joining("\n\n---\n\n"));
     }
 
     @Tool(description = "Get the status of the garden index: how many entries are indexed and where the garden is located.")
     String gardenStatus() {
         return "Garden path: " + config.path() + "\nIndexed entries: " + indexer.indexedCount();
+    }
+
+    private String provenanceLabel(SearchResult result) {
+        if (federationConfig.gardenId().equals(result.source())) {
+            return "[own]";
+        }
+        return "[" + result.sourcePrefix() + "]";
     }
 }

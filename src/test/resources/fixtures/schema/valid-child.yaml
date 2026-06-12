@@ -1,0 +1,20 @@
+---
+schema-version: 2.0.0
+id: my-garden
+id-prefix: PE
+
+federation:
+  role: child
+  relevance-threshold: 0.7
+  max-depth: 5
+  upstream:
+    - url: https://api.hortora.io/jvm
+      id-prefix: GE
+      search-order: fallback
+    - url: https://enterprise.internal/garden
+      id-prefix: EP
+      search-order: always
+  peers:
+    - url: http://localhost:8091
+      id-prefix: RE
+---

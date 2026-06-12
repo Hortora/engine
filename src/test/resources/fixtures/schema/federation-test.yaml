@@ -1,0 +1,14 @@
+---
+schema-version: 2.0.0
+id: test-garden
+id-prefix: TG
+
+federation:
+  role: child
+  relevance-threshold: 0.1
+  max-depth: 5
+  upstream:
+    - url: http://localhost:9999
+      id-prefix: UG
+      search-order: fallback
+---

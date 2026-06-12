@@ -1,0 +1,12 @@
+---
+schema-version: 2.0.0
+id: bad-garden
+id-prefix: BG
+
+federation:
+  role: child
+  upstream:
+    - url: "not a valid url %%% !!!"
+      id-prefix: GE
+      search-order: fallback
+---

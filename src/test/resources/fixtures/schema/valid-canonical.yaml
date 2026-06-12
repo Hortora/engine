@@ -1,0 +1,8 @@
+---
+schema-version: 2.0.0
+id: jvm-garden
+id-prefix: GE
+
+federation:
+  role: canonical
+---

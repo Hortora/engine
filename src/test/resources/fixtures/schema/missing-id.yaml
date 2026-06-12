@@ -1,0 +1,10 @@
+---
+schema-version: 2.0.0
+
+federation:
+  role: child
+  upstream:
+    - url: https://api.hortora.io/jvm
+      id-prefix: GE
+      search-order: fallback
+---

@@ -10,4 +10,13 @@ public interface GardenConfig {
 
     @WithDefault("${user.home}/.hortora/garden")
     Path path();
+
+    @WithDefault("garden")
+    String id();
+
+    @WithDefault("GE")
+    String idPrefix();
+
+    @WithDefault("${hortora.garden.path}/SCHEMA.md")
+    Path schemaPath();
 }
