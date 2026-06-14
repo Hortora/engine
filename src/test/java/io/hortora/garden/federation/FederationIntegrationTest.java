@@ -1,17 +1,10 @@
 package io.hortora.garden.federation;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.QuarkusTestProfile;
-import io.quarkus.test.junit.TestProfile;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
@@ -26,24 +19,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 
 @QuarkusTest
-@TestProfile(FederationIntegrationTest.FederationTestProfile.class)
+@QuarkusTestResource(value = WireMockFederationResource.class, restrictToAnnotatedClass = true)
 class FederationIntegrationTest {
 
-    static WireMockServer wireMock;
-
-    @BeforeAll
-    static void startWireMock() {
-        wireMock = new WireMockServer(WireMockConfiguration.wireMockConfig().port(9999));
-        wireMock.start();
-        WireMock.configureFor("localhost", 9999);
-    }
-
-    @AfterAll
-    static void stopWireMock() {
-        if (wireMock != null) {
-            wireMock.stop();
-        }
-    }
+    WireMockServer wireMock;
 
     @BeforeEach
     void resetWireMock() {
@@ -161,16 +140,5 @@ class FederationIntegrationTest {
                 .statusCode(200)
                 .body("[0].source", equalTo("test-garden"))
                 .body("[0].sourcePrefix", equalTo("TG"));
-    }
-
-    public static class FederationTestProfile implements QuarkusTestProfile {
-        @Override
-        public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "hortora.garden.schema-path", "src/test/resources/fixtures/schema/federation-test.yaml",
-                    "hortora.garden.id", "test-garden",
-                    "hortora.garden.id-prefix", "TG"
-            );
-        }
     }
 }
