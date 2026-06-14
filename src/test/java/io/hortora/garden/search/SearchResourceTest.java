@@ -113,4 +113,17 @@ class SearchResourceTest {
             .body("$", hasSize(1))
             .body("[0].domain", equalTo("jvm"));
     }
+
+    @Test
+    void searchResultsIncludeProvenanceFields() {
+        given()
+            .queryParam("q", "hibernate lazy loading exception")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            .body("$", not(empty()))
+            .body("[0].source", equalTo("garden"))
+            .body("[0].sourcePrefix", equalTo("GE"));
+    }
 }
