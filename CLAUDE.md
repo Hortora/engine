@@ -52,6 +52,7 @@ Paths that are project content (not workspace noise).
 | `docs/adr/` | Architecture decision records |
 | `docs/DESIGN.md` | Design document |
 | `docs/superpowers/specs/` | Design specs |
+| `docs/superpowers/plans/` | Implementation plans |
 
 ## Work Tracking
 
