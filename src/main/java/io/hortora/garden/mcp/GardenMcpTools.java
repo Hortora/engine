@@ -1,10 +1,11 @@
 package io.hortora.garden.mcp;
 
 import io.hortora.garden.config.GardenConfig;
+import io.hortora.garden.config.QdrantConfig;
 import io.hortora.garden.federation.FederationConfig;
-import io.hortora.garden.index.GardenIndexer;
 import io.hortora.garden.search.SearchResource;
 import io.hortora.garden.search.SearchResult;
+import io.qdrant.client.QdrantClient;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,7 +21,10 @@ public class GardenMcpTools {
     SearchResource searchResource;
 
     @Inject
-    GardenIndexer indexer;
+    QdrantClient qdrantClient;
+
+    @Inject
+    QdrantConfig qdrantConfig;
 
     @Inject
     GardenConfig config;
@@ -48,7 +52,13 @@ public class GardenMcpTools {
 
     @Tool(description = "Get the status of the garden index: how many entries are indexed and where the garden is located.")
     String gardenStatus() {
-        return "Garden path: " + config.path() + "\nIndexed entries: " + indexer.indexedCount();
+        long count;
+        try {
+            count = qdrantClient.countAsync(qdrantConfig.collection()).get();
+        } catch (Exception e) {
+            count = -1;
+        }
+        return "Garden path: " + config.path() + "\nIndexed entries: " + count;
     }
 
     private String provenanceLabel(SearchResult result) {

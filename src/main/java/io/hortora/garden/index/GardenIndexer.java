@@ -1,97 +1,111 @@
 package io.hortora.garden.index;
 
-import dev.langchain4j.data.embedding.Embedding;
-import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.store.embedding.EmbeddingStore;
+import io.casehub.corpus.ChangeSet;
+import io.casehub.corpus.WatchableChangeSource;
+import io.casehub.corpus.zip.FlatChangeSource;
+import io.casehub.corpus.zip.FlatCorpusStore;
 import io.hortora.garden.config.GardenConfig;
-import io.hortora.garden.entry.GardenEntry;
-import io.hortora.garden.entry.GardenEntryParser;
+import io.hortora.garden.config.QdrantConfig;
+import io.qdrant.client.QdrantClient;
+import io.qdrant.client.grpc.Collections.CreateCollection;
+import io.qdrant.client.grpc.Collections.Distance;
+import io.qdrant.client.grpc.Collections.VectorParams;
+import io.qdrant.client.grpc.Collections.VectorParamsMap;
+import io.qdrant.client.grpc.Collections.VectorsConfig;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @ApplicationScoped
 public class GardenIndexer {
 
     @Inject
-    GardenConfig config;
+    GardenConfig gardenConfig;
 
     @Inject
-    GardenEntryParser parser;
+    QdrantConfig qdrantConfig;
+
+    @Inject
+    QdrantClient qdrantClient;
 
     @Inject
     EmbeddingModel embeddingModel;
 
     @Inject
-    EmbeddingStore<TextSegment> embeddingStore;
+    GardenMetadataExtractor extractor;
 
-    private volatile int indexedCount = 0;
+    private WatchableChangeSource changeSource;
 
     void onStart(@Observes StartupEvent event) {
+        Path gardenPath = gardenConfig.path();
+        String collection = qdrantConfig.collection();
+
+        ensureCollection(collection);
+
+        FileCursorStore cursorStore = new FileCursorStore(gardenPath);
+        FlatCorpusStore corpusStore = new FlatCorpusStore(gardenPath);
+        FlatChangeSource flatChangeSource = new FlatChangeSource(corpusStore, gardenPath);
+        this.changeSource = flatChangeSource;
+
+        GardenIngestionService ingestionService = new GardenIngestionService(
+                qdrantClient, embeddingModel, extractor,
+                cursorStore, gardenPath, collection);
+
+        Optional<String> cursor = cursorStore.load();
+        ChangeSet changes = cursor.isPresent()
+                ? flatChangeSource.changesSince(cursor.get())
+                : flatChangeSource.fullScan();
+
+        ingestionService.ingest(changes);
+
         try {
-            indexGarden();
-        } catch (IOException e) {
-            Log.errorf("Failed to index garden at %s: %s", config.path(), e.getMessage());
+            flatChangeSource.watch(entries -> ingestionService.onChanges(entries));
+            Log.infof("Garden indexer started — watching %s", gardenPath);
+        } catch (Exception e) {
+            Log.warnf("Failed to start garden watcher on %s: %s — operating without live updates",
+                    gardenPath, e.getMessage());
         }
     }
 
-    void indexGarden() throws IOException {
-        Path gardenPath = config.path();
-        if (!Files.isDirectory(gardenPath)) {
-            Log.warnf("Garden path does not exist or is not a directory: %s — starting with empty index", gardenPath);
-            return;
+    @PreDestroy
+    void shutdown() {
+        if (changeSource != null) {
+            changeSource.close();
+            Log.info("Garden watcher stopped");
         }
-
-        List<GardenEntry> entries = new ArrayList<>();
-        try (var walk = Files.walk(gardenPath)) {
-            walk.filter(p -> p.toString().endsWith(".md"))
-                    .filter(p -> !p.getFileName().toString().startsWith("."))
-                    .forEach(p -> {
-                        try {
-                            entries.add(parser.parse(p));
-                        } catch (IllegalArgumentException e) {
-                            // No frontmatter — not a garden entry (e.g. README.md), skip silently
-                        } catch (IOException e) {
-                            Log.warnf("Could not read %s: %s", p, e.getMessage());
-                        }
-                    });
-        }
-
-        if (entries.isEmpty()) {
-            Log.infof("No garden entries found at: %s", gardenPath);
-            return;
-        }
-
-        List<TextSegment> segments = entries.stream()
-                .map(this::toSegment)
-                .toList();
-
-        List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
-        embeddingStore.addAll(embeddings, segments);
-
-        indexedCount = entries.size();
-        Log.infof("Garden indexed: %d entries from %s", indexedCount, gardenPath);
     }
 
-    public int indexedCount() {
-        return indexedCount;
-    }
-
-    private TextSegment toSegment(GardenEntry entry) {
-        var metadata = dev.langchain4j.data.document.Metadata.from("id", entry.id())
-                .put("title", entry.title() != null ? entry.title() : "")
-                .put("domain", entry.domain() != null ? entry.domain() : "")
-                .put("type", entry.type() != null ? entry.type() : "")
-                .put("score", String.valueOf(entry.score()));
-        return TextSegment.from(entry.title() + "\n\n" + entry.body(), metadata);
+    private void ensureCollection(String collection) {
+        try {
+            if (qdrantClient.collectionExistsAsync(collection).get()) {
+                return;
+            }
+            VectorParams denseParams = VectorParams.newBuilder()
+                    .setSize(768)
+                    .setDistance(Distance.Cosine)
+                    .build();
+            CreateCollection createRequest = CreateCollection.newBuilder()
+                    .setCollectionName(collection)
+                    .setVectorsConfig(VectorsConfig.newBuilder()
+                            .setParamsMap(VectorParamsMap.newBuilder()
+                                    .putMap("dense", denseParams)
+                                    .build())
+                            .build())
+                    .build();
+            qdrantClient.createCollectionAsync(createRequest).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted during collection creation", e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("Failed to create collection: " + collection, e.getCause());
+        }
     }
 }

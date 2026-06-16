@@ -1,5 +1,7 @@
 package io.hortora.garden.search;
 
+import io.hortora.garden.test.QdrantResource;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +9,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
+@QuarkusTestResource(QdrantResource.class)
 class SearchResourceTest {
 
     @Test
@@ -54,11 +57,9 @@ class SearchResourceTest {
 
     @Test
     void domainFilterReturnsOnlyMatchingDomain() {
-        // Note: the limit-correctness motivation for this filter (Qdrant pre-filter ensures
-        // `limit` is respected when domain entries are sparse in the corpus) cannot be
-        // demonstrated with the in-memory TestEmbeddingStore — it lacks the "wasted slots"
-        // problem that motivated moving the filter server-side. These tests verify correct
-        // domain isolation; limit-correctness is a Qdrant-specific guarantee.
+        // Qdrant pre-filter ensures `limit` is respected when domain entries are sparse
+        // in the corpus. These tests verify correct domain isolation via the real Qdrant
+        // instance provided by QdrantResource.
         given()
             .queryParam("q", "lazy loading transaction boundary")
             .queryParam("domain", "jvm")

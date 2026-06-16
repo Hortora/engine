@@ -9,13 +9,14 @@
 **engine** — the Hortora garden retrieval service. A Quarkus LangChain4j application that indexes garden entries into Qdrant and exposes them via a MCP server for AI assistant consumption.
 
 Phase 1 (current): dense-only retrieval — LangChain4j + Qdrant + Ollama + MCP HTTP server.
-Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-encoder reranking via `casehubio/onnx-inference` once that module is available.
+Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-encoder reranking via `casehubio/neural-text` `inference-splade` (Hortora-eligible).
 
 ## Stack
 
 - **Quarkus 3.36.x** — runtime
-- **LangChain4j Quarkus extension** — `quarkus-langchain4j-qdrant`, `quarkus-langchain4j-ollama`
-- **Qdrant** — vector store (Dev Services in test/dev mode)
+- **LangChain4j Quarkus extension** — `quarkus-langchain4j-ollama` (EmbeddingModel only)
+- **Qdrant** — vector store via direct `io.qdrant:client` gRPC (protocol `PP-20260616-896634`)
+- **casehub-corpus-api + casehub-corpus** — filesystem change detection (`FlatChangeSource`, `WatchableChangeSource`)
 - **Ollama** — dense embedding model (`nomic-embed-text`, 768-dim)
 - **MCP server** — `quarkus-mcp-server-http` (long-running, SSE/HTTP transport)
 - **Java 25**
@@ -23,6 +24,8 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 ## Key Design Decisions
 
 - **Dense-only first** — no ONNX/SPLADE dependency in phase 1; CI goes green without cross-repo deps
+- **Incremental re-indexing** — cursor-based change detection via `FlatChangeSource` (directory-watcher); live filesystem watching after startup sync
+- **Direct Qdrant client** — `io.qdrant:client` gRPC, not LangChain4j `EmbeddingStore` abstraction (named vectors, payload filters, scroll pagination)
 - **Long-running service, not stdio** — Qdrant loads its index once; stdio per-session cold-start is unacceptable at corpus scale
 - **One collection per garden** — single-tenant; no namespace isolation needed
 - **Garden entries are the chunks** — no document splitting; entries (50–200 lines) are the retrieval unit
@@ -40,7 +43,7 @@ CI runs two jobs: JVM (every push, fast) and native image (push to main only, ~1
 
 ## Dev Services
 
-In dev and test mode, Quarkus Dev Services starts Qdrant and Ollama automatically. No local setup needed.
+Ollama Dev Services starts automatically in dev/test mode. Qdrant uses Testcontainers in tests (`QdrantResource`); in dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`.
 
 ## Project Artifacts
 

@@ -1,6 +1,7 @@
 package io.hortora.garden.federation;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import io.hortora.garden.test.QdrantResource;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 
 @QuarkusTest
+@QuarkusTestResource(QdrantResource.class)
 @QuarkusTestResource(value = WireMockFederationResource.class, restrictToAnnotatedClass = true)
 class FederationIntegrationTest {
 

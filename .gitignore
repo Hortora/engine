@@ -39,6 +39,9 @@ nb-configuration.xml
 # Local environment
 .env
 
+# Garden indexer cursor (written during tests into fixtures dir)
+src/test/resources/fixtures/_state/
+
 # Plugin directory
 /.quarkus/cli/plugins/
 # TLS Certificates

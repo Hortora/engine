@@ -10,22 +10,21 @@ Single-module Maven project (`io.hortora:engine`).
 
 | Package | Purpose |
 |---------|---------|
-| `io.hortora.garden.config` | `GardenConfig` — config mapping for `hortora.garden.*` |
-| `io.hortora.garden.entry` | `GardenEntry` record + `GardenEntryParser` (YAML frontmatter + body) |
-| `io.hortora.garden.index` | `GardenIndexer` — startup scan, embed, upsert |
+| `io.hortora.garden.config` | `GardenConfig` + `QdrantConfig` — config mappings |
+| `io.hortora.garden.index` | `GardenIndexer` (startup wiring + lifecycle), `GardenIngestionService` (cursor-based ingest), `GardenMetadataExtractor`, `ExtractionResult`, `FileCursorStore`, `QdrantClientProducer` |
 | `io.hortora.garden.search` | `SearchResource` (REST) + `SearchResult` |
 | `io.hortora.garden.mcp` | `GardenMcpTools` — `garden_search` + `garden_status` MCP tools |
 | `io.hortora.garden.federation` | `FederationConfig`, `FederationConfigParser`, `ChainWalker`, `RemoteGardenClient` |
 
 ## Key Abstractions
 
-**`GardenEntry`** — parsed garden entry: id (file path), title, domain, type, score, tags, submitted, body.
+**`GardenMetadataExtractor`** — parses `.md` files with YAML frontmatter. Returns `ExtractionResult(content, metadata)` where content = `title + "\n\n" + body` for embedding quality. Non-`.md` files and files without frontmatter return empty content (skipped by ingestion).
 
-**`GardenEntryParser`** — reads `.md` files, splits on `---` YAML frontmatter delimiter, parses with SnakeYAML. Throws `IllegalArgumentException` for files without frontmatter (silently skipped by indexer).
+**`GardenIngestionService`** — cursor-based incremental ingestion. Consumes `ChangeSet` from `FlatChangeSource` (casehub-corpus). Two error classes: extraction failure (skip file, cursor advances) vs infrastructure failure (Qdrant/Ollama down, cursor stays). `ReentrantLock.tryLock()` for concurrency between startup ingest and watcher callbacks. Deterministic UUID v3 point IDs from path.
 
-**`GardenIndexer`** — `@Observes StartupEvent`. Walks garden directory, parses all `.md` files with frontmatter, embeds body+title via `EmbeddingModel`, upserts to `EmbeddingStore` with metadata payload (domain, type, score, title).
+**`GardenIndexer`** — `@Observes StartupEvent`. Creates `FlatCorpusStore` + `FlatChangeSource` + `GardenIngestionService`. Eagerly creates Qdrant collection with named "dense" vector (768-dim cosine). Triggers initial sync via cursor-based `fullScan()` or `changesSince()`. Starts `DirectoryWatcher` for live changes via `FlatChangeSource.watch()`. `@PreDestroy` stops the watcher.
 
-**`SearchResource`** — `GET /search?q=&domain=&limit=`. Embeds query, builds `EmbeddingSearchRequest` with optional `IsEqualTo("domain", domain)` payload pre-filter, searches `EmbeddingStore`. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, provenance tagging on own results, delegation to `ChainWalker` for upstream/peer queries. Returns `List<SearchResult>` with provenance (id, source, sourcePrefix).
+**`SearchResource`** — `GET /search?q=&domain=&limit=`. Embeds query, builds `QueryPoints` request with optional payload filter for domain, queries `QdrantClient` directly. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, provenance tagging on own results, delegation to `ChainWalker` for upstream/peer queries. Returns `List<SearchResult>` with provenance (id, source, sourcePrefix).
 
 **`GardenMcpTools`** — `@Tool`-annotated CDI bean. `garden_search` calls `SearchResource.searchFor()` and formats full entry text for LLM consumption with provenance labels (`[own]` for local, `[prefix]` for remote). `garden_status` returns index count and garden path.
 
@@ -54,9 +53,10 @@ Cycle detection: `X-Federation-Visited` header carries a comma-separated set of 
 
 ## SPI Contracts
 
-Relies on LangChain4j Quarkus extension SPIs:
+Relies on LangChain4j and direct Qdrant client:
 - `EmbeddingModel` — Ollama (`nomic-embed-text`, 768-dim) in production; `TestEmbeddingModel` in tests
-- `EmbeddingStore<TextSegment>` — Qdrant in production; `TestEmbeddingStore` (in-memory) in tests
+- `io.qdrant:client` — direct Qdrant gRPC client for vector operations, no LangChain4j `EmbeddingStore` abstraction
+- `casehub-corpus-api` + `casehub-corpus` — `FlatCorpusStore` (file tree facade), `FlatChangeSource` (cursor-based change detection), `DirectoryWatcher` (live change stream)
 
 ## Configuration
 
