@@ -8,14 +8,15 @@
 
 **engine** — the Hortora garden retrieval service. A Quarkus LangChain4j application that indexes garden entries into Qdrant and exposes them via a MCP server for AI assistant consumption.
 
-Phase 1 (current): dense-only retrieval — LangChain4j + Qdrant + Ollama + MCP HTTP server.
-Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-encoder reranking via `casehubio/neural-text` `inference-splade` (Hortora-eligible).
+Phase 1: dense-only retrieval — LangChain4j + Qdrant + Ollama + MCP HTTP server.
+Phase 2 (current): hybrid search — SPLADE sparse embeddings + cross-encoder reranking via `casehub-inference-quarkus` (ONNX Runtime). Dense+sparse RRF fusion and reranking activate when ONNX models are configured.
 
 ## Stack
 
 - **Quarkus 3.36.x** — runtime
 - **LangChain4j Quarkus extension** — `quarkus-langchain4j-ollama` (EmbeddingModel only)
 - **casehub-rag** — neural-text RAG module (`CaseRetriever`, `EmbeddingIngestor`, `CorpusIngestionService`); Qdrant integration via `casehub-rag`, not direct client
+- **casehub-inference-quarkus** — ONNX inference CDI wiring, native image metadata; engine bridges `@Inference` models to `SparseEmbedder`/`CrossEncoderReranker`
 - **casehub-corpus-api + casehub-corpus** — filesystem change detection (`FlatChangeSource`, `WatchableChangeSource`)
 - **Ollama** — dense embedding model (`nomic-embed-text`, 768-dim)
 - **MCP server** — `quarkus-mcp-server-http` (long-running, SSE/HTTP transport)
@@ -23,7 +24,7 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 
 ## Key Design Decisions
 
-- **Dense-only first** — no ONNX/SPLADE dependency in phase 1; CI goes green without cross-repo deps
+- **Hybrid search via inference-quarkus** — `HybridSearchProducer` bridges `@Inference`-qualified ONNX models to `SparseEmbedder`/`CrossEncoderReranker` via `@LookupIfProperty`; beans are genuinely non-resolvable when ONNX models aren't configured, so the engine falls back to dense-only transparently. `CollectionMigration` detects dense-only Qdrant collections at startup and triggers re-indexing when SPLADE is newly enabled.
 - **Incremental re-indexing** — cursor-based change detection via `FlatChangeSource` (directory-watcher); live filesystem watching after startup sync
 - **neural-text RAG delegation** — ingestion and retrieval via `casehub-rag` SPIs (`EmbeddingIngestor`, `CaseRetriever`); engine provides `CorpusIngestionBinding` via CDI, neural-text handles Qdrant lifecycle, collection schema, and cursor management
 - **Fixed tenant ID** — `CorpusRef("hortora", gardenConfig.id())`; collection name `hortora_garden` under `SEPARATE_COLLECTIONS` tenancy strategy

@@ -14,6 +14,7 @@ Single-module Maven project (`io.hortora:engine`).
 | `io.hortora.garden.index` | `GardenBindingProducer` (CDI integration with neural-text), `GardenMetadataExtractor` (implements `MetadataExtractor` SPI) |
 | `io.hortora.garden.search` | `SearchResource` (REST, delegates to `CaseRetriever`) + `SearchResult` |
 | `io.hortora.garden.mcp` | `GardenMcpTools` — `garden_search` + `garden_status` MCP tools |
+| `io.hortora.garden.inference` | `HybridSearchProducer` (bridges `@Inference` models to `SparseEmbedder`/`CrossEncoderReranker`), `CollectionMigration` (dense→hybrid re-index) |
 | `io.hortora.garden.federation` | `FederationConfig`, `FederationConfigParser`, `ChainWalker`, `RemoteGardenClient` |
 
 ## Key Abstractions
