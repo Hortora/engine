@@ -1,5 +1,7 @@
 package io.hortora.garden.index;
 
+import io.casehub.rag.ExtractionResult;
+import io.casehub.rag.MetadataExtractor;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.yaml.snakeyaml.Yaml;
 
@@ -9,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
-public class GardenMetadataExtractor {
+public class GardenMetadataExtractor implements MetadataExtractor {
 
+    @Override
     public ExtractionResult extract(String path, byte[] content) {
         if (!path.endsWith(".md")) {
             return new ExtractionResult("", Map.of());

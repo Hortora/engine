@@ -15,7 +15,7 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 
 - **Quarkus 3.36.x** — runtime
 - **LangChain4j Quarkus extension** — `quarkus-langchain4j-ollama` (EmbeddingModel only)
-- **Qdrant** — vector store via direct `io.qdrant:client` gRPC (protocol `PP-20260616-896634`)
+- **casehub-rag** — neural-text RAG module (`CaseRetriever`, `EmbeddingIngestor`, `CorpusIngestionService`); Qdrant integration via `casehub-rag`, not direct client
 - **casehub-corpus-api + casehub-corpus** — filesystem change detection (`FlatChangeSource`, `WatchableChangeSource`)
 - **Ollama** — dense embedding model (`nomic-embed-text`, 768-dim)
 - **MCP server** — `quarkus-mcp-server-http` (long-running, SSE/HTTP transport)
@@ -25,9 +25,9 @@ Phase 2 (future): hybrid search — adds SPLADE sparse embeddings and cross-enco
 
 - **Dense-only first** — no ONNX/SPLADE dependency in phase 1; CI goes green without cross-repo deps
 - **Incremental re-indexing** — cursor-based change detection via `FlatChangeSource` (directory-watcher); live filesystem watching after startup sync
-- **Direct Qdrant client** — `io.qdrant:client` gRPC, not LangChain4j `EmbeddingStore` abstraction (named vectors, payload filters, scroll pagination)
+- **neural-text RAG delegation** — ingestion and retrieval via `casehub-rag` SPIs (`EmbeddingIngestor`, `CaseRetriever`); engine provides `CorpusIngestionBinding` via CDI, neural-text handles Qdrant lifecycle, collection schema, and cursor management
+- **Fixed tenant ID** — `CorpusRef("hortora", gardenConfig.id())`; collection name `hortora_garden` under `SEPARATE_COLLECTIONS` tenancy strategy
 - **Long-running service, not stdio** — Qdrant loads its index once; stdio per-session cold-start is unacceptable at corpus scale
-- **One collection per garden** — single-tenant; no namespace isolation needed
 - **Garden entries are the chunks** — no document splitting; entries (50–200 lines) are the retrieval unit
 - **Federation in this service** — canonical/child chain walk is Hortora-specific logic, lives here not in any shared module
 
@@ -43,7 +43,7 @@ CI runs two jobs: JVM (every push, fast) and native image (push to main only, ~1
 
 ## Dev Services
 
-Ollama Dev Services starts automatically in dev/test mode. Qdrant uses Testcontainers in tests (`QdrantResource`); in dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`.
+Ollama Dev Services starts automatically in dev/test mode. In tests, `casehub-rag-testing` provides in-memory `CaseRetriever` and `EmbeddingIngestor` stubs (no Qdrant needed). In dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`.
 
 ## Project Artifacts
 

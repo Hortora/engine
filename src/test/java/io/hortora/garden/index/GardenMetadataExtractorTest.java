@@ -1,5 +1,6 @@
 package io.hortora.garden.index;
 
+import io.casehub.rag.ExtractionResult;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -19,7 +20,7 @@ class GardenMetadataExtractorTest {
 
         ExtractionResult result = extractor.extract("jvm/ge-test.md", content);
 
-        assertThat(result.content())
+        assertThat(result.body())
                 .startsWith("Hibernate lazy loading fails outside transaction\n\n")
                 .contains("LazyInitializationException");
         assertThat(result.metadata())
@@ -35,7 +36,7 @@ class GardenMetadataExtractorTest {
 
         ExtractionResult result = extractor.extract("images/diagram.png", content);
 
-        assertThat(result.content()).isEmpty();
+        assertThat(result.body()).isEmpty();
         assertThat(result.metadata()).isEmpty();
     }
 
@@ -46,7 +47,7 @@ class GardenMetadataExtractorTest {
 
         ExtractionResult result = extractor.extract("notes/readme.md", content);
 
-        assertThat(result.content()).isEmpty();
+        assertThat(result.body()).isEmpty();
         assertThat(result.metadata()).isEmpty();
     }
 

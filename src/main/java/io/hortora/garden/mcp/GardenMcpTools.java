@@ -1,11 +1,11 @@
 package io.hortora.garden.mcp;
 
+import io.casehub.rag.CorpusRef;
+import io.casehub.rag.EmbeddingIngestor;
 import io.hortora.garden.config.GardenConfig;
-import io.hortora.garden.config.QdrantConfig;
 import io.hortora.garden.federation.FederationConfig;
 import io.hortora.garden.search.SearchResource;
 import io.hortora.garden.search.SearchResult;
-import io.qdrant.client.QdrantClient;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -17,20 +17,10 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class GardenMcpTools {
 
-    @Inject
-    SearchResource searchResource;
-
-    @Inject
-    QdrantClient qdrantClient;
-
-    @Inject
-    QdrantConfig qdrantConfig;
-
-    @Inject
-    GardenConfig config;
-
-    @Inject
-    FederationConfig federationConfig;
+    @Inject SearchResource searchResource;
+    @Inject EmbeddingIngestor embeddingIngestor;
+    @Inject GardenConfig config;
+    @Inject FederationConfig federationConfig;
 
     @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption.")
     String gardenSearch(
@@ -52,9 +42,10 @@ public class GardenMcpTools {
 
     @Tool(description = "Get the status of the garden index: how many entries are indexed and where the garden is located.")
     String gardenStatus() {
-        long count;
+        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+        int count;
         try {
-            count = qdrantClient.countAsync(qdrantConfig.collection()).get();
+            count = embeddingIngestor.listDocuments(corpusRef).size();
         } catch (Exception e) {
             count = -1;
         }

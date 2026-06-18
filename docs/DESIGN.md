@@ -2,7 +2,7 @@
 
 ## Architecture
 
-Quarkus native image service. Indexes garden entries into Qdrant on startup, exposes search via REST and MCP HTTP server. Long-running — Qdrant loads its vector index once at startup. Supports federation: upstream chain walk to parent gardens via HTTP, peer fan-out for supplementary results.
+Quarkus native image service. Delegates ingestion and retrieval to neural-text's `casehub-rag` module, exposes search via REST and MCP HTTP server. Long-running — Qdrant loads its vector index once at startup. Supports federation: upstream chain walk to parent gardens via HTTP, peer fan-out for supplementary results.
 
 ## Module Structure
 
@@ -10,29 +10,27 @@ Single-module Maven project (`io.hortora:engine`).
 
 | Package | Purpose |
 |---------|---------|
-| `io.hortora.garden.config` | `GardenConfig` + `QdrantConfig` — config mappings |
-| `io.hortora.garden.index` | `GardenIndexer` (startup wiring + lifecycle), `GardenIngestionService` (cursor-based ingest), `GardenMetadataExtractor`, `ExtractionResult`, `FileCursorStore`, `QdrantClientProducer` |
-| `io.hortora.garden.search` | `SearchResource` (REST) + `SearchResult` |
+| `io.hortora.garden.config` | `GardenConfig` — garden path, ID, and federation schema config |
+| `io.hortora.garden.index` | `GardenBindingProducer` (CDI integration with neural-text), `GardenMetadataExtractor` (implements `MetadataExtractor` SPI) |
+| `io.hortora.garden.search` | `SearchResource` (REST, delegates to `CaseRetriever`) + `SearchResult` |
 | `io.hortora.garden.mcp` | `GardenMcpTools` — `garden_search` + `garden_status` MCP tools |
 | `io.hortora.garden.federation` | `FederationConfig`, `FederationConfigParser`, `ChainWalker`, `RemoteGardenClient` |
 
 ## Key Abstractions
 
-**`GardenMetadataExtractor`** — parses `.md` files with YAML frontmatter. Returns `ExtractionResult(content, metadata)` where content = `title + "\n\n" + body` for embedding quality. Non-`.md` files and files without frontmatter return empty content (skipped by ingestion).
+**`GardenBindingProducer`** — CDI producer that creates a `CorpusIngestionBinding` for the garden. This is the single integration point with neural-text's `CorpusIngestionService`. Creates `FlatCorpusStore` + `FlatChangeSource` from `GardenConfig.path()`, wraps them with a fixed `CorpusRef("hortora", gardenConfig.id())`. Neural-text handles startup scanning, filesystem watching, cursor persistence, collection schema creation, and embedding — the engine provides only the binding.
 
-**`GardenIngestionService`** — cursor-based incremental ingestion. Consumes `ChangeSet` from `FlatChangeSource` (casehub-corpus). Two error classes: extraction failure (skip file, cursor advances) vs infrastructure failure (Qdrant/Ollama down, cursor stays). `ReentrantLock.tryLock()` for concurrency between startup ingest and watcher callbacks. Deterministic UUID v3 point IDs from path.
+**`GardenMetadataExtractor`** — implements neural-text's `MetadataExtractor` SPI. Parses `.md` files with YAML frontmatter. Returns `ExtractionResult(body, metadata)` where body = `title + "\n\n" + body` for embedding quality. Non-`.md` files and files without frontmatter return empty content (skipped by ingestion). Extracts: title, domain, type, score, tags, submitted.
 
-**`GardenIndexer`** — `@Observes StartupEvent`. Creates `FlatCorpusStore` + `FlatChangeSource` + `GardenIngestionService`. Eagerly creates Qdrant collection with named "dense" vector (768-dim cosine). Triggers initial sync via cursor-based `fullScan()` or `changesSince()`. Starts `DirectoryWatcher` for live changes via `FlatChangeSource.watch()`. `@PreDestroy` stops the watcher.
+**`SearchResource`** — `GET /search?q=&domain=&limit=`. Delegates local search to `CaseRetriever.retrieve()` with `PayloadFilter` for domain filtering (single domain → `Eq`, multiple → `In`). Maps `RetrievedChunk` to `SearchResult` with metadata extraction and provenance tagging. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, delegation to `ChainWalker` for upstream/peer queries.
 
-**`SearchResource`** — `GET /search?q=&domain=&limit=`. Embeds query, builds `QueryPoints` request with optional payload filter for domain, queries `QdrantClient` directly. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, provenance tagging on own results, delegation to `ChainWalker` for upstream/peer queries. Returns `List<SearchResult>` with provenance (id, source, sourcePrefix).
-
-**`GardenMcpTools`** — `@Tool`-annotated CDI bean. `garden_search` calls `SearchResource.searchFor()` and formats full entry text for LLM consumption with provenance labels (`[own]` for local, `[prefix]` for remote). `garden_status` returns index count and garden path.
+**`GardenMcpTools`** — `@Tool`-annotated CDI bean. `garden_search` calls `SearchResource.searchFor()` and formats full entry text for LLM consumption with provenance labels (`[own]` for local, `[prefix]` for remote). `garden_status` returns index count (via `EmbeddingIngestor.listDocuments()`) and garden path.
 
 **`FederationConfig`** — record parsed from SCHEMA.md `federation:` block. Holds garden identity, role (canonical/child/peer), upstream chain, peers, relevance threshold, and max depth.
 
 **`FederationConfigParser`** — `@ApplicationScoped`. `@Observes StartupEvent` for fail-fast validation. `@Produces @Singleton FederationConfig`. Falls back to default canonical config when no SCHEMA.md or no `federation:` block.
 
-**`ChainWalker`** — `@ApplicationScoped`. Creates `RemoteGardenClient` instances at `@PostConstruct`. `walk()` orchestrates the full federation path: upstream sequential walk with short-circuit, peer parallel fan-out via `ManagedExecutor`, deduplication by id+source, tier-grouped relevance-sorted merge, truncation to limit. Returns the final merged result set. Degrades gracefully on timeout/failure.
+**`ChainWalker`** — `@ApplicationScoped`. Creates `RemoteGardenClient` instances at `@PostConstruct`. `walk()` orchestrates the full federation path: upstream sequential walk with short-circuit, peer parallel fan-out via `ManagedExecutor`, deduplication by id+source, tier-grouped relevance-sorted merge, truncation to limit. Degrades gracefully on timeout/failure.
 
 **`RemoteGardenClient`** — package-private JAX-RS interface for HTTP calls to upstream/peer gardens. Clients created programmatically via `QuarkusRestClientBuilder` with 5s read timeout.
 
@@ -53,10 +51,13 @@ Cycle detection: `X-Federation-Visited` header carries a comma-separated set of 
 
 ## SPI Contracts
 
-Relies on LangChain4j and direct Qdrant client:
-- `EmbeddingModel` — Ollama (`nomic-embed-text`, 768-dim) in production; `TestEmbeddingModel` in tests
-- `io.qdrant:client` — direct Qdrant gRPC client for vector operations, no LangChain4j `EmbeddingStore` abstraction
-- `casehub-corpus-api` + `casehub-corpus` — `FlatCorpusStore` (file tree facade), `FlatChangeSource` (cursor-based change detection), `DirectoryWatcher` (live change stream)
+Relies on neural-text's RAG module and LangChain4j:
+- `CaseRetriever` — neural-text SPI for vector search with `PayloadFilter` support
+- `EmbeddingIngestor` — neural-text SPI for ingestion and document lifecycle
+- `CorpusIngestionService` — neural-text orchestrator; engine provides `CorpusIngestionBinding` via CDI
+- `MetadataExtractor` — neural-text SPI; engine provides `GardenMetadataExtractor`
+- `EmbeddingModel` — LangChain4j; Ollama (`nomic-embed-text`, 768-dim) in production; `TestEmbeddingModel` in tests
+- `casehub-corpus-api` + `casehub-corpus` — `FlatCorpusStore` (file tree facade), `FlatChangeSource` (cursor-based change detection + live watching)
 
 ## Configuration
 
@@ -67,8 +68,10 @@ Relies on LangChain4j and direct Qdrant client:
 | `hortora.garden.id-prefix` | `GE` | config or SCHEMA.md `id-prefix:` |
 | `hortora.garden.schema-path` | `${hortora.garden.path}/SCHEMA.md` | config |
 | `quarkus.langchain4j.ollama.embedding-model.model-name` | `nomic-embed-text` | config |
-| `quarkus.langchain4j.qdrant.collection.name` | `garden` | config |
+| `casehub.rag.qdrant.host` | `localhost` | config |
+| `casehub.rag.qdrant.port` | `6334` | config |
+| `casehub.rag.tenancy-strategy` | `SEPARATE_COLLECTIONS` | config |
 
 ## Phase 2 (pending)
 
-SPLADE sparse embeddings + cross-encoder reranker via `casehubio/onnx-inference` (not yet published). Gated on ONNX Runtime JNI + Quarkus native image prototype on macOS ARM.
+SPLADE sparse embeddings + cross-encoder reranker via `casehubio/neural-text` `inference-splade` (Hortora-eligible). Neural-text's `casehub-rag` already supports optional sparse embeddings — Phase 2 adds a `SparseEmbedder` CDI bean to activate hybrid search with RRF fusion.

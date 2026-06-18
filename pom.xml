@@ -83,9 +83,14 @@
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>io.qdrant</groupId>
-            <artifactId>client</artifactId>
-            <version>1.18.1</version>
+            <groupId>io.casehub</groupId>
+            <artifactId>casehub-rag-api</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.casehub</groupId>
+            <artifactId>casehub-rag</artifactId>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -129,6 +134,12 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>1.21.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.casehub</groupId>
+            <artifactId>casehub-rag-testing</artifactId>
+            <version>0.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
