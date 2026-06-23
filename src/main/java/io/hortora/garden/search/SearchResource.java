@@ -3,16 +3,19 @@ package io.hortora.garden.search;
 import io.casehub.rag.CaseRetriever;
 import io.casehub.rag.CorpusRef;
 import io.casehub.rag.PayloadFilter;
+import io.casehub.rag.RetrievalQuery;
 import io.casehub.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.ChainWalker;
 import io.hortora.garden.federation.FederationConfig;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -24,7 +27,11 @@ import java.util.Set;
 
 @Path("/search")
 @Produces(MediaType.APPLICATION_JSON)
+@ApplicationScoped
 public class SearchResource {
+
+    static final int DEFAULT_LIMIT = 8;
+    static final int MAX_LIMIT = 50;
 
     @Inject CaseRetriever caseRetriever;
     @Inject GardenConfig gardenConfig;
@@ -32,25 +39,28 @@ public class SearchResource {
     @Inject ChainWalker chainWalker;
 
     @GET
-    public Response search(
+    public List<SearchResult> search(
             @QueryParam("q") String query,
             @QueryParam("domain") List<String> domains,
             @QueryParam("limit") Integer limit,
             @HeaderParam("X-Federation-Visited") String visited) {
 
         if (query == null || query.isBlank()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"query parameter 'q' is required\"}")
-                    .build();
+            throw new WebApplicationException("query parameter 'q' is required", Response.Status.BAD_REQUEST);
         }
 
-        int maxResults = limit != null && limit > 0 ? limit : 8;
-        return Response.ok(doSearch(query, domains, maxResults, visited)).build();
+        int maxResults = resolveLimit(limit);
+        return doSearch(query, domains, maxResults, visited);
     }
 
     public List<SearchResult> searchFor(String query, List<String> domains, Integer limit) {
-        int maxResults = limit != null && limit > 0 ? limit : 8;
+        int maxResults = resolveLimit(limit);
         return doSearch(query, domains, maxResults, null);
+    }
+
+    private static int resolveLimit(Integer limit) {
+        if (limit == null || limit <= 0) return DEFAULT_LIMIT;
+        return Math.min(limit, MAX_LIMIT);
     }
 
     List<SearchResult> doSearch(String query, List<String> domains, int maxResults, String visitedHeader) {
@@ -77,7 +87,7 @@ public class SearchResource {
         CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
         PayloadFilter filter = buildDomainFilter(domains);
 
-        List<RetrievedChunk> chunks = caseRetriever.retrieve(query, corpusRef, maxResults, filter);
+        List<RetrievedChunk> chunks = caseRetriever.retrieve(RetrievalQuery.of(query), corpusRef, maxResults, filter);
 
         List<SearchResult> results = new ArrayList<>(chunks.size());
         for (RetrievedChunk chunk : chunks) {
@@ -107,7 +117,8 @@ public class SearchResource {
         if (header == null || header.isBlank()) {
             return new LinkedHashSet<>();
         }
-        return new LinkedHashSet<>(Arrays.asList(header.split(",")));
+        return new LinkedHashSet<>(
+                Arrays.stream(header.split(",")).map(String::trim).toList());
     }
 
     private static int parseScore(String s) {

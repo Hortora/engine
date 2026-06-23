@@ -111,6 +111,41 @@ class FederationConfigParserTest {
         assertThat(config.maxDepth()).isEqualTo(5);
     }
 
+    @Test
+    void invalidSearchOrderThrows() {
+        assertThatThrownBy(() -> parse("invalid-search-order.yaml"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("search-order");
+    }
+
+    @Test
+    void crlfLineEndingsParseCorrectly(@TempDir Path tempDir) throws IOException {
+        String content = "---\r\nschema-version: 2.0.0\r\nid: crlf-garden\r\nid-prefix: CR\r\n\r\n" +
+                "federation:\r\n  role: canonical\r\n---\r\n";
+        Path crlfFile = tempDir.resolve("crlf-schema.yaml");
+        Files.writeString(crlfFile, content);
+
+        var config = FederationConfigParser.parse(crlfFile, "fallback-id", "FB");
+
+        assertThat(config.gardenId()).isEqualTo("crlf-garden");
+        assertThat(config.idPrefix()).isEqualTo("CR");
+        assertThat(config.role()).isEqualTo("canonical");
+    }
+
+    @Test
+    void parsesTimeoutSeconds() throws IOException {
+        var config = parse("with-timeout.yaml");
+
+        assertThat(config.federationTimeoutSeconds()).isEqualTo(10);
+    }
+
+    @Test
+    void defaultTimeoutIsFiveSeconds() throws IOException {
+        var config = parse("valid-child.yaml");
+
+        assertThat(config.federationTimeoutSeconds()).isEqualTo(5);
+    }
+
     private FederationConfig parse(String fixtureFilename) throws IOException {
         Path fixture = Path.of("src/test/resources/fixtures/schema/" + fixtureFilename);
         return FederationConfigParser.parse(fixture, "fallback-id", "FB");

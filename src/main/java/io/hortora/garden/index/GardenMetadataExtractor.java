@@ -20,6 +20,7 @@ public class GardenMetadataExtractor implements MetadataExtractor {
         }
 
         String text = new String(content, StandardCharsets.UTF_8);
+        text = text.replace("\r\n", "\n");
         if (!text.startsWith("---")) {
             return new ExtractionResult("", Map.of());
         }
@@ -32,7 +33,12 @@ public class GardenMetadataExtractor implements MetadataExtractor {
         String frontmatterBlock = text.substring(4, closingIndex).trim();
         String body = text.substring(closingIndex + 4).trim();
 
-        Map<String, Object> fm = new Yaml().load(frontmatterBlock);
+        Map<String, Object> fm;
+        try {
+            fm = new Yaml().load(frontmatterBlock);
+        } catch (Exception e) {
+            return new ExtractionResult("", Map.of());
+        }
         if (fm == null) {
             return new ExtractionResult("", Map.of());
         }

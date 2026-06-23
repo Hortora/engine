@@ -8,6 +8,7 @@ import io.hortora.garden.search.SearchResource;
 import io.hortora.garden.search.SearchResult;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -47,6 +48,7 @@ public class GardenMcpTools {
         try {
             count = embeddingIngestor.listDocuments(corpusRef).size();
         } catch (Exception e) {
+            Log.warn("Failed to count indexed entries", e);
             count = -1;
         }
         return "Garden path: " + config.path() + "\nIndexed entries: " + count;

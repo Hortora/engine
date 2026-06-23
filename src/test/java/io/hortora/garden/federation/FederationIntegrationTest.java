@@ -1,10 +1,17 @@
 package io.hortora.garden.federation;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import io.casehub.rag.ChunkInput;
+import io.casehub.rag.CorpusRef;
+import io.casehub.rag.testing.InMemoryEmbeddingIngestor;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
@@ -23,10 +30,26 @@ import static org.hamcrest.Matchers.not;
 class FederationIntegrationTest {
 
     WireMockServer wireMock;
+    @Inject InMemoryEmbeddingIngestor ingestor;
+
+    private static final CorpusRef CORPUS = new CorpusRef("hortora", "test-garden");
 
     @BeforeEach
-    void resetWireMock() {
+    void resetState() {
         wireMock.resetAll();
+        ingestor.deleteCorpus(CORPUS);
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput(
+                        "Hibernate lazy loading fails outside transaction boundary.\n\nLazyInitializationException is thrown.",
+                        "jvm/ge-test-hibernate-lazy.md",
+                        Map.of("title", "Hibernate lazy loading fails outside transaction",
+                                "domain", "jvm", "type", "gotcha", "score", "8")),
+                new ChunkInput(
+                        "Git stash metadata is lost when applying across branches.",
+                        "tools/ge-test-git-stash.md",
+                        Map.of("title", "Git stash metadata lost across branches",
+                                "domain", "tools", "type", "gotcha", "score", "6"))
+        ));
     }
 
     @Test

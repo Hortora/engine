@@ -16,14 +16,12 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+import io.quarkus.logging.Log;
+
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @ApplicationScoped
 public class CollectionMigration {
-
-    private static final Logger LOG = Logger.getLogger(CollectionMigration.class.getName());
 
     private final Instance<SparseEmbedder> sparseEmbedderInstance;
     private final QdrantClient qdrantClient;
@@ -65,20 +63,20 @@ public class CollectionMigration {
             CollectionParams params = info.getConfig().getParams();
 
             if (params.hasSparseVectorsConfig()) {
-                LOG.info(() -> "Collection '" + collectionName + "' already has sparse vectors — no migration needed");
+                Log.infof("Collection '%s' already has sparse vectors — no migration needed", collectionName);
                 return;
             }
 
-            LOG.info(() -> "Collection '" + collectionName + "' lacks sparse vectors — migrating to hybrid");
+            Log.infof("Collection '%s' lacks sparse vectors — migrating to hybrid", collectionName);
             embeddingIngestor.deleteCorpus(corpusRef);
             cursorStore.save(gardenConfig.id(), "");
-            LOG.info(() -> "Migration complete — collection deleted and cursor reset. Full re-index will run on next ingestion cycle.");
+            Log.info("Migration complete — collection deleted and cursor reset. Full re-index will run on next ingestion cycle.");
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            LOG.log(Level.WARNING, "Interrupted during collection migration check", e);
+            Log.warn("Interrupted during collection migration check", e);
         } catch (ExecutionException e) {
-            LOG.log(Level.WARNING, "Failed to check collection for migration", e.getCause());
+            Log.warn("Failed to check collection for migration", e.getCause());
         }
     }
 }

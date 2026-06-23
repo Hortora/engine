@@ -102,7 +102,7 @@ public class ChainWalker {
 
             try {
                 List<Future<List<SearchResult>>> futures = executor.invokeAll(
-                        peerCalls, 5, TimeUnit.SECONDS);
+                        peerCalls, config.federationTimeoutSeconds(), TimeUnit.SECONDS);
                 for (var future : futures) {
                     try {
                         if (future.isDone() && !future.isCancelled()) {
@@ -175,7 +175,7 @@ public class ChainWalker {
     private RemoteGardenClient buildClient(String url) {
         return QuarkusRestClientBuilder.newBuilder()
                 .baseUri(URI.create(url))
-                .readTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(config.federationTimeoutSeconds(), TimeUnit.SECONDS)
                 .build(RemoteGardenClient.class);
     }
 

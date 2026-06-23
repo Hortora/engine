@@ -75,7 +75,7 @@ class ChainWalkerTest {
                 result("u2", HIGH, "parent", "PG"),
                 result("u3", HIGH, "parent", "PG"));
 
-        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5, 5,
                 List.of(
                         new FederationConfig.UpstreamRef("http://parent", "PG", "fallback"),
                         new FederationConfig.UpstreamRef("http://grandparent", "GP", "fallback")),
@@ -106,7 +106,7 @@ class ChainWalkerTest {
 
     @Test
     void peerFanOutTriggersWhenInsufficient() {
-        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5, 5,
                 List.of(), List.of(new FederationConfig.PeerRef("http://peer", "PR")));
         walker = new ChainWalker();
         walker.config = config;
@@ -143,7 +143,7 @@ class ChainWalkerTest {
 
     @Test
     void peerTierAfterUpstreamTier() {
-        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5, 5,
                 List.of(new FederationConfig.UpstreamRef("http://parent", "PG", "fallback")),
                 List.of(new FederationConfig.PeerRef("http://peer", "PR")));
         walker = new ChainWalker();
@@ -227,7 +227,7 @@ class ChainWalkerTest {
         var alwaysClient = new RecordingClient();
         alwaysClient.response = List.of(result("a1", HIGH, "always-garden", "AG"));
 
-        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5, 5,
                 List.of(new FederationConfig.UpstreamRef("http://always-upstream", "AG", "always")),
                 List.of());
         walker = new ChainWalker();
@@ -245,29 +245,6 @@ class ChainWalkerTest {
     }
 
     @Test
-    void depthExceededReturnsOwnResultsOnly() {
-        configureChild();
-        upstreamClient.response = List.of(result("u1", HIGH, "parent", "PG"));
-
-        // Visited set already has max-depth entries — depth exceeded
-        var visited = new LinkedHashSet<>(List.of("a", "b", "c", "d", "e", "my-garden"));
-        // max-depth is 5, visited has 6 entries (> 5) — depth exceeded in SearchResource
-        // ChainWalker should not be called, but if it is, upstream should not be queried
-        // This tests the SearchResource.doSearch() depth check path
-
-        // Simulate what SearchResource does: if visited.size() > maxDepth, return ownResults
-        // Here we test ChainWalker behavior when called — it should still not query if we
-        // verify the depth at SearchResource level
-        // For ChainWalker unit test: verify upstream isn't called when depth exceeds
-        var own = List.of(result("e1", LOW, "my-garden", "MG"));
-        var results = walker.walk("query", null, LIMIT, own, visited);
-
-        // ChainWalker itself doesn't enforce depth — that's SearchResource's job
-        // But we verify the integration by checking ChainWalker still works with large visited sets
-        assertThat(results).isNotEmpty();
-    }
-
-    @Test
     void visitedHeaderPassedToUpstream() {
         configureChild();
         upstreamClient.response = List.of();
@@ -281,14 +258,14 @@ class ChainWalkerTest {
     // --- Helpers ---
 
     private void configureCanonical() {
-        config = new FederationConfig("my-garden", "MG", "canonical", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "canonical", THRESHOLD, 5, 5,
                 List.of(), List.of());
         walker = new ChainWalker();
         walker.config = config;
     }
 
     private void configureChild() {
-        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5, 5,
                 List.of(new FederationConfig.UpstreamRef("http://parent", "PG", "fallback")),
                 List.of());
         walker = new ChainWalker();
@@ -297,7 +274,7 @@ class ChainWalkerTest {
     }
 
     private void configureChildWithPeer() {
-        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5,
+        config = new FederationConfig("my-garden", "MG", "child", THRESHOLD, 5, 5,
                 List.of(new FederationConfig.UpstreamRef("http://parent", "PG", "fallback")),
                 List.of(new FederationConfig.PeerRef("http://peer", "PR")));
         walker = new ChainWalker();

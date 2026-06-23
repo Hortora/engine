@@ -1,9 +1,15 @@
 package io.hortora.garden.search;
 
+import io.casehub.rag.ChunkInput;
+import io.casehub.rag.CorpusRef;
 import io.casehub.rag.PayloadFilter;
+import io.casehub.rag.testing.InMemoryEmbeddingIngestor;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static io.restassured.RestAssured.given;
@@ -13,6 +19,28 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 class SearchResourceTest {
+
+    @Inject SearchResource searchResource;
+    @Inject InMemoryEmbeddingIngestor ingestor;
+
+    private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");
+
+    @BeforeEach
+    void seedFixtures() {
+        ingestor.deleteCorpus(CORPUS);
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput(
+                        "Hibernate lazy loading fails outside transaction boundary.\n\nLazyInitializationException is thrown.",
+                        "jvm/ge-test-hibernate-lazy.md",
+                        Map.of("title", "Hibernate lazy loading fails outside transaction",
+                                "domain", "jvm", "type", "gotcha", "score", "8")),
+                new ChunkInput(
+                        "Git stash metadata is lost when applying across branches.",
+                        "tools/ge-test-git-stash.md",
+                        Map.of("title", "Git stash metadata lost across branches",
+                                "domain", "tools", "type", "gotcha", "score", "6"))
+        ));
+    }
 
     @Test
     void missingQueryReturns400() {
@@ -79,5 +107,51 @@ class SearchResourceTest {
         assertThat(filter).isInstanceOf(PayloadFilter.Eq.class);
         PayloadFilter.Eq eq = (PayloadFilter.Eq) filter;
         assertThat(eq.value()).isEqualTo("jvm");
+    }
+
+    @Test
+    void parseVisitedTrimsWhitespace() {
+        given()
+            .queryParam("q", "test query")
+            .header("X-Federation-Visited", "garden")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            .body("$", hasSize(0));
+
+        // With spaces — should still detect cycle
+        given()
+            .queryParam("q", "test query")
+            .header("X-Federation-Visited", " garden , other-garden ")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            .body("$", hasSize(0));
+    }
+
+    @Test
+    void limitCappedAtMaximum() {
+        List<SearchResult> results = searchResource.searchFor("test", null, 99999);
+        assertThat(results).hasSizeLessThanOrEqualTo(SearchResource.MAX_LIMIT);
+    }
+
+    @Test
+    void searchForReturnsResults() {
+        List<SearchResult> results = searchResource.searchFor("hibernate lazy", null, null);
+        assertThat(results).isNotEmpty();
+    }
+
+    @Test
+    void domainFilterReturnsOnlyMatchingDomain() {
+        given()
+            .queryParam("q", "test query")
+            .queryParam("domain", "jvm")
+        .when()
+            .get("/search")
+        .then()
+            .statusCode(200)
+            .body("domain", everyItem(equalTo("jvm")));
     }
 }

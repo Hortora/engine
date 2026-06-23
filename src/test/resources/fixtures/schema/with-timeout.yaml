@@ -1,0 +1,13 @@
+---
+schema-version: 2.0.0
+id: timeout-garden
+id-prefix: TG
+
+federation:
+  role: child
+  timeout-seconds: 10
+  upstream:
+    - url: https://api.example.com
+      id-prefix: EX
+      search-order: fallback
+---

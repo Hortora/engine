@@ -25,6 +25,7 @@ public class FederationConfigParser {
     private static final Set<String> VALID_SEARCH_ORDERS = Set.of("fallback", "always");
     private static final double DEFAULT_RELEVANCE_THRESHOLD = 0.7;
     private static final int DEFAULT_MAX_DEPTH = 5;
+    private static final int DEFAULT_FEDERATION_TIMEOUT_SECONDS = 5;
 
     @Inject
     GardenConfig gardenConfig;
@@ -56,6 +57,7 @@ public class FederationConfigParser {
         }
 
         String content = Files.readString(schemaPath);
+        content = content.replace("\r\n", "\n");
         String[] parts = content.split("---\n", 3);
         if (parts.length < 2 || parts[1].isBlank()) {
             return defaultConfig(fallbackId, fallbackPrefix);
@@ -78,7 +80,7 @@ public class FederationConfigParser {
         Map<String, Object> federation = (Map<String, Object>) yaml.get("federation");
         if (federation == null) {
             return new FederationConfig(gardenId, idPrefix, "canonical",
-                    DEFAULT_RELEVANCE_THRESHOLD, DEFAULT_MAX_DEPTH, List.of(), List.of());
+                    DEFAULT_RELEVANCE_THRESHOLD, DEFAULT_MAX_DEPTH, DEFAULT_FEDERATION_TIMEOUT_SECONDS, List.of(), List.of());
         }
 
         String role = (String) federation.getOrDefault("role", "canonical");
@@ -95,12 +97,16 @@ public class FederationConfigParser {
                 ? ((Number) federation.get("max-depth")).intValue()
                 : DEFAULT_MAX_DEPTH;
 
+        int timeoutSeconds = federation.containsKey("timeout-seconds")
+                ? ((Number) federation.get("timeout-seconds")).intValue()
+                : DEFAULT_FEDERATION_TIMEOUT_SECONDS;
+
         List<FederationConfig.UpstreamRef> upstream = parseUpstream(
                 (List<Map<String, Object>>) federation.get("upstream"));
         List<FederationConfig.PeerRef> peers = parsePeers(
                 (List<Map<String, Object>>) federation.get("peers"));
 
-        return new FederationConfig(gardenId, idPrefix, role, threshold, maxDepth, upstream, peers);
+        return new FederationConfig(gardenId, idPrefix, role, threshold, maxDepth, timeoutSeconds, upstream, peers);
     }
 
     private static List<FederationConfig.UpstreamRef> parseUpstream(List<Map<String, Object>> raw) {
@@ -149,6 +155,6 @@ public class FederationConfigParser {
 
     private static FederationConfig defaultConfig(String gardenId, String idPrefix) {
         return new FederationConfig(gardenId, idPrefix, "canonical",
-                DEFAULT_RELEVANCE_THRESHOLD, DEFAULT_MAX_DEPTH, List.of(), List.of());
+                DEFAULT_RELEVANCE_THRESHOLD, DEFAULT_MAX_DEPTH, DEFAULT_FEDERATION_TIMEOUT_SECONDS, List.of(), List.of());
     }
 }

@@ -53,7 +53,7 @@ Cycle detection: `X-Federation-Visited` header carries a comma-separated set of 
 ## SPI Contracts
 
 Relies on neural-text's RAG module and LangChain4j:
-- `CaseRetriever` — neural-text SPI for vector search with `PayloadFilter` support
+- `CaseRetriever` — neural-text SPI for vector search; `retrieve(RetrievalQuery, CorpusRef, int, PayloadFilter)` — takes `RetrievalQuery` (wraps query text + optional expanded text for query expansion)
 - `EmbeddingIngestor` — neural-text SPI for ingestion and document lifecycle
 - `CorpusIngestionService` — neural-text orchestrator; engine provides `CorpusIngestionBinding` via CDI
 - `MetadataExtractor` — neural-text SPI; engine provides `GardenMetadataExtractor`
@@ -73,6 +73,10 @@ Relies on neural-text's RAG module and LangChain4j:
 | `casehub.rag.qdrant.port` | `6334` | config |
 | `casehub.rag.tenancy-strategy` | `SEPARATE_COLLECTIONS` | config |
 
-## Phase 2 (pending)
+## Phase 2 — Hybrid Search (complete)
 
-SPLADE sparse embeddings + cross-encoder reranker via `casehubio/neural-text` `inference-splade` (Hortora-eligible). Neural-text's `casehub-rag` already supports optional sparse embeddings — Phase 2 adds a `SparseEmbedder` CDI bean to activate hybrid search with RRF fusion.
+SPLADE sparse embeddings + cross-encoder reranking via `casehub-inference-quarkus` (ONNX Runtime).
+
+- `HybridSearchProducer` bridges `@Inference`-qualified ONNX models to `SparseEmbedder` and `CrossEncoderReranker` via `@LookupIfProperty` — beans are genuinely non-resolvable when ONNX models aren't configured, so the engine falls back to dense-only transparently.
+- `CollectionMigration` detects dense-only Qdrant collections at startup and triggers re-indexing when SPLADE is newly enabled.
+- Dense + sparse RRF fusion and cross-encoder reranking activate when ONNX models are configured via `casehub.inference.models.splade.model-path` and `casehub.inference.models.reranker.model-path`.

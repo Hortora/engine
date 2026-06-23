@@ -70,4 +70,61 @@ class GardenMetadataExtractorTest {
 
         assertThat(result.metadata()).containsEntry("submitted", "2026-04-15");
     }
+
+    @Test
+    void crlfLineEndingsParseCorrectly() {
+        byte[] content = "---\r\ntitle: \"CRLF test\"\r\ndomain: jvm\r\n---\r\nBody with CRLF."
+                .getBytes(StandardCharsets.UTF_8);
+
+        ExtractionResult result = extractor.extract("test/crlf.md", content);
+
+        assertThat(result.body()).isEqualTo("CRLF test\n\nBody with CRLF.");
+        assertThat(result.metadata()).containsEntry("title", "CRLF test");
+        assertThat(result.metadata()).containsEntry("domain", "jvm");
+    }
+
+    @Test
+    void malformedYamlReturnsEmptyExtractionResult() {
+        byte[] content = "---\n: invalid yaml [[[broken\n---\nBody text."
+                .getBytes(StandardCharsets.UTF_8);
+
+        ExtractionResult result = extractor.extract("test/bad-yaml.md", content);
+
+        assertThat(result.body()).isEmpty();
+        assertThat(result.metadata()).isEmpty();
+    }
+
+    @Test
+    void nonMappingYamlReturnsEmptyExtractionResult() {
+        byte[] content = "---\nhello world\n---\nBody text."
+                .getBytes(StandardCharsets.UTF_8);
+
+        ExtractionResult result = extractor.extract("test/scalar-yaml.md", content);
+
+        assertThat(result.body()).isEmpty();
+        assertThat(result.metadata()).isEmpty();
+    }
+
+    @Test
+    void missingTitleExtractsBodyWithoutTitlePrefix() {
+        byte[] content = "---\ndomain: tools\ntype: technique\n---\nBody without title."
+                .getBytes(StandardCharsets.UTF_8);
+
+        ExtractionResult result = extractor.extract("test/no-title.md", content);
+
+        assertThat(result.body()).isEqualTo("Body without title.");
+        assertThat(result.metadata()).containsEntry("domain", "tools");
+        assertThat(result.metadata()).doesNotContainKey("title");
+    }
+
+    @Test
+    void unclosedFrontmatterReturnsEmptyExtractionResult() {
+        byte[] content = "---\ntitle: unclosed\ndomain: jvm\nBody without closing delimiter."
+                .getBytes(StandardCharsets.UTF_8);
+
+        ExtractionResult result = extractor.extract("test/unclosed.md", content);
+
+        assertThat(result.body()).isEmpty();
+        assertThat(result.metadata()).isEmpty();
+    }
 }

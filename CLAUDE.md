@@ -44,7 +44,7 @@ CI runs two jobs: JVM (every push, fast) and native image (push to main only, ~1
 
 ## Dev Services
 
-Ollama Dev Services starts automatically in dev/test mode. In tests, `casehub-rag-testing` provides in-memory `CaseRetriever` and `EmbeddingIngestor` stubs (no Qdrant needed). In dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`.
+Ollama Dev Services starts automatically in dev mode (disabled in tests via `quarkus.langchain4j.ollama.devservices.enabled=false`). In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestEmbeddingModel` (`@Mock`) satisfies the `EmbeddingModel` CDI injection point without starting Ollama. In dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`. For hybrid search in dev mode, run `scripts/download-models.sh` to fetch ONNX models, then uncomment the `%dev` model paths in `application.properties`.
 
 ## Project Artifacts
 
@@ -57,6 +57,7 @@ Paths that are project content (not workspace noise).
 | `docs/DESIGN.md` | Design document |
 | `docs/superpowers/specs/` | Design specs |
 | `docs/superpowers/plans/` | Implementation plans |
+| `scripts/` | Development scripts (ONNX model download) |
 
 ## Work Tracking
 

@@ -1,0 +1,12 @@
+---
+schema-version: 2.0.0
+id: bad-garden
+id-prefix: BG
+
+federation:
+  role: child
+  upstream:
+    - url: https://api.example.com
+      id-prefix: EX
+      search-order: invalid-value
+---
