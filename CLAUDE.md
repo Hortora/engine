@@ -16,7 +16,7 @@ Phase 2 (current): hybrid search — SPLADE sparse embeddings + cross-encoder re
 - **Quarkus 3.36.x** — runtime
 - **LangChain4j Quarkus extension** — `quarkus-langchain4j-ollama` (EmbeddingModel only)
 - **casehub-rag** — neural-text RAG module (`CaseRetriever`, `EmbeddingIngestor`, `CorpusIngestionService`); Qdrant integration via `casehub-rag`, not direct client
-- **casehub-inference-quarkus** — ONNX inference CDI wiring, native image metadata; engine bridges `@Inference` models to `SparseEmbedder`/`CrossEncoderReranker`
+- **casehub-inference-quarkus** — ONNX inference CDI wiring; engine bridges `@Inference` models to `SparseEmbedder`/`CrossEncoderReranker`
 - **casehub-corpus-api + casehub-corpus** — filesystem change detection (`FlatChangeSource`, `WatchableChangeSource`)
 - **Ollama** — dense embedding model (`nomic-embed-text`, 768-dim)
 - **MCP server** — `quarkus-mcp-server-http` (long-running, SSE/HTTP transport)
@@ -36,11 +36,16 @@ Phase 2 (current): hybrid search — SPLADE sparse embeddings + cross-encoder re
 
 ```bash
 ./mvnw verify                          # JVM tests
-./mvnw verify -Pnative                 # native image (requires GraalVM 25)
 ./mvnw quarkus:dev                     # dev mode with live reload + Dev Services
 ```
 
-CI runs two jobs: JVM (every push, fast) and native image (push to main only, ~15 min). Native is the production deployment artifact.
+CI runs JVM tests on every push. JVM is the production deployment mode — long-running services benefit from HotSpot JIT over AOT.
+
+## Deployment Mode — JVM by Design
+
+The engine is a long-running service — native image's fast startup provides no benefit, and HotSpot's JIT optimisation outperforms AOT for sustained workloads. Deploys in JVM mode.
+
+The future Hortora CLI client will use native image (fast startup, single binary). The `inference-quarkus` reachability metadata from neural-text is available for that use case.
 
 ## Dev Services
 

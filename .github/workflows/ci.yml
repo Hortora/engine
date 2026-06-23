@@ -22,20 +22,3 @@ jobs:
 
       - name: Build and test (JVM)
         run: ./mvnw verify -B
-
-  build-native:
-    name: Native image build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Set up GraalVM 25
-        uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '25'
-          distribution: 'graalvm-community'
-          cache: 'maven'
-
-      - name: Build native image
-        run: ./mvnw verify -Pnative -B

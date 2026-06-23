@@ -2,7 +2,7 @@
 
 ## Architecture
 
-Quarkus native image service. Delegates ingestion and retrieval to neural-text's `casehub-rag` module, exposes search via REST and MCP HTTP server. Long-running — Qdrant loads its vector index once at startup. Supports federation: upstream chain walk to parent gardens via HTTP, peer fan-out for supplementary results.
+Quarkus JVM service. Delegates ingestion and retrieval to neural-text's `casehub-rag` module, exposes search via REST and MCP HTTP server. Long-running — Qdrant loads its vector index once at startup. Supports federation: upstream chain walk to parent gardens via HTTP, peer fan-out for supplementary results.
 
 ## Module Structure
 
