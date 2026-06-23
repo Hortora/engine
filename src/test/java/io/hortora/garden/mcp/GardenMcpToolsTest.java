@@ -27,7 +27,7 @@ class GardenMcpToolsTest {
         ingestor.ingest(CORPUS, List.of(
                 new ChunkInput(
                         "Hibernate lazy loading fails outside transaction.",
-                        "jvm/ge-test-hibernate-lazy.md",
+                        "jvm/GE-20260620-a1b2c3.md",
                         Map.of("title", "Hibernate lazy loading gotcha",
                                 "domain", "jvm", "type", "gotcha", "score", "8"))
         ));
@@ -38,6 +38,10 @@ class GardenMcpToolsTest {
         String result = mcpTools.gardenSearch("hibernate lazy", null, null);
 
         assertThat(result).contains("## [own] Hibernate lazy loading gotcha");
+        assertThat(result).contains("**ID:** GE-20260620-a1b2c3");
+        assertThat(result).contains("**Domain:** jvm");
+        assertThat(result).contains("**Type:** gotcha");
+        assertThat(result).containsPattern("\\*\\*Relevance:\\*\\* \\d+\\.\\d{2}");
         assertThat(result).contains("Hibernate lazy loading fails outside transaction.");
     }
 
@@ -56,5 +60,53 @@ class GardenMcpToolsTest {
 
         assertThat(result).contains("Garden path:");
         assertThat(result).contains("Indexed entries:");
+    }
+
+    @Test
+    void gardenSearchStripsDoubledTitle() {
+        ingestor.deleteCorpus(CORPUS);
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput(
+                        "Hibernate lazy loading gotcha\n\nHibernate lazy loading fails outside transaction.",
+                        "jvm/GE-20260518-d1e4b2.md",
+                        Map.of("title", "Hibernate lazy loading gotcha",
+                                "domain", "jvm", "type", "gotcha", "score", "8"))
+        ));
+
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null);
+
+        long titleCount = result.lines()
+                .filter(l -> l.contains("Hibernate lazy loading gotcha"))
+                .count();
+        assertThat(titleCount).as("Title should appear once (heading), not twice").isEqualTo(1);
+        assertThat(result).contains("Hibernate lazy loading fails outside transaction.");
+    }
+
+    @Test
+    void gardenSearchKeepsRelativePathForNonGeDocuments() {
+        ingestor.deleteCorpus(CORPUS);
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput(
+                        "Testing principles and TDD workflow.",
+                        "approaches/testing.md",
+                        Map.of("title", "Testing — Principles",
+                                "domain", "approaches", "type", "reference", "score", "10"))
+        ));
+
+        String result = mcpTools.gardenSearch("testing TDD", null, null);
+
+        assertThat(result).contains("**ID:** approaches/testing");
+        assertThat(result).doesNotContain("**ID:** testing");
+    }
+
+    @Test
+    void gardenReindexDeletesCorpusAndResetsCursor() {
+        String result = mcpTools.gardenReindex();
+
+        assertThat(result).contains("Reindex triggered");
+        assertThat(result).contains("garden");
+
+        String status = mcpTools.gardenStatus();
+        assertThat(status).contains("Indexed entries: 0");
     }
 }

@@ -46,6 +46,11 @@ public class CollectionMigration {
         this.ragConfig = ragConfig;
     }
 
+    public void resetCorpus(CorpusRef corpusRef, String gardenId) {
+        embeddingIngestor.deleteCorpus(corpusRef);
+        cursorStore.save(gardenId, "");
+    }
+
     void onStartup(@Observes @Priority(10) StartupEvent event) {
         if (!sparseEmbedderInstance.isResolvable()) {
             return;
@@ -68,8 +73,7 @@ public class CollectionMigration {
             }
 
             Log.infof("Collection '%s' lacks sparse vectors — migrating to hybrid", collectionName);
-            embeddingIngestor.deleteCorpus(corpusRef);
-            cursorStore.save(gardenConfig.id(), "");
+            resetCorpus(corpusRef, gardenConfig.id());
             Log.info("Migration complete — collection deleted and cursor reset. Full re-index will run on next ingestion cycle.");
 
         } catch (InterruptedException e) {

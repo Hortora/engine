@@ -43,7 +43,7 @@ class HybridSearchProducerTest {
                 "casehub.inference.models.splade.tokenizer-path", "stub",
                 "casehub.inference.models.reranker.model-path", "stub",
                 "casehub.inference.models.reranker.tokenizer-path", "stub",
-                "quarkus.arc.exclude-types", "io.hortora.garden.inference.CollectionMigration"
+                "quarkus.arc.exclude-types", "io.hortora.garden.inference.CollectionMigration,io.hortora.garden.mcp.GardenMcpTools"
             );
         }
     }

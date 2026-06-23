@@ -4,6 +4,7 @@ import io.casehub.rag.CorpusRef;
 import io.casehub.rag.EmbeddingIngestor;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
+import io.hortora.garden.inference.CollectionMigration;
 import io.hortora.garden.search.SearchResource;
 import io.hortora.garden.search.SearchResult;
 import io.quarkiverse.mcp.server.Tool;
@@ -22,6 +23,7 @@ public class GardenMcpTools {
     @Inject EmbeddingIngestor embeddingIngestor;
     @Inject GardenConfig config;
     @Inject FederationConfig federationConfig;
+    @Inject CollectionMigration collectionMigration;
 
     @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption.")
     String gardenSearch(
@@ -37,7 +39,12 @@ public class GardenMcpTools {
         }
 
         return results.stream()
-                .map(r -> "## " + provenanceLabel(r) + " " + r.title() + "\n\n" + r.body())
+                .map(r -> "## " + provenanceLabel(r) + " " + r.title()
+                        + "\n**ID:** " + extractDocumentId(r.id())
+                        + " · **Domain:** " + r.domain()
+                        + " · **Type:** " + r.type()
+                        + " · **Relevance:** " + String.format("%.2f", r.relevance())
+                        + "\n\n" + stripTitlePrefix(r.title(), r.body()))
                 .collect(Collectors.joining("\n\n---\n\n"));
     }
 
@@ -54,10 +61,53 @@ public class GardenMcpTools {
         return "Garden path: " + config.path() + "\nIndexed entries: " + count;
     }
 
+    @Tool(description = "Trigger a full re-index of the garden corpus. Deletes the current Qdrant collection and resets the cursor so the next ingestion cycle re-embeds all entries. Use after bulk metadata changes, reclassification, or schema evolution.")
+    String gardenReindex() {
+        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+        int fileCount;
+        try {
+            fileCount = embeddingIngestor.listDocuments(corpusRef).size();
+        } catch (Exception e) {
+            fileCount = -1;
+        }
+
+        try {
+            collectionMigration.resetCorpus(corpusRef, config.id());
+        } catch (Exception e) {
+            Log.warn("Failed to trigger reindex", e);
+            return "Reindex failed for garden '" + config.id() + "': " + e.getMessage();
+        }
+
+        return "Reindex triggered for garden '" + config.id()
+                + "'. Collection deleted, cursor reset. Re-embedding will complete on next ingestion cycle"
+                + (fileCount >= 0 ? " (" + fileCount + " entries in corpus)." : ".");
+    }
+
     private String provenanceLabel(SearchResult result) {
         if (federationConfig.gardenId().equals(result.source())) {
             return "[own]";
         }
         return "[" + result.sourcePrefix() + "]";
+    }
+
+    static String extractDocumentId(String path) {
+        if (path == null) {
+            return "";
+        }
+        String withoutExt = path.replaceFirst("\\.md$", "");
+        String filename = withoutExt.contains("/")
+                ? withoutExt.substring(withoutExt.lastIndexOf('/') + 1)
+                : withoutExt;
+        if (filename.matches("GE-\\d{8}-[0-9a-f]{6}")) {
+            return filename;
+        }
+        return withoutExt;
+    }
+
+    static String stripTitlePrefix(String title, String body) {
+        if (title != null && body != null && body.startsWith(title + "\n\n")) {
+            return body.substring(title.length() + 2);
+        }
+        return body;
     }
 }

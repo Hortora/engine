@@ -112,4 +112,14 @@ class CollectionMigrationTest {
 
         verifyNoInteractions(qdrantClient, embeddingIngestor, cursorStore);
     }
+
+    @Test
+    void resetCorpusDeletesAndResetsCursor() {
+        CorpusRef corpusRef = new CorpusRef("hortora", "garden");
+
+        migration.resetCorpus(corpusRef, "garden");
+
+        verify(embeddingIngestor).deleteCorpus(eq(corpusRef));
+        verify(cursorStore).save("garden", "");
+    }
 }
