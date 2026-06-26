@@ -43,9 +43,7 @@ CI runs JVM tests on every push. JVM is the production deployment mode — long-
 
 ## Deployment Mode — JVM by Design
 
-The engine is a long-running service — native image's fast startup provides no benefit, and HotSpot's JIT optimisation outperforms AOT for sustained workloads. Deploys in JVM mode.
-
-The future Hortora CLI client will use native image (fast startup, single binary). The `inference-quarkus` reachability metadata from neural-text is available for that use case.
+The engine is a long-running service — native image's fast startup provides no benefit, and HotSpot's JIT optimisation outperforms AOT for sustained workloads. Deploys in JVM mode. AI assistants consume the engine via MCP (SSE/HTTP) — no separate CLI client needed.
 
 ## Dev Services
 

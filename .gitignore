@@ -47,3 +47,4 @@ src/test/resources/fixtures/_state/
 # TLS Certificates
 .certs/
 wksp
+scripts/__pycache__/
