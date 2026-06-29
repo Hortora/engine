@@ -1,0 +1,6070 @@
+[
+  {
+    "scenario_id": "issue-1-reactive-async",
+    "query_type": "KW",
+    "query_text": "BlockingOperationNotAllowedException|Vert.x|IO thread|EntityManager",
+    "failure_modes": [
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        ".",
+        "blocking",
+        "entity",
+        "io",
+        "thread",
+        "ve",
+        "x",
+        "|"
+      ],
+      "subwords": [
+        "##all",
+        "##ation",
+        "##ception",
+        "##ex",
+        "##ger",
+        "##mana",
+        "##not",
+        "##oper",
+        "##owed",
+        "##rt"
+      ]
+    },
+    "total_activated": 36,
+    "top_20": [
+      {
+        "token": "entity",
+        "weight": 1.9614,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##mana",
+        "weight": 1.7224,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "io",
+        "weight": 1.6524,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "block",
+        "weight": 1.5356,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ception",
+        "weight": 1.5239,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##rt",
+        "weight": 1.5226,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "thread",
+        "weight": 1.4183,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##oper",
+        "weight": 1.3942,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "entities",
+        "weight": 1.2749,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ger",
+        "weight": 1.1723,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "threads",
+        "weight": 1.1134,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ve",
+        "weight": 1.0745,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "blocked",
+        "weight": 1.0362,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "blocking",
+        "weight": 1.0146,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "x",
+        "weight": 1.0059,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##not",
+        "weight": 0.9514,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ex",
+        "weight": 0.9277,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##all",
+        "weight": 0.8292,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ation",
+        "weight": 0.7346,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##man",
+        "weight": 0.5451,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 21,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "entity"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-1-reactive-async",
+    "query_type": "NL",
+    "query_text": "JPA blocking operation on Vert.x IO thread causes BlockingOperationNotAllowedException when calling EntityManager from event handler",
+    "failure_modes": [
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        ".",
+        "blocking",
+        "calling",
+        "causes",
+        "entity",
+        "event",
+        "from",
+        "handler",
+        "io",
+        "jp",
+        "on",
+        "operation",
+        "thread",
+        "ve",
+        "when",
+        "x"
+      ],
+      "subwords": [
+        "##a",
+        "##all",
+        "##ation",
+        "##ception",
+        "##ex",
+        "##ger",
+        "##mana",
+        "##not",
+        "##oper",
+        "##owed",
+        "##rt"
+      ]
+    },
+    "total_activated": 63,
+    "top_20": [
+      {
+        "token": "jp",
+        "weight": 2.5865,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "io",
+        "weight": 1.9872,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "handler",
+        "weight": 1.9116,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "entity",
+        "weight": 1.9101,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##mana",
+        "weight": 1.9053,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "block",
+        "weight": 1.8698,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "thread",
+        "weight": 1.6867,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##rt",
+        "weight": 1.5874,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "x",
+        "weight": 1.5514,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "yu",
+        "weight": 1.5073,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "operation",
+        "weight": 1.4807,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "blocked",
+        "weight": 1.4247,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ception",
+        "weight": 1.4197,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "event",
+        "weight": 1.3843,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ve",
+        "weight": 1.3707,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "blocking",
+        "weight": 1.3677,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "threads",
+        "weight": 1.31,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "entities",
+        "weight": 1.2657,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "causes",
+        "weight": 1.2068,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ger",
+        "weight": 1.1348,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 42,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "entity"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-2-cdi-wiring",
+    "query_type": "KW",
+    "query_text": "DefaultBean|AmbiguousResolutionException|GroupMembershipProvider|ambiguous",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "ambiguous",
+        "default",
+        "group",
+        "|"
+      ],
+      "subwords": [
+        "##an",
+        "##be",
+        "##ception",
+        "##er",
+        "##ex",
+        "##mber",
+        "##me",
+        "##ol",
+        "##pro",
+        "##res",
+        "##ship",
+        "##ution",
+        "##vid"
+      ]
+    },
+    "total_activated": 27,
+    "top_20": [
+      {
+        "token": "default",
+        "weight": 2.2666,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##be",
+        "weight": 2.0016,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##vid",
+        "weight": 1.8827,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mber",
+        "weight": 1.6628,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ambiguous",
+        "weight": 1.6105,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "group",
+        "weight": 1.3951,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##an",
+        "weight": 1.3863,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ution",
+        "weight": 1.2711,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ception",
+        "weight": 1.2651,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##pro",
+        "weight": 1.1524,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##res",
+        "weight": 1.0697,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##me",
+        "weight": 1.03,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ex",
+        "weight": 0.9825,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ambiguity",
+        "weight": 0.9647,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "groups",
+        "weight": 0.9496,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ol",
+        "weight": 0.9387,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ship",
+        "weight": 0.6388,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "unclear",
+        "weight": 0.4536,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "member",
+        "weight": 0.3799,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ans",
+        "weight": 0.3407,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 12,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-2-cdi-wiring",
+    "query_type": "NL",
+    "query_text": "CDI ambiguous dependency resolution when @Default bean conflicts with @DefaultBean in multi-module Quarkus application",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "@",
+        "ambiguous",
+        "application",
+        "bean",
+        "cd",
+        "conflicts",
+        "default",
+        "dependency",
+        "in",
+        "module",
+        "multi",
+        "qu",
+        "resolution",
+        "when",
+        "with"
+      ],
+      "subwords": [
+        "##an",
+        "##ark",
+        "##be",
+        "##i",
+        "##us"
+      ]
+    },
+    "total_activated": 42,
+    "top_20": [
+      {
+        "token": "bean",
+        "weight": 2.1111,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ark",
+        "weight": 2.079,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "default",
+        "weight": 1.9842,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cd",
+        "weight": 1.9625,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ambiguous",
+        "weight": 1.8964,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "resolution",
+        "weight": 1.8294,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##be",
+        "weight": 1.7828,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dependency",
+        "weight": 1.6633,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "qu",
+        "weight": 1.3585,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "conflict",
+        "weight": 1.3554,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "beans",
+        "weight": 1.2425,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "conflicts",
+        "weight": 1.1934,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "multi",
+        "weight": 1.1737,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "cds",
+        "weight": 1.1366,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##an",
+        "weight": 1.1295,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "@",
+        "weight": 1.1228,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "resolutions",
+        "weight": 1.115,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ambiguity",
+        "weight": 1.0886,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "module",
+        "weight": 0.9892,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##us",
+        "weight": 0.949,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 23,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "multi"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-3-persistence-migrations",
+    "query_type": "KW",
+    "query_text": "tenancyId|JOINED|shadowing|LedgerEntry",
+    "failure_modes": [
+      "POLYSEMY",
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "joined",
+        "ledger",
+        "shadow",
+        "ten",
+        "|"
+      ],
+      "subwords": [
+        "##ancy",
+        "##ent",
+        "##id",
+        "##ing",
+        "##ry"
+      ]
+    },
+    "total_activated": 29,
+    "top_20": [
+      {
+        "token": "shadow",
+        "weight": 2.0112,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ancy",
+        "weight": 1.9032,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ledger",
+        "weight": 1.89,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ten",
+        "weight": 1.7599,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "join",
+        "weight": 1.4952,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "joined",
+        "weight": 1.3021,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ent",
+        "weight": 1.284,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##id",
+        "weight": 1.2202,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "10",
+        "weight": 1.0966,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ing",
+        "weight": 0.716,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "stock",
+        "weight": 0.515,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "signed",
+        "weight": 0.5001,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "security",
+        "weight": 0.4588,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "shadows",
+        "weight": 0.4262,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "membership",
+        "weight": 0.4199,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "rent",
+        "weight": 0.3561,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "bank",
+        "weight": 0.3464,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "|",
+        "weight": 0.3268,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "member",
+        "weight": 0.3057,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "joins",
+        "weight": 0.2689,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 20,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-3-persistence-migrations",
+    "query_type": "NL",
+    "query_text": "JPA JOINED inheritance field shadowing \u2014 subclass field shadows base class column causing Hibernate persist failure with NOT NULL constraint violation",
+    "failure_modes": [
+      "POLYSEMY",
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "base",
+        "causing",
+        "class",
+        "column",
+        "constraint",
+        "failure",
+        "field",
+        "hi",
+        "inheritance",
+        "joined",
+        "jp",
+        "not",
+        "null",
+        "persist",
+        "shadow",
+        "shadows",
+        "sub",
+        "violation",
+        "with",
+        "\u2014"
+      ],
+      "subwords": [
+        "##a",
+        "##ber",
+        "##class",
+        "##ing",
+        "##nate"
+      ]
+    },
+    "total_activated": 61,
+    "top_20": [
+      {
+        "token": "jp",
+        "weight": 2.6484,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "shadow",
+        "weight": 2.0051,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "inheritance",
+        "weight": 1.9352,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "null",
+        "weight": 1.913,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ber",
+        "weight": 1.8619,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "shadows",
+        "weight": 1.8262,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "field",
+        "weight": 1.7006,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "base",
+        "weight": 1.6919,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "class",
+        "weight": 1.609,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##nate",
+        "weight": 1.5451,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "yu",
+        "weight": 1.5305,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "join",
+        "weight": 1.5228,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "sub",
+        "weight": 1.5053,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "column",
+        "weight": 1.5034,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "persist",
+        "weight": 1.4443,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 1
+      },
+      {
+        "token": "##class",
+        "weight": 1.4363,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "joined",
+        "weight": 1.4282,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "inherited",
+        "weight": 1.3916,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "constraint",
+        "weight": 1.3562,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "violation",
+        "weight": 1.2935,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 40,
+    "tier1_hits": 1,
+    "tier1_tokens": [
+      "persist"
+    ],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-4-rest-messaging",
+    "query_type": "KW",
+    "query_text": "CloudEvent|stream|fireAsync|StreamContext",
+    "failure_modes": [
+      "POLYSEMY",
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "cloud",
+        "fire",
+        "stream",
+        "|"
+      ],
+      "subwords": [
+        "##as",
+        "##c",
+        "##con",
+        "##eve",
+        "##nt",
+        "##text",
+        "##yn"
+      ]
+    },
+    "total_activated": 21,
+    "top_20": [
+      {
+        "token": "stream",
+        "weight": 1.8447,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cloud",
+        "weight": 1.6856,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "fire",
+        "weight": 1.6385,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##yn",
+        "weight": 1.5411,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##eve",
+        "weight": 1.4685,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##text",
+        "weight": 1.3833,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##con",
+        "weight": 1.2142,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "clouds",
+        "weight": 1.0335,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "streams",
+        "weight": 1.0283,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##nt",
+        "weight": 0.8234,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "firefighters",
+        "weight": 0.7299,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##as",
+        "weight": 0.6937,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##c",
+        "weight": 0.6264,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "streaming",
+        "weight": 0.2903,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "genre",
+        "weight": 0.1767,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "connection",
+        "weight": 0.1641,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "format",
+        "weight": 0.1042,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "formula",
+        "weight": 0.1021,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "text",
+        "weight": 0.0608,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "roof",
+        "weight": 0.0337,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 11,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-4-rest-messaging",
+    "query_type": "NL",
+    "query_text": "CloudEvent CDI event bus with fireAsync \u2014 stream modules for Kafka AMQP webhook that receive external transport messages and fire typed CDI events with tenancy propagation",
+    "failure_modes": [
+      "POLYSEMY",
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "am",
+        "and",
+        "bus",
+        "cd",
+        "cloud",
+        "event",
+        "events",
+        "external",
+        "fire",
+        "for",
+        "ka",
+        "messages",
+        "modules",
+        "propagation",
+        "receive",
+        "stream",
+        "ten",
+        "that",
+        "transport",
+        "typed",
+        "web",
+        "with",
+        "\u2014"
+      ],
+      "subwords": [
+        "##a",
+        "##ancy",
+        "##as",
+        "##c",
+        "##eve",
+        "##fk",
+        "##ho",
+        "##i",
+        "##nt",
+        "##ok",
+        "##p",
+        "##q",
+        "##yn"
+      ]
+    },
+    "total_activated": 68,
+    "top_20": [
+      {
+        "token": "##fk",
+        "weight": 2.2225,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "bus",
+        "weight": 2.052,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "kennedy",
+        "weight": 2.0,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cd",
+        "weight": 1.971,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "stream",
+        "weight": 1.9618,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##yn",
+        "weight": 1.9386,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "fire",
+        "weight": 1.8975,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cloud",
+        "weight": 1.8057,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "propagation",
+        "weight": 1.7301,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##eve",
+        "weight": 1.7197,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "typed",
+        "weight": 1.6403,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "event",
+        "weight": 1.6123,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "modules",
+        "weight": 1.6051,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ka",
+        "weight": 1.6005,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##q",
+        "weight": 1.5464,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "module",
+        "weight": 1.5339,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "buses",
+        "weight": 1.4448,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ancy",
+        "weight": 1.4329,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##nt",
+        "weight": 1.3876,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "external",
+        "weight": 1.3557,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 37,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-5-ai-llm-inference",
+    "query_type": "KW",
+    "query_text": "ChatModel|AgentSession|prompt.cach|LangChain4j",
+    "failure_modes": [
+      "VOCABULARY_GAP",
+      "DOMAIN_ABSENCE"
+    ],
+    "input_tokens": {
+      "whole": [
+        ".",
+        "agents",
+        "ca",
+        "chat",
+        "lang",
+        "prompt",
+        "|"
+      ],
+      "subwords": [
+        "##4",
+        "##ch",
+        "##chai",
+        "##del",
+        "##ess",
+        "##ion",
+        "##j",
+        "##mo",
+        "##n"
+      ]
+    },
+    "total_activated": 30,
+    "top_20": [
+      {
+        "token": "##chai",
+        "weight": 1.8057,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "chat",
+        "weight": 1.7487,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "prompt",
+        "weight": 1.6577,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ess",
+        "weight": 1.6,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "lang",
+        "weight": 1.5132,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "agents",
+        "weight": 1.4835,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "agent",
+        "weight": 1.4819,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ca",
+        "weight": 1.1387,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ch",
+        "weight": 1.1351,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mo",
+        "weight": 1.0864,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##del",
+        "weight": 0.9026,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##j",
+        "weight": 0.7626,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##4",
+        "weight": 0.7492,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "talk",
+        "weight": 0.6762,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ion",
+        "weight": 0.643,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "4",
+        "weight": 0.6141,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "beauty",
+        "weight": 0.4611,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "renovation",
+        "weight": 0.4456,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "page",
+        "weight": 0.3997,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "genre",
+        "weight": 0.3599,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 17,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-5-ai-llm-inference",
+    "query_type": "NL",
+    "query_text": "ChatModel adapter bridging LangChain4j interface to Claude AgentSession for native prompt caching \u2014 LLM provider integration with token cost optimization",
+    "failure_modes": [
+      "VOCABULARY_GAP",
+      "DOMAIN_ABSENCE"
+    ],
+    "input_tokens": {
+      "whole": [
+        "adapt",
+        "agents",
+        "br",
+        "ca",
+        "chat",
+        "claude",
+        "cost",
+        "for",
+        "integration",
+        "interface",
+        "lang",
+        "ll",
+        "native",
+        "optimization",
+        "prompt",
+        "provider",
+        "to",
+        "token",
+        "with",
+        "\u2014"
+      ],
+      "subwords": [
+        "##4",
+        "##chai",
+        "##ching",
+        "##del",
+        "##er",
+        "##ess",
+        "##ging",
+        "##id",
+        "##ion",
+        "##j",
+        "##m",
+        "##mo",
+        "##n"
+      ]
+    },
+    "total_activated": 67,
+    "top_20": [
+      {
+        "token": "claude",
+        "weight": 2.4176,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "chat",
+        "weight": 2.1455,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "prompt",
+        "weight": 2.1289,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "lang",
+        "weight": 2.1092,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##chai",
+        "weight": 2.0631,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "native",
+        "weight": 1.9946,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "adapt",
+        "weight": 1.9099,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ll",
+        "weight": 1.7083,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##id",
+        "weight": 1.6503,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ess",
+        "weight": 1.6411,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "token",
+        "weight": 1.5963,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "interface",
+        "weight": 1.5663,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "adaptation",
+        "weight": 1.5532,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##j",
+        "weight": 1.522,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "br",
+        "weight": 1.5166,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##del",
+        "weight": 1.4916,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "agents",
+        "weight": 1.3868,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ging",
+        "weight": 1.375,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mo",
+        "weight": 1.3748,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ca",
+        "weight": 1.356,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 39,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-6-testing-ci",
+    "query_type": "KW",
+    "query_text": "InMemoryWorkItemTemplateStore|Panache|selected-alternatives|Alternative",
+    "failure_modes": [
+      "UNAMBIGUOUS_TERM"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "alternative",
+        "alternatives",
+        "in",
+        "pan",
+        "selected",
+        "|"
+      ],
+      "subwords": [
+        "##ache",
+        "##e",
+        "##em",
+        "##ite",
+        "##me",
+        "##mo",
+        "##mt",
+        "##plate",
+        "##ry",
+        "##stor",
+        "##work"
+      ]
+    },
+    "total_activated": 38,
+    "top_20": [
+      {
+        "token": "##stor",
+        "weight": 1.9647,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##me",
+        "weight": 1.7118,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "pan",
+        "weight": 1.64,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ache",
+        "weight": 1.4945,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "selected",
+        "weight": 1.4844,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##plate",
+        "weight": 1.4579,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mo",
+        "weight": 1.4389,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##work",
+        "weight": 1.4349,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mt",
+        "weight": 1.4154,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternatives",
+        "weight": 1.3612,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternative",
+        "weight": 1.3549,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##ach",
+        "weight": 1.1147,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##em",
+        "weight": 1.0601,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "in",
+        "weight": 1.0332,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ry",
+        "weight": 0.9186,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ite",
+        "weight": 0.8809,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "selection",
+        "weight": 0.7857,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "options",
+        "weight": 0.6132,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "select",
+        "weight": 0.6044,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "preferred",
+        "weight": 0.4147,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 22,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "alternative"
+    ],
+    "missing_domain_terms": [
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "issue-6-testing-ci",
+    "query_type": "NL",
+    "query_text": "Test fails because @Alternative @Priority in-memory CDI bean bypasses Panache JPA persistence \u2014 test writes via Panache static methods but reads from empty in-memory store",
+    "failure_modes": [
+      "UNAMBIGUOUS_TERM"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "@",
+        "alternative",
+        "bean",
+        "because",
+        "but",
+        "bypass",
+        "cd",
+        "empty",
+        "fails",
+        "from",
+        "in",
+        "jp",
+        "memory",
+        "methods",
+        "pan",
+        "persistence",
+        "priority",
+        "reads",
+        "static",
+        "store",
+        "test",
+        "via",
+        "writes",
+        "\u2014"
+      ],
+      "subwords": [
+        "##a",
+        "##ache",
+        "##es",
+        "##i"
+      ]
+    },
+    "total_activated": 65,
+    "top_20": [
+      {
+        "token": "jp",
+        "weight": 2.2362,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "bean",
+        "weight": 2.0827,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "bypass",
+        "weight": 2.0369,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priority",
+        "weight": 1.9147,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternative",
+        "weight": 1.9129,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "static",
+        "weight": 1.8617,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cd",
+        "weight": 1.8537,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "fail",
+        "weight": 1.8226,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "test",
+        "weight": 1.8063,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "pan",
+        "weight": 1.6165,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "persistence",
+        "weight": 1.6144,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "empty",
+        "weight": 1.5539,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "memory",
+        "weight": 1.4517,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ache",
+        "weight": 1.2881,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "failure",
+        "weight": 1.2868,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternatives",
+        "weight": 1.2805,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "persistent",
+        "weight": 1.273,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "fails",
+        "weight": 1.2115,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "write",
+        "weight": 1.1776,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "beans",
+        "weight": 1.1541,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 42,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "alternative"
+    ],
+    "missing_domain_terms": [
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d1-cdi-priority-tiers",
+    "query_type": "KW",
+    "query_text": "Priority(100)|CDI priority|tier.*Alternative|ephemeral.*backend",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "(",
+        ")",
+        "*",
+        ".",
+        "100",
+        "alternative",
+        "back",
+        "cd",
+        "ep",
+        "priority",
+        "tier",
+        "|"
+      ],
+      "subwords": [
+        "##end",
+        "##eral",
+        "##hem",
+        "##i"
+      ]
+    },
+    "total_activated": 42,
+    "top_20": [
+      {
+        "token": "priority",
+        "weight": 2.226,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "tier",
+        "weight": 2.0744,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cd",
+        "weight": 1.9265,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##end",
+        "weight": 1.9016,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##hem",
+        "weight": 1.7971,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternative",
+        "weight": 1.5421,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##eral",
+        "weight": 1.5136,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "100",
+        "weight": 1.4941,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "back",
+        "weight": 1.3448,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priorities",
+        "weight": 1.3178,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cds",
+        "weight": 1.1784,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ep",
+        "weight": 1.0963,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##i",
+        "weight": 0.9385,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternatives",
+        "weight": 0.9339,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "responsibility",
+        "weight": 0.8611,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "101",
+        "weight": 0.8593,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "number",
+        "weight": 0.772,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "key",
+        "weight": 0.7404,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "urgency",
+        "weight": 0.738,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "precedence",
+        "weight": 0.7182,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 31,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "alternative"
+    ],
+    "missing_domain_terms": [
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d1-cdi-priority-tiers",
+    "query_type": "NL",
+    "query_text": "CDI priority ladder with multiple tiers of Alternative Priority annotations for persistence backend selection where ephemeral in-memory store must override all other backends",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "all",
+        "alternative",
+        "ann",
+        "back",
+        "cd",
+        "ep",
+        "for",
+        "in",
+        "ladder",
+        "memory",
+        "multiple",
+        "must",
+        "of",
+        "other",
+        "over",
+        "persistence",
+        "priority",
+        "selection",
+        "store",
+        "tier",
+        "where",
+        "with"
+      ],
+      "subwords": [
+        "##end",
+        "##eral",
+        "##hem",
+        "##i",
+        "##ota",
+        "##ride",
+        "##s",
+        "##tions"
+      ]
+    },
+    "total_activated": 64,
+    "top_20": [
+      {
+        "token": "ladder",
+        "weight": 2.3903,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priority",
+        "weight": 2.1214,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cd",
+        "weight": 2.0797,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "persistence",
+        "weight": 1.9858,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "tier",
+        "weight": 1.859,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##hem",
+        "weight": 1.7575,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternative",
+        "weight": 1.693,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "persistent",
+        "weight": 1.6727,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ota",
+        "weight": 1.6231,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ann",
+        "weight": 1.587,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "multiple",
+        "weight": 1.5827,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "memory",
+        "weight": 1.5526,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "selection",
+        "weight": 1.5408,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##end",
+        "weight": 1.5221,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ride",
+        "weight": 1.3986,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "back",
+        "weight": 1.3388,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "over",
+        "weight": 1.2748,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cds",
+        "weight": 1.2667,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priorities",
+        "weight": 1.1703,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##i",
+        "weight": 1.1616,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 43,
+    "tier1_hits": 1,
+    "tier1_tokens": [
+      "persist"
+    ],
+    "tier2_hits": 2,
+    "tier2_tokens": [
+      "alternative",
+      "multi"
+    ],
+    "missing_domain_terms": [
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "mutiny",
+      "observer",
+      "panache",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d2-thread-safety",
+    "query_type": "KW",
+    "query_text": "ConcurrentHashMap|CopyOnWriteArrayList|thread.safe|lock.free",
+    "failure_modes": [
+      "UNAMBIGUOUS_TERM"
+    ],
+    "input_tokens": {
+      "whole": [
+        ".",
+        "concurrent",
+        "copy",
+        "free",
+        "lock",
+        "safe",
+        "thread",
+        "|"
+      ],
+      "subwords": [
+        "##ar",
+        "##has",
+        "##hma",
+        "##list",
+        "##on",
+        "##p",
+        "##ray",
+        "##write"
+      ]
+    },
+    "total_activated": 45,
+    "top_20": [
+      {
+        "token": "##hma",
+        "weight": 2.1565,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "concurrent",
+        "weight": 2.087,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##has",
+        "weight": 1.7939,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "copy",
+        "weight": 1.7436,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "lock",
+        "weight": 1.7125,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "thread",
+        "weight": 1.6862,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "free",
+        "weight": 1.6204,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "safe",
+        "weight": 1.5261,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##write",
+        "weight": 1.4513,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "threads",
+        "weight": 1.3725,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ray",
+        "weight": 1.2532,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "parallel",
+        "weight": 1.2264,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##list",
+        "weight": 1.2059,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "locked",
+        "weight": 0.9848,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##on",
+        "weight": 0.911,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##writing",
+        "weight": 0.885,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ar",
+        "weight": 0.83,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "safety",
+        "weight": 0.8173,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "locks",
+        "weight": 0.7155,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "copies",
+        "weight": 0.6734,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 31,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 2,
+    "tier2_tokens": [
+      "concurrent",
+      "lock"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d2-thread-safety",
+    "query_type": "NL",
+    "query_text": "Thread-safe in-memory store using ConcurrentHashMap and CopyOnWriteArrayList for lock-free concurrent access with READ COMMITTED semantics",
+    "failure_modes": [
+      "UNAMBIGUOUS_TERM"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "access",
+        "and",
+        "committed",
+        "concurrent",
+        "copy",
+        "for",
+        "free",
+        "in",
+        "lock",
+        "memory",
+        "read",
+        "safe",
+        "semantics",
+        "store",
+        "thread",
+        "using",
+        "with"
+      ],
+      "subwords": [
+        "##ar",
+        "##has",
+        "##hma",
+        "##list",
+        "##on",
+        "##p",
+        "##ray",
+        "##write"
+      ]
+    },
+    "total_activated": 76,
+    "top_20": [
+      {
+        "token": "##hma",
+        "weight": 2.2783,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "thread",
+        "weight": 2.226,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "concurrent",
+        "weight": 1.9699,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "memory",
+        "weight": 1.7647,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "copy",
+        "weight": 1.7629,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "threads",
+        "weight": 1.7575,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "safe",
+        "weight": 1.7345,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "store",
+        "weight": 1.7299,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "lock",
+        "weight": 1.7194,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##has",
+        "weight": 1.6617,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "committed",
+        "weight": 1.513,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "free",
+        "weight": 1.4436,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ray",
+        "weight": 1.3997,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "read",
+        "weight": 1.3773,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "semantics",
+        "weight": 1.3766,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##write",
+        "weight": 1.3472,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "access",
+        "weight": 1.2701,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "parallel",
+        "weight": 1.2652,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "memories",
+        "weight": 1.1334,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##list",
+        "weight": 1.0637,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 55,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 2,
+    "tier2_tokens": [
+      "concurrent",
+      "lock"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d3-extension-deactivation",
+    "query_type": "KW",
+    "query_text": "datasource.active|hibernate-orm.active|extension.*deactivat|build.time.*deactivat",
+    "failure_modes": [
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "*",
+        "-",
+        ".",
+        "active",
+        "build",
+        "data",
+        "dea",
+        "extension",
+        "hi",
+        "or",
+        "time",
+        "|"
+      ],
+      "subwords": [
+        "##ber",
+        "##ce",
+        "##ct",
+        "##iva",
+        "##m",
+        "##nate",
+        "##so",
+        "##t",
+        "##ur"
+      ]
+    },
+    "total_activated": 50,
+    "top_20": [
+      {
+        "token": "##ber",
+        "weight": 1.9298,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "active",
+        "weight": 1.8696,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "data",
+        "weight": 1.8033,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##nate",
+        "weight": 1.7388,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dea",
+        "weight": 1.7244,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##so",
+        "weight": 1.6495,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##iva",
+        "weight": 1.6074,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "extension",
+        "weight": 1.5257,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "build",
+        "weight": 1.3871,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ur",
+        "weight": 1.3846,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "or",
+        "weight": 1.3694,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "hi",
+        "weight": 1.3035,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ce",
+        "weight": 1.2123,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##m",
+        "weight": 1.0438,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ct",
+        "weight": 0.9888,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "inactive",
+        "weight": 0.9671,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "times",
+        "weight": 0.9125,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "extensions",
+        "weight": 0.8281,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "builds",
+        "weight": 0.7411,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "activity",
+        "weight": 0.605,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 34,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d3-extension-deactivation",
+    "query_type": "NL",
+    "query_text": "Quarkus datasource and hibernate-orm extension deactivation at build time to prevent JPA validation when using in-memory persistence instead of database",
+    "failure_modes": [
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "and",
+        "at",
+        "build",
+        "data",
+        "database",
+        "dea",
+        "extension",
+        "hi",
+        "in",
+        "instead",
+        "jp",
+        "memory",
+        "of",
+        "or",
+        "persistence",
+        "prevent",
+        "qu",
+        "time",
+        "to",
+        "using",
+        "validation",
+        "when"
+      ],
+      "subwords": [
+        "##a",
+        "##ark",
+        "##ber",
+        "##ce",
+        "##ct",
+        "##ivation",
+        "##m",
+        "##nate",
+        "##so",
+        "##ur",
+        "##us"
+      ]
+    },
+    "total_activated": 88,
+    "top_20": [
+      {
+        "token": "##ark",
+        "weight": 2.3556,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "jp",
+        "weight": 2.2899,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dea",
+        "weight": 2.0133,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ber",
+        "weight": 1.9697,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##nate",
+        "weight": 1.929,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "qu",
+        "weight": 1.9069,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "or",
+        "weight": 1.8405,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "persistence",
+        "weight": 1.8185,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "extension",
+        "weight": 1.7921,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ivation",
+        "weight": 1.6216,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "memory",
+        "weight": 1.5855,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##so",
+        "weight": 1.5546,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "data",
+        "weight": 1.5312,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##us",
+        "weight": 1.5091,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "hi",
+        "weight": 1.4511,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "persistent",
+        "weight": 1.4429,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ur",
+        "weight": 1.4127,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "build",
+        "weight": 1.4126,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##m",
+        "weight": 1.4111,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "validation",
+        "weight": 1.3387,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 63,
+    "tier1_hits": 1,
+    "tier1_tokens": [
+      "persist"
+    ],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d4-protocol-compliance",
+    "query_type": "KW",
+    "query_text": "scan.*pagination|aggregate.*scan|no.scan.delegation|pagination.*truncat",
+    "failure_modes": [
+      "DOMAIN_ABSENCE"
+    ],
+    "input_tokens": {
+      "whole": [
+        "*",
+        ".",
+        "aggregate",
+        "delegation",
+        "no",
+        "pa",
+        "scan",
+        "tr",
+        "|"
+      ],
+      "subwords": [
+        "##cat",
+        "##gina",
+        "##tion",
+        "##un"
+      ]
+    },
+    "total_activated": 27,
+    "top_20": [
+      {
+        "token": "aggregate",
+        "weight": 1.9587,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "delegation",
+        "weight": 1.821,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "scan",
+        "weight": 1.6615,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##gina",
+        "weight": 1.6446,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##un",
+        "weight": 1.5503,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "delegate",
+        "weight": 1.5334,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##cat",
+        "weight": 1.5183,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "pa",
+        "weight": 1.2503,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "tr",
+        "weight": 1.2386,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "aggregation",
+        "weight": 1.2072,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "delegates",
+        "weight": 1.1152,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "*",
+        "weight": 1.0938,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "no",
+        "weight": 0.9377,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##tion",
+        "weight": 0.9347,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "scanning",
+        "weight": 0.7375,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "mri",
+        "weight": 0.7132,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "scanner",
+        "weight": 0.4839,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##uni",
+        "weight": 0.3098,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##ginal",
+        "weight": 0.2993,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ted",
+        "weight": 0.2295,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 16,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "##uni"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec1-d4-protocol-compliance",
+    "query_type": "NL",
+    "query_text": "In-memory store aggregate methods must not delegate to scan because scan applies pagination which silently truncates aggregation results",
+    "failure_modes": [
+      "DOMAIN_ABSENCE"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "aggregate",
+        "aggregation",
+        "applies",
+        "because",
+        "delegate",
+        "in",
+        "memory",
+        "methods",
+        "must",
+        "not",
+        "pa",
+        "results",
+        "scan",
+        "silently",
+        "store",
+        "to",
+        "tr",
+        "which"
+      ],
+      "subwords": [
+        "##cate",
+        "##gina",
+        "##s",
+        "##tion",
+        "##un"
+      ]
+    },
+    "total_activated": 51,
+    "top_20": [
+      {
+        "token": "delegate",
+        "weight": 2.3165,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "aggregate",
+        "weight": 2.2393,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "aggregation",
+        "weight": 2.0339,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "scan",
+        "weight": 2.0235,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "memory",
+        "weight": 1.8094,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "delegates",
+        "weight": 1.78,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "store",
+        "weight": 1.741,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##gina",
+        "weight": 1.5528,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##cate",
+        "weight": 1.4709,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "silently",
+        "weight": 1.3073,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "scanning",
+        "weight": 1.2591,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "memories",
+        "weight": 1.2562,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##un",
+        "weight": 1.171,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "must",
+        "weight": 1.167,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "pa",
+        "weight": 1.1342,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "methods",
+        "weight": 1.0793,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "method",
+        "weight": 1.063,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "not",
+        "weight": 1.0171,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "silent",
+        "weight": 0.9856,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "storage",
+        "weight": 0.9551,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 31,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d1-cdi-tier-coexistence",
+    "query_type": "KW",
+    "query_text": "DefaultBean.*Priority|Alternative.*Priority.*coexist|@DefaultBean.*@Priority|@Alternative.*@Priority.*suppress",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "*",
+        ".",
+        "@",
+        "alternative",
+        "coe",
+        "default",
+        "priority",
+        "suppress",
+        "|"
+      ],
+      "subwords": [
+        "##an",
+        "##be",
+        "##st",
+        "##xi"
+      ]
+    },
+    "total_activated": 56,
+    "top_20": [
+      {
+        "token": "default",
+        "weight": 2.2101,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##be",
+        "weight": 2.0621,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priority",
+        "weight": 1.9498,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "suppress",
+        "weight": 1.8613,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "coe",
+        "weight": 1.8217,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternative",
+        "weight": 1.6525,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "suppression",
+        "weight": 1.3855,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##xi",
+        "weight": 1.3744,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priorities",
+        "weight": 1.3055,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternatives",
+        "weight": 1.2803,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##an",
+        "weight": 1.2638,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "@",
+        "weight": 0.7584,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##st",
+        "weight": 0.6962,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "casey",
+        "weight": 0.642,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "hu",
+        "weight": 0.6374,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "responsibility",
+        "weight": 0.5754,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "*",
+        "weight": 0.5354,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "suppressed",
+        "weight": 0.4932,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "language",
+        "weight": 0.4441,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "urgency",
+        "weight": 0.4113,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 44,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "alternative"
+    ],
+    "missing_domain_terms": [
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d1-cdi-tier-coexistence",
+    "query_type": "NL",
+    "query_text": "@DefaultBean @Priority coexistence with @Alternative \u2014 how multiple CDI bean tiers interact when both DefaultBean and Alternative annotations are used together in Quarkus multi-module application",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "@",
+        "alternative",
+        "and",
+        "ann",
+        "application",
+        "are",
+        "bean",
+        "both",
+        "cd",
+        "coe",
+        "default",
+        "how",
+        "in",
+        "interact",
+        "module",
+        "multi",
+        "multiple",
+        "priority",
+        "qu",
+        "tier",
+        "together",
+        "used",
+        "when",
+        "with",
+        "\u2014"
+      ],
+      "subwords": [
+        "##an",
+        "##ark",
+        "##be",
+        "##ce",
+        "##i",
+        "##ota",
+        "##s",
+        "##sten",
+        "##tions",
+        "##us",
+        "##xi"
+      ]
+    },
+    "total_activated": 67,
+    "top_20": [
+      {
+        "token": "tier",
+        "weight": 2.1475,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "default",
+        "weight": 2.0995,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "priority",
+        "weight": 2.0963,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ark",
+        "weight": 2.096,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "coe",
+        "weight": 1.8615,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "bean",
+        "weight": 1.843,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "alternative",
+        "weight": 1.8134,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "##be",
+        "weight": 1.8057,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cd",
+        "weight": 1.7003,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "multiple",
+        "weight": 1.5429,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "interact",
+        "weight": 1.5171,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "@",
+        "weight": 1.4281,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "qu",
+        "weight": 1.4007,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ota",
+        "weight": 1.3619,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##sten",
+        "weight": 1.3594,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "ann",
+        "weight": 1.3534,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "multi",
+        "weight": 1.3345,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 2
+      },
+      {
+        "token": "alternatives",
+        "weight": 1.1602,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "interaction",
+        "weight": 1.1481,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##xi",
+        "weight": 1.1027,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 39,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 2,
+    "tier2_tokens": [
+      "alternative",
+      "multi"
+    ],
+    "missing_domain_terms": [
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d2-chatmodel-adaptation",
+    "query_type": "KW",
+    "query_text": "ChatModel|doChat|StreamingChatModel|ChatLanguageModel",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "chat",
+        "doc",
+        "streaming",
+        "|"
+      ],
+      "subwords": [
+        "##cha",
+        "##del",
+        "##ge",
+        "##hat",
+        "##l",
+        "##lang",
+        "##mo",
+        "##ode",
+        "##tm",
+        "##ua"
+      ]
+    },
+    "total_activated": 32,
+    "top_20": [
+      {
+        "token": "chat",
+        "weight": 1.8064,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##hat",
+        "weight": 1.6104,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##lang",
+        "weight": 1.5523,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ode",
+        "weight": 1.5451,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "streaming",
+        "weight": 1.3768,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "doc",
+        "weight": 1.3363,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "stream",
+        "weight": 1.2531,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ua",
+        "weight": 1.1529,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##tm",
+        "weight": 1.143,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##cha",
+        "weight": 1.0221,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mo",
+        "weight": 1.0036,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##del",
+        "weight": 0.9021,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ge",
+        "weight": 0.7829,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "renovation",
+        "weight": 0.776,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "talk",
+        "weight": 0.6926,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "hotel",
+        "weight": 0.5364,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "beauty",
+        "weight": 0.4175,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "streams",
+        "weight": 0.4004,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "type",
+        "weight": 0.3414,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ht",
+        "weight": 0.2644,
+        "source": "EXPANSION",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 20,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d2-chatmodel-adaptation",
+    "query_type": "NL",
+    "query_text": "LangChain4j ChatModel adapter wrapping AgentProvider \u2014 doChat extension point, StreamingChatModel handler, ChatResponse building, provider-agnostic model bridging",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        ",",
+        "-",
+        "adapt",
+        "ag",
+        "agent",
+        "br",
+        "building",
+        "chat",
+        "doc",
+        "extension",
+        "handler",
+        "lang",
+        "model",
+        "point",
+        "provider",
+        "streaming",
+        "wrapping",
+        "\u2014"
+      ],
+      "subwords": [
+        "##4",
+        "##cha",
+        "##chai",
+        "##del",
+        "##er",
+        "##ging",
+        "##hat",
+        "##id",
+        "##j",
+        "##l",
+        "##mo",
+        "##n",
+        "##nostic",
+        "##ode",
+        "##pon",
+        "##pro",
+        "##res",
+        "##se",
+        "##tm",
+        "##vid"
+      ]
+    },
+    "total_activated": 77,
+    "top_20": [
+      {
+        "token": "lang",
+        "weight": 2.3879,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##chai",
+        "weight": 2.2549,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##vid",
+        "weight": 2.0242,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##hat",
+        "weight": 1.9447,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "chat",
+        "weight": 1.937,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "handler",
+        "weight": 1.8986,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "agent",
+        "weight": 1.8938,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##j",
+        "weight": 1.8015,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##nostic",
+        "weight": 1.7986,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "adapt",
+        "weight": 1.7796,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ode",
+        "weight": 1.6259,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "wrap",
+        "weight": 1.5918,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "doc",
+        "weight": 1.5871,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##pro",
+        "weight": 1.5648,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "extension",
+        "weight": 1.4979,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##pon",
+        "weight": 1.4645,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "wrapped",
+        "weight": 1.4584,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "streaming",
+        "weight": 1.4574,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##del",
+        "weight": 1.4076,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##id",
+        "weight": 1.4022,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 44,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d3-circular-deps",
+    "query_type": "KW",
+    "query_text": "Instance.*ChatModel|Instance.*filter|circular.*depend|@PostConstruct.*deactivat|graceful.*deactivat",
+    "failure_modes": [
+      "POLYSEMY",
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "*",
+        ".",
+        "@",
+        "chat",
+        "circular",
+        "dea",
+        "depend",
+        "filter",
+        "graceful",
+        "instance",
+        "post",
+        "|"
+      ],
+      "subwords": [
+        "##con",
+        "##ct",
+        "##del",
+        "##iva",
+        "##mo",
+        "##ru",
+        "##st",
+        "##t"
+      ]
+    },
+    "total_activated": 64,
+    "top_20": [
+      {
+        "token": "graceful",
+        "weight": 2.0221,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "circular",
+        "weight": 1.8377,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "chat",
+        "weight": 1.8068,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dea",
+        "weight": 1.6375,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "depend",
+        "weight": 1.6251,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##iva",
+        "weight": 1.6153,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "filter",
+        "weight": 1.5646,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "instance",
+        "weight": 1.5397,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ru",
+        "weight": 1.4568,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "post",
+        "weight": 1.4091,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "example",
+        "weight": 1.3509,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##del",
+        "weight": 1.3261,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "filters",
+        "weight": 1.3129,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##mo",
+        "weight": 1.3084,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##con",
+        "weight": 1.2582,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "instances",
+        "weight": 1.1984,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "round",
+        "weight": 1.0997,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dependent",
+        "weight": 1.0624,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "depends",
+        "weight": 1.0523,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ct",
+        "weight": 1.0304,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 47,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d3-circular-deps",
+    "query_type": "NL",
+    "query_text": "CDI bean using Instance to dynamically lookup and filter beans at PostConstruct to prevent circular dependency between two CDI beans that reference each other",
+    "failure_modes": [
+      "POLYSEMY",
+      "SEMANTIC_WIN"
+    ],
+    "input_tokens": {
+      "whole": [
+        "and",
+        "at",
+        "bean",
+        "beans",
+        "between",
+        "cd",
+        "circular",
+        "dependency",
+        "dynamic",
+        "each",
+        "filter",
+        "instance",
+        "look",
+        "other",
+        "post",
+        "prevent",
+        "reference",
+        "that",
+        "to",
+        "two",
+        "using"
+      ],
+      "subwords": [
+        "##ally",
+        "##con",
+        "##ct",
+        "##i",
+        "##ru",
+        "##st",
+        "##up"
+      ]
+    },
+    "total_activated": 81,
+    "top_20": [
+      {
+        "token": "cd",
+        "weight": 2.0596,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "instance",
+        "weight": 2.0526,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "bean",
+        "weight": 2.0115,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "filter",
+        "weight": 1.8068,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "beans",
+        "weight": 1.7321,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "example",
+        "weight": 1.618,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dynamic",
+        "weight": 1.6103,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "post",
+        "weight": 1.5837,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "instances",
+        "weight": 1.5302,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "dependency",
+        "weight": 1.5234,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "circular",
+        "weight": 1.5107,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "filters",
+        "weight": 1.4759,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ru",
+        "weight": 1.4271,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "cds",
+        "weight": 1.318,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "prevent",
+        "weight": 1.272,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##con",
+        "weight": 1.2711,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##i",
+        "weight": 1.0935,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "look",
+        "weight": 1.0867,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "use",
+        "weight": 1.0332,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "reference",
+        "weight": 0.9927,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 58,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 1,
+    "tier2_tokens": [
+      "lazy"
+    ],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d4-exception-mapper",
+    "query_type": "KW",
+    "query_text": "ExceptionMapper|exception.*mapper|MissingTenancy|403.*Forbidden",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "*",
+        ".",
+        "403",
+        "exception",
+        "forbidden",
+        "map",
+        "missing",
+        "|"
+      ],
+      "subwords": [
+        "##ancy",
+        "##ma",
+        "##per",
+        "##pper",
+        "##ten"
+      ]
+    },
+    "total_activated": 57,
+    "top_20": [
+      {
+        "token": "##pper",
+        "weight": 2.2606,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "exception",
+        "weight": 1.942,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "map",
+        "weight": 1.9101,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "missing",
+        "weight": 1.7526,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "forbidden",
+        "weight": 1.6035,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "exceptions",
+        "weight": 1.5666,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "403",
+        "weight": 1.5304,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##per",
+        "weight": 1.5097,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ten",
+        "weight": 1.3625,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ma",
+        "weight": 1.256,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "banned",
+        "weight": 0.9502,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "allowed",
+        "weight": 0.9259,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ancy",
+        "weight": 0.918,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "maps",
+        "weight": 0.8909,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "prohibited",
+        "weight": 0.8548,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "39",
+        "weight": 0.8544,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "except",
+        "weight": 0.8205,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "key",
+        "weight": 0.7496,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "code",
+        "weight": 0.7167,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "mapping",
+        "weight": 0.685,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 46,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  },
+  {
+    "scenario_id": "spec2-d4-exception-mapper",
+    "query_type": "NL",
+    "query_text": "JAX-RS ExceptionMapper that converts application exceptions to HTTP error responses with JSON body \u2014 mapping domain exceptions to proper HTTP status codes like 403 Forbidden in Quarkus RESTEasy Reactive",
+    "failure_modes": [
+      "VOCABULARY_GAP"
+    ],
+    "input_tokens": {
+      "whole": [
+        "-",
+        "403",
+        "application",
+        "body",
+        "codes",
+        "converts",
+        "domain",
+        "error",
+        "exception",
+        "exceptions",
+        "forbidden",
+        "http",
+        "in",
+        "j",
+        "jax",
+        "like",
+        "mapping",
+        "proper",
+        "qu",
+        "reactive",
+        "responses",
+        "rest",
+        "rs",
+        "status",
+        "that",
+        "to",
+        "with",
+        "\u2014"
+      ],
+      "subwords": [
+        "##ark",
+        "##ea",
+        "##ma",
+        "##pper",
+        "##son",
+        "##sy",
+        "##us"
+      ]
+    },
+    "total_activated": 90,
+    "top_20": [
+      {
+        "token": "jax",
+        "weight": 2.7831,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##pper",
+        "weight": 2.3518,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "rs",
+        "weight": 2.1384,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "reactive",
+        "weight": 2.094,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ark",
+        "weight": 2.0181,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "exception",
+        "weight": 1.9958,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##son",
+        "weight": 1.7542,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "403",
+        "weight": 1.6976,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "exceptions",
+        "weight": 1.6335,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "convert",
+        "weight": 1.5958,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "error",
+        "weight": 1.5874,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "domain",
+        "weight": 1.5391,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "forbidden",
+        "weight": 1.5191,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "j",
+        "weight": 1.5099,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "http",
+        "weight": 1.4986,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "rest",
+        "weight": 1.4715,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "status",
+        "weight": 1.4521,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "##ea",
+        "weight": 1.4257,
+        "source": "INPUT",
+        "form": "SUBWORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "response",
+        "weight": 1.4082,
+        "source": "EXPANSION",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      },
+      {
+        "token": "body",
+        "weight": 1.3767,
+        "source": "INPUT",
+        "form": "WHOLE_WORD",
+        "domain_tier": 0
+      }
+    ],
+    "expansion_count": 62,
+    "tier1_hits": 0,
+    "tier1_tokens": [],
+    "tier2_hits": 0,
+    "tier2_tokens": [],
+    "missing_domain_terms": [
+      "alternative",
+      "applicationscoped",
+      "arc",
+      "atomic",
+      "cascade",
+      "concurrent",
+      "devservices",
+      "emit",
+      "entity",
+      "fetch",
+      "inject",
+      "interceptor",
+      "jandex",
+      "lazy",
+      "lock",
+      "merge",
+      "multi",
+      "mutiny",
+      "observer",
+      "panache",
+      "persist",
+      "produces",
+      "qualifier",
+      "scope",
+      "singleton",
+      "subscribe",
+      "synchronized",
+      "uni",
+      "volatile"
+    ]
+  }
+]

@@ -60,7 +60,8 @@ Paths that are project content (not workspace noise).
 | `docs/DESIGN.md` | Design document |
 | `docs/superpowers/specs/` | Design specs |
 | `docs/superpowers/plans/` | Implementation plans |
-| `scripts/` | Development scripts (ONNX model download) |
+| `scripts/` | Development scripts (ONNX model download, benchmark harness) |
+| `docs/comparison/` | Retrieval benchmark reports (#27 dense-only, #28 hybrid) |
 
 ## Work Tracking
 

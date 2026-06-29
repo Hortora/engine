@@ -1,0 +1,443 @@
+{
+  "issue-1-reactive-async": {
+    "context": "casehubio/engine#542: CaseContextChangedEventHandler throws BlockingOperationNotAllowedException because JPA EntityManager calls execute on the Vert.x event loop thread. Fix: add @Blocking or dispatch via emitOn(Infrastructure.getDefaultWorkerPool()).",
+    "entries": [
+      {
+        "ge_id": "GE-20260420-7d28fa",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "PanacheRepository<PlainEntity, UUID> listAll() throws implementationInjectionMissing at runtime when entity is plain @Entity",
+        "body": "PanacheRepository<PlainEntity, UUID> listAll() throws implementationInjectionMissing at runtime when entity is plain @Entity\n\n## Symptom\n\nAt runtime, calling `repo.listAll()` (or other Panache repository methods) throws:\n\n```\njava.lang.IllegalStateException: This method is normally automatically overridden in subclasses:\ndid you forget to annotate your entity with @Entity?\n    at io.quarkus.hibernate.orm.panache.common.runtime.AbstractJpaOperations.implementationInjectionMissing\n    at io.quarku"
+      },
+      {
+        "ge_id": "GE-20260428-a67806",
+        "query_type": "KW",
+        "config": "full-hybrid",
+        "title": "casehub-engine Vert.x event-bus handlers lack @Blocking \u2014 JPA consumer calls fail from IO thread",
+        "body": "casehub-engine Vert.x event-bus handlers lack @Blocking \u2014 JPA consumer calls fail from IO thread\n\n## Symptom\n\nCalling `CaseHub.startCase()` in a `@QuarkusTest` (or in production with JPA-backed SPIs) throws:\n\n```\nio.quarkus.runtime.BlockingOperationNotAllowedException:\n  Cannot start a JTA transaction from the IO thread.\n```\n\nPropagated through the Vert.x event bus as:\n```\n(RECIPIENT_FAILURE,8185) io.quarkus.runtime.BlockingOperationNotAllowedException:\n  Cannot start a JTA transaction from the "
+      },
+      {
+        "ge_id": "GE-20260420-7d28fa",
+        "query_type": "KW",
+        "config": "full-hybrid",
+        "title": "PanacheRepository<PlainEntity, UUID> listAll() throws implementationInjectionMissing at runtime when entity is plain @Entity",
+        "body": "PanacheRepository<PlainEntity, UUID> listAll() throws implementationInjectionMissing at runtime when entity is plain @Entity\n\n## Symptom\n\nAt runtime, calling `repo.listAll()` (or other Panache repository methods) throws:\n\n```\njava.lang.IllegalStateException: This method is normally automatically overridden in subclasses:\ndid you forget to annotate your entity with @Entity?\n    at io.quarkus.hibernate.orm.panache.common.runtime.AbstractJpaOperations.implementationInjectionMissing\n    at io.quarku"
+      },
+      {
+        "ge_id": "GE-20260428-a67806",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "casehub-engine Vert.x event-bus handlers lack @Blocking \u2014 JPA consumer calls fail from IO thread",
+        "body": "casehub-engine Vert.x event-bus handlers lack @Blocking \u2014 JPA consumer calls fail from IO thread\n\n## Symptom\n\nCalling `CaseHub.startCase()` in a `@QuarkusTest` (or in production with JPA-backed SPIs) throws:\n\n```\nio.quarkus.runtime.BlockingOperationNotAllowedException:\n  Cannot start a JTA transaction from the IO thread.\n```\n\nPropagated through the Vert.x event bus as:\n```\n(RECIPIENT_FAILURE,8185) io.quarkus.runtime.BlockingOperationNotAllowedException:\n  Cannot start a JTA transaction from the "
+      }
+    ]
+  },
+  "issue-2-cdi-wiring": {
+    "context": "casehubio/work#264: NoOpGroupMembershipProvider is @ApplicationScoped (effectively @Default) but should be @DefaultBean. When both it and platform's MockGroupMembershipProvider (@DefaultBean) are on classpath, Quarkus throws AmbiguousResolutionException.",
+    "entries": [
+      {
+        "ge_id": "GE-20260427-5d7c67",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "quarkus-work (full) brings JpaWorkloadProvider that clashes with any other WorkloadProvider bean",
+        "body": "quarkus-work (full) brings JpaWorkloadProvider that clashes with any other WorkloadProvider bean\n\n## Context\n\nAdding `quarkus-work` (the full runtime module, not just `quarkus-work-api` or `quarkus-work-core`) as a dependency to a Quarkus module that already has its own `WorkloadProvider` implementation (e.g., `CasehubWorkloadProvider` from the casehub-engine module).\n\n## Symptom\n\n```\njakarta.enterprise.inject.AmbiguousResolutionException: Ambiguous dependencies\n  for type io.quarkiverse.work.ap"
+      },
+      {
+        "ge_id": "GE-20260604-b3d2ef",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "quarkus-flow CDI extension already registers WorkflowApplication \u2014 adding @Produces causes ambiguous dependency",
+        "body": "quarkus-flow CDI extension already registers WorkflowApplication \u2014 adding @Produces causes ambiguous dependency\n\n## Symptom\n\nQuarkus startup fails with `AmbiguousResolutionException: Ambiguous dependencies for type io.serverlessworkflow.impl.WorkflowApplication and qualifiers [@Default]` when you add a custom CDI producer for `WorkflowApplication`.\n\n## Context\n\nWhen integrating quarkus-flow into a Quarkus module that needs to control `WorkflowApplication` lifecycle (e.g. ensuring a singleton sha"
+      }
+    ]
+  },
+  "issue-3-persistence-migrations": {
+    "context": "casehubio/ledger#131: LedgerEntry.tenancyId added to base class shadows same-named field on JOINED-inheritance subclasses. Hibernate bytecode enhancement makes two fields invisible to Java, but em.persist() reads base field via reflection (null), violating NOT NULL constraint.",
+    "entries": [
+      {
+        "ge_id": "GE-20260619-fe34fc",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Hibernate named query gains a parameter in one repo \u2014 sibling repo call site silently unbound until runtime",
+        "body": "Hibernate named query gains a parameter in one repo \u2014 sibling repo call site silently unbound until runtime\n\n### Symptom\n\n```\norg.hibernate.QueryParameterException: No argument for named parameter ':tenancyId'\n  at ReactiveSqmQueryImpl.executeReactiveUpdate\n```\n\nAll message dispatches fail with HTTP 500 when `casehub.ledger.hash-chain.enabled=true`.\n\n### Context\n\n`LedgerMerkleFrontier.deleteBySubjectAndLevel` is a `@NamedQuery` defined in `casehub-ledger`.\nThe ledger repo added a `:tenancyId` pr"
+      },
+      {
+        "ge_id": "GE-20260619-479b69",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Static entity factory creates JPA child entities without multi-tenancy fields \u2014 NOT NULL INSERT fails",
+        "body": "Static entity factory creates JPA child entities without multi-tenancy fields \u2014 NOT NULL INSERT fails\n\n### Symptom\n\n```\norg.hibernate.exception.ConstraintViolationException: column \"tenancy_id\" violates not-null constraint\n```\n\nEntities persisted via a static factory or utility method fail on INSERT even though the owning\nparent entity has `tenancyId` set correctly.\n\n### Context\n\n`LedgerMerkleTree.append(digest, currentFrontier, subjectId)` is a pure static utility that\nbuilds new `LedgerMerkleF"
+      },
+      {
+        "ge_id": "GE-20260619-479b69",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Static entity factory creates JPA child entities without multi-tenancy fields \u2014 NOT NULL INSERT fails",
+        "body": "Static entity factory creates JPA child entities without multi-tenancy fields \u2014 NOT NULL INSERT fails\n\n### Symptom\n\n```\norg.hibernate.exception.ConstraintViolationException: column \"tenancy_id\" violates not-null constraint\n```\n\nEntities persisted via a static factory or utility method fail on INSERT even though the owning\nparent entity has `tenancyId` set correctly.\n\n### Context\n\n`LedgerMerkleTree.append(digest, currentFrontier, subjectId)` is a pure static utility that\nbuilds new `LedgerMerkleF"
+      }
+    ]
+  },
+  "issue-4-rest-messaging": {
+    "context": "casehubio/platform#98: Spec defining CloudEvent foundation \u2014 io.cloudevents.CloudEvent as CDI event type, StreamContext SPI, five classpath-activated stream modules (Kafka, AMQP, webhook, poll, Camel) firing Event<CloudEvent>.fireAsync() with tenancy propagation.",
+    "entries": [
+      {
+        "ge_id": "GE-20260621-629712",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Canonical CloudEvent adapter pattern \u2014 7 rules for CDI async adapters",
+        "body": "Canonical CloudEvent adapter pattern \u2014 7 rules for CDI async adapters\n\nSeven rules every CloudEvent adapter in the platform must satisfy.\nDiscovered during casehubio/connectors#20 \u2014 two existing adapters (IoT, Qhorus)\nhad 2 bugs, 1 silent failure path, and 1 pattern inconsistency. All fixed together.\n\n### The pattern\n\n| Rule | Requirement | Failure mode |\n|------|-------------|-------------|\n| ObjectMapper | Injected \u2014 never a private static instance | Static instance isolates serialisation conf"
+      },
+      {
+        "ge_id": "GE-20260522-5685ba",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Synchronous CDI Event.fire() in @Observes StartupEvent propagates observer exceptions \u2014 can abort Quarkus startup",
+        "body": "Synchronous CDI Event.fire() in @Observes StartupEvent propagates observer exceptions \u2014 can abort Quarkus startup\n\n## Symptom\n\nQuarkus startup fails with an unexpected exception. The stack trace originates in a CDI observer, propagates through `Event.fire()`, exits the `@Observes StartupEvent` handler, and Quarkus marks startup as failed. The application never becomes ready.\n\n## Context\n\nA startup hook needs to initialise multiple channels and notify external backends via a CDI event:\n\n```java\nv"
+      }
+    ]
+  },
+  "issue-5-ai-llm-inference": {
+    "context": "casehubio/platform#100: ChatModel adapter backed by AgentSession (Claude SDK subprocess) instead of HTTP API, gaining native prompt caching (70-80% token cost reduction for long sessions).",
+    "entries": [
+      {
+        "ge_id": "GE-20260627-51e402",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "@Alternative on a CDI bean silently suppresses all @DefaultBean beans of the same type \u2014 they vanish from the container entirely",
+        "body": "@Alternative on a CDI bean silently suppresses all @DefaultBean beans of the same type \u2014 they vanish from the container entirely\n\n### Symptom\n\n`Instance<ChatModel>` iteration returns only the `@Alternative` bean. The `@DefaultBean` ChatModel (registered by quarkus-langchain4j via `SyntheticBeanBuildItem.defaultBean()`) is completely absent from the container \u2014 not deprioritized, gone.\n\n### Context\n\nA platform module needed to provide a `ChatModel` adapter (`@Alternative @Priority(10)`) that wrap"
+      },
+      {
+        "ge_id": "GE-20260614-337397",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "quarkus-langchain4j Ollama extension registers @Default ChatModel \u2014 clashes with @DefaultBean fallback",
+        "body": "quarkus-langchain4j Ollama extension registers @Default ChatModel \u2014 clashes with @DefaultBean fallback\n\n## Symptom\n\nWhen the quarkus-langchain4j-ollama extension is on the classpath alongside a\n`@DefaultBean ChatModel` implementation, Quarkus throws at startup:\n\n```\nAmbiguousResolutionException: Ambiguous dependencies for type ChatModel and qualifiers [@Default]\n  - CLASS bean [... AgentProviderChatModel] qualifiers=[@Any, @Default]\n  - SYNTHETIC bean [... OllamaChatModel] qualifiers=[@Any, @Def"
+      },
+      {
+        "ge_id": "GE-20260422-f922f3",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "quarkus-langchain4j-core Quarkus extension stalls @QuarkusTest augmentation when no model provider is configured",
+        "body": "quarkus-langchain4j-core Quarkus extension stalls @QuarkusTest augmentation when no model provider is configured\n\n## Symptom\n\n`mvn test` hangs indefinitely during Quarkus augmentation when `quarkus-langchain4j-core` is a compile-scope dependency of a non-extension library module and no AI model provider is configured. No error message, no timeout \u2014 the build just blocks.\n\n## Context\n\nOccurs when a library module (Jandex-indexed, not a full Quarkus extension) adds `io.quarkiverse.langchain4j:quar"
+      }
+    ]
+  },
+  "issue-6-testing-ci": {
+    "context": "casehubio/engine#576: InMemoryWorkItemTemplateStore (@Alternative @Priority(100)) wins CDI over JpaWorkItemTemplateStore. Tests write via Panache static methods (H2) but read via injected in-memory store (empty ConcurrentHashMap).",
+    "entries": [
+      {
+        "ge_id": "GE-20260420-c1d394",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Zero-duplication reactive test doubles: wrap InMemory*Store in a delegation shell returning Uni",
+        "body": "Zero-duplication reactive test doubles: wrap InMemory*Store in a delegation shell returning Uni\n\n## Zero-duplication reactive test doubles: wrap InMemory*Store in a delegation shell returning Uni\n\n**ID:** GE-20260420-c1d394\n**Stack:** Quarkus 3.32.2, Hibernate Reactive, Mutiny\n\n**Problem:** A dual-stack extension (blocking + reactive) needs in-memory test implementations for both `ChannelStore` (returns `T`) and `ReactiveChannelStore` (returns `Uni<T>`). Duplicating all the in-memory state and l"
+      },
+      {
+        "ge_id": "GE-20260521-1e95dc",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Static test capture list in @ObservesAsync @Mock bean is a data race with the test thread",
+        "body": "Static test capture list in @ObservesAsync @Mock bean is a data race with the test thread\n\n### Symptom\n\nFlaky test results when using `Awaitility` to wait for an `@ObservesAsync` CDI event to be\nprocessed. Occasionally the capture list appears empty despite the observer having run, or\nentries from a previous test contaminate the current one.\n\nUnder Quarkus's default serial test execution the window is narrow and failures are rare.\nUnder parallel test execution or higher thread-pool concurrency t"
+      }
+    ]
+  },
+  "spec1-d1-cdi-priority-tiers": {
+    "context": "Spec: persistence-memory module. Extraction of in-memory stores into new persistence-memory/ module with @Alternative @Priority(100) as Tier 3 in CDI ladder, thread-safe data structures, Quarkus extension deactivation.",
+    "entries": [
+      {
+        "ge_id": "GE-20260609-02c68a",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "CDI StartupEvent @Priority ordering: no-priority observer fires at 2500, after @Priority(10) \u2014 not before",
+        "body": "CDI StartupEvent @Priority ordering: no-priority observer fires at 2500, after @Priority(10) \u2014 not before\n\n## Symptom\n\nA `@Observes StartupEvent` method with no `@Priority` annotation appears to run *before* another observer annotated with `@Priority(10)`. In reality, the opposite is true: the undecorated observer fires at the CDI default priority (2500), which is *much later* than `@Priority(10)`.\n\nThe bug manifests as a startup workaround that \"seems to work\" because the system falls back to a"
+      },
+      {
+        "ge_id": "GE-20260628-ea2ac5",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "quarkus.arc.selected-alternatives default priority 1 creates tie with @Priority(1) subclass beans \u2014 two @ApplicationScoped instances with separate state",
+        "body": "quarkus.arc.selected-alternatives default priority 1 creates tie with @Priority(1) subclass beans \u2014 two @ApplicationScoped instances with separate state\n\n### Symptom\n`CaseInstance not found or wrong tenant` (or similar state-not-found error) despite the instance being saved moments earlier. The save and lookup use the same `CaseInstanceRepository` interface, but they resolve to different `@ApplicationScoped` bean instances with separate `ConcurrentHashMap` stores.\n\n### Context\n`casehub-engine-te"
+      },
+      {
+        "ge_id": "GE-20260415-884e48",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "@Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException",
+        "body": "@Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException\n\n## @Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException\n\n### Stack\nQuarkus 3.31.1, CDI 4.0\n\n### Symptom\nMultiple beans implement the same SPI interface. Each alternative is annotated with\n`@Alternative @Priority(10)` as well as `@ApplicationScoped`. On Quarkus startup, the\napplication fails with `AmbiguousResolutio"
+      },
+      {
+        "ge_id": "GE-20260531-1e51d4",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "casehub-engine-persistence-memory @Alternative beans need explicit selected-alternatives for SubCaseGroupRepository and PlanItemStore",
+        "body": "casehub-engine-persistence-memory @Alternative beans need explicit selected-alternatives for SubCaseGroupRepository and PlanItemStore\n\n### Symptom\n\nQuarkus startup fails with:\n\n```\njakarta.enterprise.inject.spi.DeploymentException: Found 2 deployment problems:\n[1] Unsatisfied dependency for type io.casehub.engine.common.spi.SubCaseGroupRepository\n    - injection target: SubCaseExecutionHandler constructor\n[2] Unsatisfied dependency for type io.casehub.engine.common.spi.SubCaseGroupRepository\n   "
+      },
+      {
+        "ge_id": "GE-20260628-cabe4f",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "@IfBuildProfile + @Alternative + @Priority resolves CDI without selected-alternatives in indexed JARs",
+        "body": "@IfBuildProfile + @Alternative + @Priority resolves CDI without selected-alternatives in indexed JARs\n\n### Symptom\n\nAdding a dev-profile-only CDI bean (e.g., a `CurrentPrincipal` for dev mode) via `%dev.quarkus.arc.selected-alternatives=com.example.DevBean` causes startup failures \u2014 all beans from the non-profiled `quarkus.arc.selected-alternatives` list disappear.\n\n### Context\n\nQuarkus profile-specific properties (`%dev.`, `%test.`, `%prod.`) completely **replace** their non-profiled counterpar"
+      },
+      {
+        "ge_id": "GE-20260628-ea2ac5",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "quarkus.arc.selected-alternatives default priority 1 creates tie with @Priority(1) subclass beans \u2014 two @ApplicationScoped instances with separate state",
+        "body": "quarkus.arc.selected-alternatives default priority 1 creates tie with @Priority(1) subclass beans \u2014 two @ApplicationScoped instances with separate state\n\n### Symptom\n`CaseInstance not found or wrong tenant` (or similar state-not-found error) despite the instance being saved moments earlier. The save and lookup use the same `CaseInstanceRepository` interface, but they resolve to different `@ApplicationScoped` bean instances with separate `ConcurrentHashMap` stores.\n\n### Context\n`casehub-engine-te"
+      },
+      {
+        "ge_id": "GE-20260415-884e48",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "@Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException",
+        "body": "@Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException\n\n## @Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException\n\n### Stack\nQuarkus 3.31.1, CDI 4.0\n\n### Symptom\nMultiple beans implement the same SPI interface. Each alternative is annotated with\n`@Alternative @Priority(10)` as well as `@ApplicationScoped`. On Quarkus startup, the\napplication fails with `AmbiguousResolutio"
+      }
+    ]
+  },
+  "spec1-d2-thread-safety": {
+    "context": "Spec: persistence-memory module. Data structure migration to ConcurrentHashMap/CopyOnWriteArrayList for lock-free concurrency with READ COMMITTED semantics in in-memory stores.",
+    "entries": [
+      {
+        "ge_id": "GE-0139",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "`synchronized(key.intern())` causes JVM-wide global pool contention across unrelated instances",
+        "body": "`synchronized(key.intern())` causes JVM-wide global pool contention across unrelated instances\n\n## `synchronized(key.intern())` causes JVM-wide global pool contention across unrelated instances\n\n**ID:** GE-0139\n**Stack:** Java 21 (all versions)\n**Symptom:** Per-key locking in a `ConcurrentHashMap`-backed store appears correct and passes all tests. Under production load, unrelated instances (different map objects) serialise unexpectedly. No error, warning, or lock timeout \u2014 just hidden throughput"
+      }
+    ]
+  },
+  "spec1-d3-extension-deactivation": {
+    "context": "Spec: persistence-memory module. Quarkus extension deactivation at build time to prevent JPA validation when using in-memory persistence instead of database.",
+    "entries": [
+      {
+        "ge_id": "GE-20260529-18fc5f",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Quarkus QuarkusTestProfile.getConfigProfile() REPLACES %test profile \u2014 production application.properties becomes active, Dev Services cannot inject URLs",
+        "body": "Quarkus QuarkusTestProfile.getConfigProfile() REPLACES %test profile \u2014 production application.properties becomes active, Dev Services cannot inject URLs\n\n## Symptom\n\nA `@QuarkusTest` annotated with `@TestProfile` (whose `getConfigProfile()` returns a custom name,\ne.g. `\"reactive-pg\"`) starts the application but either:\n- The datasource bean is deactivated: *\"Bean is not active: AgroalDataSource \u2014 URL is not set\"*\n- Or the wrong datasource URL is used (e.g., the production H2 file URL rather than"
+      },
+      {
+        "ge_id": "GE-20260616-e04575",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Detect live JDBC dialect via DatabaseMetaData instead of @ConfigProperty(db-kind) for named-datasource compatibility",
+        "body": "Detect live JDBC dialect via DatabaseMetaData instead of @ConfigProperty(db-kind) for named-datasource compatibility\n\n## Detect live JDBC dialect via DatabaseMetaData instead of @ConfigProperty(db-kind)\n\n**ID:** GE-20260616-e04575\n**Stack:** Quarkus 3.x, Hibernate ORM, JDBC\n\n### Context\n\nA Quarkus extension supports both H2 (dev/test) and PostgreSQL (production). The extension\nmust choose between two incompatible SQL branches at runtime. The intuitive approach reads\nthe `quarkus.datasource.db-ki"
+      },
+      {
+        "ge_id": "GE-20260612-8e925b",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Quarkus quarkus.hibernate-orm.<pu-name>.sql-load-script for named PU \u2014 import.sql only runs for the default PU",
+        "body": "Quarkus quarkus.hibernate-orm.<pu-name>.sql-load-script for named PU \u2014 import.sql only runs for the default PU\n\n### Symptom\nNative SQL tables (not JPA entities) are missing after `database.generation=drop-and-create` even though `import.sql` exists in `src/test/resources`. The table was expected to be created by the SQL script.\n\n### Context\nA test uses a named Hibernate ORM persistence unit (e.g. `quarkus`) configured via `quarkus.hibernate-orm.qhorus.datasource=qhorus`. After switching to `drop"
+      },
+      {
+        "ge_id": "GE-20260422-334eb8",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Quarkus named persistence unit EntityManager injection uses io.quarkus.hibernate.orm.PersistenceUnit \u2014 not jakarta.persistence.PersistenceUnit",
+        "body": "Quarkus named persistence unit EntityManager injection uses io.quarkus.hibernate.orm.PersistenceUnit \u2014 not jakarta.persistence.PersistenceUnit\n\n## What exists but isn't documented\n\nWhen using multiple Hibernate ORM persistence units in Quarkus, injecting a specific PU's `EntityManager` requires a Quarkus-specific CDI qualifier \u2014 **not** the standard JPA annotation.\n\n**Wrong** (standard JPA \u2014 doesn't work as a CDI qualifier):\n```java\n@PersistenceContext(unitName = \"qhorus\")\nEntityManager em;\n```\n"
+      }
+    ]
+  },
+  "spec1-d4-protocol-compliance": {
+    "context": "Spec: persistence-memory module. Protocol compliance: aggregate methods must iterate the full data set, not delegate to scan which applies pagination and silently truncates results.",
+    "entries": [
+      {
+        "ge_id": "GE-20260625-5287ac",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "WEIGHTED_MAJORITY attestation aggregation silently masks contradicting verdicts on the same entry",
+        "body": "WEIGHTED_MAJORITY attestation aggregation silently masks contradicting verdicts on the same entry\n\n### Symptom\nCapability trust scores remain unchanged (e.g. 11/12 = 0.917) regardless of how many FLAGGED attestations are written against an actor's decisions. Investigation naturally targets the query layer, computation logic, or score persistence \u2014 all of which are correct.\n\n### Context\nBayesian Beta trust scoring with a four-pass pipeline (capability \u2192 dimension \u2192 cap\u00d7dim \u2192 global). Attestations"
+      },
+      {
+        "ge_id": "GE-20260616-90a867",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Scan Java class bytecode in a JAR for annotation presence using Python zipfile + constant-pool string search",
+        "body": "Scan Java class bytecode in a JAR for annotation presence using Python zipfile + constant-pool string search\n\n## Technique\n\nWhen you need to verify whether a class in a compiled JAR carries a specific\nannotation (e.g. `@Alternative`, `@Default`, `@ApplicationScoped`) without\naccess to source code or a Java decompiler:\n\n```python\nimport zipfile\n\njar = '/path/to/library.jar'\nwith zipfile.ZipFile(jar) as z:\n    data = z.read('com/example/MyClass.class')\n    if b'Alternative' in data:\n        print("
+      },
+      {
+        "ge_id": "GE-20260625-5287ac",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "WEIGHTED_MAJORITY attestation aggregation silently masks contradicting verdicts on the same entry",
+        "body": "WEIGHTED_MAJORITY attestation aggregation silently masks contradicting verdicts on the same entry\n\n### Symptom\nCapability trust scores remain unchanged (e.g. 11/12 = 0.917) regardless of how many FLAGGED attestations are written against an actor's decisions. Investigation naturally targets the query layer, computation logic, or score persistence \u2014 all of which are correct.\n\n### Context\nBayesian Beta trust scoring with a four-pass pipeline (capability \u2192 dimension \u2192 cap\u00d7dim \u2192 global). Attestations"
+      },
+      {
+        "ge_id": "GE-20260518-896005",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "In-memory test doubles are not rolled back when @Transactional rolls back \u2014 JTA and non-JTA writes diverge",
+        "body": "In-memory test doubles are not rolled back when @Transactional rolls back \u2014 JTA and non-JTA writes diverge\n\n## Symptom\n\nA `@Transactional` method writes to both a JPA store and an in-memory `@Alternative` store. A downstream call in the same transaction throws an exception. After rollback:\n\n- The JPA store is clean (the row was rolled back) \u2705\n- The in-memory store still shows the write \u274c\n\nTests that assert on the in-memory store state after a simulated failure see stale data and pass or fail inc"
+      },
+      {
+        "ge_id": "GE-20260625-891c48",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "quarkus.datasource.active=false is runtime-only \u2014 Hibernate build step still demands a configured datasource",
+        "body": "quarkus.datasource.active=false is runtime-only \u2014 Hibernate build step still demands a configured datasource\n\n### Symptom\n`io.quarkus.runtime.configuration.ConfigurationException: Datasource '<default>' is not configured` at Quarkus augmentation time, despite setting `quarkus.datasource.active=false` and `quarkus.hibernate-orm.active=false` in `application.properties`.\n\n### Context\nYou have `@Entity` classes on the classpath (from a Quarkus extension runtime module) and want to boot without any "
+      },
+      {
+        "ge_id": "casehub-work/docs/protocols/casehub/platform-casememorystore-timed-annotation",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Annotate all 7 CaseMemoryStore public methods with @Timed",
+        "body": "Annotate all 7 CaseMemoryStore public methods with @Timed\n\nEvery `CaseMemoryStore` adapter that overrides any of the 7 public interface methods must annotate each override with `@Timed(value = \"casehub.memory.<adapter>\", histogram = true, extraTags = {\"operation\", \"<op-name>\"})` where `<adapter>` is the short adapter name (e.g. `jpa`, `sqlite`, `mem0`, `graphiti`) and `<op-name>` matches the method name (e.g. `store`, `storeAll`, `query`, `erase`, `eraseById`, `eraseEntity`, `eraseEntityAcrossTe"
+      },
+      {
+        "ge_id": "GE-0016",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Hardcoded path traversal fails silently when scanning file copies in an alternate directory",
+        "body": "Hardcoded path traversal fails silently when scanning file copies in an alternate directory\n\n## Hardcoded path traversal fails silently when scanning file copies in an alternate directory\n\n**ID:** GE-0016\n**Stack:** Python, BeautifulSoup4 (any version), any pipeline scanning files from multiple locations\n**Symptom:** A bulk scan reports hundreds or thousands of \"missing local image\" errors. On investigation, the image files exist on disk at the expected paths. No exception is raised; the check s"
+      }
+    ]
+  },
+  "spec2-d1-cdi-tier-coexistence": {
+    "context": "Spec: agent-langchain4j interop. Cross-module bidirectional bridge between AgentProvider and ChatModel/StreamingChatModel using two separate CDI tier systems (@Alternative @Priority(1) and @DefaultBean @Priority(10)).",
+    "entries": [
+      {
+        "ge_id": "GE-20260601-81be07",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Resolve CDI ambiguity between two competing @DefaultBean implementations by introducing a concrete non-default bean",
+        "body": "Resolve CDI ambiguity between two competing @DefaultBean implementations by introducing a concrete non-default bean\n\n## Context\n\nTwo `@DefaultBean @ApplicationScoped` beans from different JARs both implement the same interface. CDI can't resolve which to use and throws `AmbiguousResolutionException`. Standard approaches don't help:\n\n- `quarkus.arc.exclude-types` is silently ignored for beans from Jandex-indexed JARs (see GE-20260601-848232)\n- Marking one as `@Alternative` requires changes to a J"
+      },
+      {
+        "ge_id": "GE-20260521-0bd1e6",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "@Alternative without @Priority silently disables @IfBuildProperty-gated beans \u2014 dependencies activate, service does not",
+        "body": "@Alternative without @Priority silently disables @IfBuildProperty-gated beans \u2014 dependencies activate, service does not\n\n## Symptom\n\nCDI deployment failure or `UnsatisfiedResolutionException` in a consumer app. All injected dependencies of the gated service are activated, but the service itself is not injectable. Adding the class to `quarkus.arc.selected-alternatives` fixes it.\n\n## Context\n\nA Quarkus extension adds a service bean with both `@Alternative` and `@IfBuildProperty`:\n\n```java\n@Alterna"
+      },
+      {
+        "ge_id": "GE-20260628-cabe4f",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "@IfBuildProfile + @Alternative + @Priority resolves CDI without selected-alternatives in indexed JARs",
+        "body": "@IfBuildProfile + @Alternative + @Priority resolves CDI without selected-alternatives in indexed JARs\n\n### Symptom\n\nAdding a dev-profile-only CDI bean (e.g., a `CurrentPrincipal` for dev mode) via `%dev.quarkus.arc.selected-alternatives=com.example.DevBean` causes startup failures \u2014 all beans from the non-profiled `quarkus.arc.selected-alternatives` list disappear.\n\n### Context\n\nQuarkus profile-specific properties (`%dev.`, `%test.`, `%prod.`) completely **replace** their non-profiled counterpar"
+      }
+    ]
+  },
+  "spec2-d2-chatmodel-adaptation": {
+    "context": "Spec: agent-langchain4j interop. Design of ChatModelAgentProvider to adapt LangChain4j ChatModel interface, implementing doChat() backed by AgentProvider. Includes StreamingChatModel, ChatResponse building.",
+    "entries": [
+      {
+        "ge_id": "GE-20260605-8b9118",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Jackson readValue() silently accepts trailing content unless FAIL_ON_TRAILING_TOKENS is enabled",
+        "body": "Jackson readValue() silently accepts trailing content unless FAIL_ON_TRAILING_TOKENS is enabled\n\n## Context\n\nWhen using `ObjectMapper.readValue()` to parse a JSON string, Jackson does NOT reject trailing non-JSON content by default. The parse succeeds and the trailing content is silently discarded.\n\n```java\n// This succeeds silently \u2014 \"extra text\" is ignored\nMap<String, Object> result = mapper.readValue(\n    \"{\\\"key\\\": \\\"value\\\"} extra text here\",\n    Map.class\n);\n// result = {\"key\": \"value\"}\n``"
+      },
+      {
+        "ge_id": "GE-20260423-af487b",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "IntelliJ MultiHostInjector: multiple addPlace() in one session concatenates content",
+        "body": "IntelliJ MultiHostInjector: multiple addPlace() in one session concatenates content\n\n### Symptom\nA string attribute containing `\"A${i}x${i}\"` produces a single injected file containing `\"ii\"` instead of two separate files each containing `\"i\"`. Annotators produce false-positive warnings for the concatenated token (`ii` is unknown; `i` would be known).\n\n### Context\nAny `MultiHostInjector` that calls `addPlace()` multiple times within one `startInjecting()`/`doneInjecting()` session for independen"
+      },
+      {
+        "ge_id": "GE-20260604-5bb2e7",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "CircuitBreakerOpenException escapes AgentInvocationException wrapper in Quarkus langchain4j agents",
+        "body": "CircuitBreakerOpenException escapes AgentInvocationException wrapper in Quarkus langchain4j agents\n\nWhen `@CircuitBreaker` is applied to a Quarkus langchain4j agent interface,\n`CircuitBreakerOpenException` is NOT wrapped in `AgentInvocationException`. The FaultTolerance\ninterceptor fires at a higher CDI priority than the agent's invocation handler, so\n`CircuitBreakerOpenException` escapes the wrapper and propagates directly to the caller.\nAll other agent runtime exceptions ARE wrapped \u2014 this is "
+      },
+      {
+        "ge_id": "GE-20260609-23438e",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Upstream SPI wrapping for config override \u2014 intercept without bypassing declarative flow",
+        "body": "Upstream SPI wrapping for config override \u2014 intercept without bypassing declarative flow\n\n### Symptom\n\nNeed to override annotation values at runtime from Quarkus config, but upstream reads them directly with no interception point.\n\n### Context\n\nUpstream's declarative flow reads annotation values and passes them to builders. The `AgentConfigurator` callback only covers inner `AgentBuilder`, not workflow builders. Options: (A) bypass the declarative path entirely (reimplementing parsing), (B) anno"
+      }
+    ]
+  },
+  "spec2-d3-circular-deps": {
+    "context": "Spec: agent-langchain4j interop. Circular dependency prevention via Instance<ChatModel> filtering at @PostConstruct and graceful deactivation patterns for the bidirectional adapter.",
+    "entries": [
+      {
+        "ge_id": "GE-20260606-096df3",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "LangChain4j EmbeddingSearchRequest.filter() pushes domain/metadata filters into Qdrant pre-scoring",
+        "body": "LangChain4j EmbeddingSearchRequest.filter() pushes domain/metadata filters into Qdrant pre-scoring\n\n## LangChain4j EmbeddingSearchRequest.filter() pushes domain/metadata filters into Qdrant pre-scoring\n\n**Stack:** LangChain4j 1.x, Qdrant\n\nPass a `Filter` to `EmbeddingSearchRequest.builder().filter()` to apply a metadata\npayload filter in Qdrant *before* vector similarity scoring. `QdrantFilterConverter`\ntranslates it to a gRPC `FieldCondition`. Only entries matching the filter participate\nin the"
+      },
+      {
+        "ge_id": "GE-20260609-75e00d",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Package-private test constructor + @PostConstruct null guard enables CDI bean unit testing without a container",
+        "body": "Package-private test constructor + @PostConstruct null guard enables CDI bean unit testing without a container\n\n## Context\n\nA CDI `@ApplicationScoped` bean has `@Inject` constructor dependencies, a field-injected\ndependency, and a `@PostConstruct` method that uses the field. You want to unit-test the bean's\ncore logic without a Quarkus container \u2014 pure Mockito, fast, no augmentation.\n\nThe challenge: field injection happens after construction; the `@PostConstruct` method references\nthe field-inje"
+      },
+      {
+        "ge_id": "GE-20260421-1192cd",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Expose @ApplicationScoped parsing logic as static package-private methods for zero-overhead unit testing",
+        "body": "Expose @ApplicationScoped parsing logic as static package-private methods for zero-overhead unit testing\n\n## Context\n\nAn `@ApplicationScoped` service class (e.g. a REST resource or business service) contains both injected CDI dependencies and parsing/transformation logic. The parsing logic needs unit tests, but the class can't be instantiated with `new` because CDI proxies it.\n\n## The technique\n\nExtract the parsing/transformation methods as `static` with package-private visibility. Tests instant"
+      },
+      {
+        "ge_id": "GE-20260526-1653dc",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "@All List<T> in Quarkus/ArC gives testable multi-bean injection without Instance<T>",
+        "body": "@All List<T> in Quarkus/ArC gives testable multi-bean injection without Instance<T>\n\n## Context\nWhen building a registry or routing layer that needs all CDI beans of a type\n(e.g. routing to the right `Connector` by id), the natural CDI approach is\n`Instance<T>`. But `Instance<T>` is a CDI interface with many abstract methods\n\u2014 difficult to stub in plain JUnit tests without a full container.\n\n## What developers normally do\nInject `Instance<T>`, iterate with `.stream()`, or use `@InjectMock` insid"
+      },
+      {
+        "ge_id": "GE-20260612-279b44",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "CDI bean ordering non-determinism causes silent registry key collision \u2014 symptoms mimic scheduler contamination",
+        "body": "CDI bean ordering non-determinism causes silent registry key collision \u2014 symptoms mimic scheduler contamination\n\n### Symptom\n12 @QuarkusTest tests fail with ConditionTimeoutException \u2014 cases start (RUNNING)\nbut workers never execute and cases never reach COMPLETED. Failures appear\ntest-ordering-dependent: passing in isolation, failing in the full suite. Symptoms\nare indistinguishable from Quartz scheduler contamination or event bus saturation.\n\n### Context\nTwo CaseHub beans \u2014 one Java-defined, o"
+      },
+      {
+        "ge_id": "GE-20260423-a01832",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "Quarkus CDI does not scan @Alternative beans in third-party test jars without explicit index config",
+        "body": "Quarkus CDI does not scan @Alternative beans in third-party test jars without explicit index config\n\n## Symptom\n\n`@Alternative @Priority(1)` beans from a `test`-scoped dependency are not selected by CDI in `@QuarkusTest` runs. The default (non-alternative) beans are used instead. No error is thrown \u2014 the wrong beans silently win.\n\n## Context\n\nOccurs when a library ships a `-testing` artifact (e.g. `quarkus-mylib-testing`) containing `@Alternative` in-memory implementations intended for use in co"
+      }
+    ]
+  },
+  "spec2-d4-exception-mapper": {
+    "context": "Spec: agent-langchain4j interop. MissingTenancyExceptionMapper returning 403 Forbidden for missing tenancy context exceptions in Quarkus RESTEasy Reactive.",
+    "entries": [
+      {
+        "ge_id": "GE-20260605-8b9118",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Jackson readValue() silently accepts trailing content unless FAIL_ON_TRAILING_TOKENS is enabled",
+        "body": "Jackson readValue() silently accepts trailing content unless FAIL_ON_TRAILING_TOKENS is enabled\n\n## Context\n\nWhen using `ObjectMapper.readValue()` to parse a JSON string, Jackson does NOT reject trailing non-JSON content by default. The parse succeeds and the trailing content is silently discarded.\n\n```java\n// This succeeds silently \u2014 \"extra text\" is ignored\nMap<String, Object> result = mapper.readValue(\n    \"{\\\"key\\\": \\\"value\\\"} extra text here\",\n    Map.class\n);\n// result = {\"key\": \"value\"}\n``"
+      },
+      {
+        "ge_id": "GE-20260621-629712",
+        "query_type": "KW",
+        "config": "dense+splade",
+        "title": "Canonical CloudEvent adapter pattern \u2014 7 rules for CDI async adapters",
+        "body": "With `.whenComplete()`: exception preserved on the stage \u2192 `thenCompose` skips its lambda\n\u2192 exception surfaces to SmallRye \u2192 message nacked \u2192 retried or dead-lettered.\n\nRule 3 applies **only in pure fire-and-forget dispatch** (the `CompletionStage` is not\nreturned or chained further).\n\nCDI `@ObservesAsync` adapters are always fire-and-forget.\n\nSmallRye `@Incoming` consumers return the stage for ack/nack signalling \u2014 they are not.\n\n### Alternatives considered\n\n- **Let exceptions propagate from `@"
+      },
+      {
+        "ge_id": "GE-20260623-941ade",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "quarkus.http.auth.permission.*.policy=deny on /* blocks ALL requests \u2014 @RolesAllowed becomes unreachable dead code",
+        "body": "quarkus.http.auth.permission.*.policy=deny on /* blocks ALL requests \u2014 @RolesAllowed becomes unreachable dead code\n\n### Symptom\nEvery endpoint returns 403. Always. Regardless of authentication status, role, or `@RolesAllowed` annotation. The application is completely non-functional.\n\n### Context\nWhen adding OIDC + `@RolesAllowed` to a Quarkus application, a natural instinct is to add a catch-all deny policy so missing annotations fail closed:\n```properties\nquarkus.http.auth.permission.default.pa"
+      },
+      {
+        "ge_id": "GE-20260420-e61431",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "@WrapBusinessError on Quarkus MCP Server CDI proxy wraps exceptions into ToolCallException(cause) \u2014 must inspect getCause() to distinguish error types",
+        "body": "@WrapBusinessError on Quarkus MCP Server CDI proxy wraps exceptions into ToolCallException(cause) \u2014 must inspect getCause() to distinguish error types\n\n### What happened\n\n`QhorusMcpTools.sendMessage()` throws `IllegalArgumentException(\"Channel not found: name\")` for unknown channels. In a JAX-RS resource, catching `IllegalArgumentException` directly missed this \u2014 the test for 404 returned 409 instead.\n\n### Root cause\n\n`@WrapBusinessError` on the `@Tool`-annotated CDI bean intercepts `IllegalArgu"
+      },
+      {
+        "ge_id": "GE-20260618-a677f1",
+        "query_type": "NL",
+        "config": "dense+splade",
+        "title": "java.net.http.HttpClient.send() does NOT throw for 4xx/5xx \u2014 returns HttpResponse with statusCode()",
+        "body": "java.net.http.HttpClient.send() does NOT throw for 4xx/5xx \u2014 returns HttpResponse with statusCode()\n\n## Symptom\n\nHTTP GET responses with 4xx or 5xx status codes are processed as if they were successful. No exception is thrown. Error body bytes (HTML error pages, JSON error responses) are silently treated as valid response data.\n\n## Context\n\nPolling arbitrary URLs with `java.net.http.HttpClient` and using the response body as data. The code has a `try/catch (IOException e)` block around the `send"
+      }
+    ]
+  }
+}

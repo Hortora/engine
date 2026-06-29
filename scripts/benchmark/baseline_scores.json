@@ -1,0 +1,2867 @@
+{
+  "GE-20260414-598352": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260414-8c43a9": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260414-be9977": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260414-c18090": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260415-884e48": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260416-39d854": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260416-7ec461": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260417-4a3c22": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260417-691885": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260417-96accd": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260417-c59817": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260420-45d53b": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260420-86180e": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260420-b9c06c": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260420-d99177": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260420-daf5dc": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260420-dcec35": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260421-473024": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260421-88296e": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260422-0ed3e5": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260422-70b817": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260422-e48245": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260422-ebb91d": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260422-f86f42": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260422-f922f3": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260423-4aa1e0": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260423-878486": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260423-9a5470": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260423-bcb5b7": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260423-c8d8cb": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260423-daef97": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260423-e96787": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260423-fce720": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260424-318ef3": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260424-59906a": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260424-647a6d": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260424-883890": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260424-e33d79": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260426-0915b7": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260427-543663": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260427-5d7c67": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260428-096e90": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260428-13d4ff": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260428-6d75d7": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260428-a67806": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260428-b966bd": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260428-fd7a65": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260429-21e6cf": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260429-2e1c4f": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260429-68ee24": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260429-a79d0e": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260429-d20380": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260429-da95ec": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260430-01fecd": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260430-3275b1": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260501-11ce7f": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260501-311bd8": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260501-4c94b8": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260501-56e179": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260501-b12416": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260501-bc4553": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260501-d9c2d7": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260502-c77725": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260504-5b9269": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260504-ae76f6": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260504-ba71a8": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260504-c51f9c": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260505-43a73b": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260505-8c57c2": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260505-b04e30": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260505-da346d": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260508-492336": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260508-b4c9b4": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260508-ce2285": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260511-3e5a75": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260511-b6f903": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-0fe012": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-2c2eff": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260512-66d997": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-67b3b5": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-a09bd3": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-a3838e": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-a9ad9f": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260512-c246b0": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-c30f52": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260512-e552f7": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260513-4f26a7": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260513-a49d06": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260514-421a6e": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260514-477d2f": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260514-83ee13": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260514-875f82": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260515-6e8205": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260515-99cf39": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260515-fd3156": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-0823c8": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-11dd6b": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-9006f7": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-9e571a": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-a6d608": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-da2a42": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260517-e78ae8": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260517-f31786": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260518-896005": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260518-a61d1b": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260518-da7e91": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260518-e4fa52": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260519-12efe9": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260519-244ad2": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260519-4a42e6": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260519-e13b01": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260519-e193d2": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260519-eb8340": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260519-f0967f": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260519-f33c66": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260519-f9624b": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260521-0bd1e6": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260521-2b82e7": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260521-3ce7ca": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260522-2a4009": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260522-3e2589": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260522-6786c3": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260522-6c22a3": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260522-98b286": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260522-a575c3": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260522-adb5cd": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260522-daca26": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260522-f7db12": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260523-86ed13": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260523-afab1d": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260523-fc29ea": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260524-122018": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260524-2b587e": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260524-c66b05": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260525-00cbde": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260525-5cf881": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260525-80e370": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260525-a8bd9a": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260525-cc8321": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260525-fd4868": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260526-27301b": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260526-a08a81": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260526-a5bbd2": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260527-714661": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260527-8c3ff5": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260527-cad5ba": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260528-936918": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260528-e9564b": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260528-e9ed9f": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260528-f0a75c": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260529-04a5a5": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260529-0b8284": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260529-0c80ca": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260529-59d35a": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260529-636a36": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260529-b994c2": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260529-bc1eaa": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260529-d1397c": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260529-d8156d": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260529-e43076": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260529-fef800": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260529-ff186e": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260530-29545c": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260530-3562b0": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260530-4387cb": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260530-b68c00": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260530-c05d12": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260530-da427e": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260530-e14065": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260531-1587fe": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-1e51d4": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260531-1ec900": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-686150": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-9118e7": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-bd4b53": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-d2ed26": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-dd44a2": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260531-e1ce47": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260601-08a351": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260601-0eb1b6": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260601-13fc26": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260601-3dbc80": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260601-7a3b38": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260601-81be07": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260601-a35fb3": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260601-cee623": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260601-fcf0d9": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260602-047ac4": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260602-1fb07b": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260602-286f16": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260602-6cfbdb": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260602-c38360": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260602-f2ca07": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260603-301b80": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260603-fdc6d5": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260604-037c42": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260604-21b1fa": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260604-2f0889": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260604-5bb2e7": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260604-81a6a6": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260604-96d82a": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260604-a6f008": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260604-b3d2ef": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260604-d08c9f": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260604-ed1b02": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    },
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260605-5d0034": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260605-6aa860": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260605-73c9d6": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260605-8b9118": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260605-e4d5c3": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260606-096df3": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260606-cd1c61": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260606-fc0556": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260607-067ace": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260607-1c0a05": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260607-3747a1": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260607-3ded98": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260607-7033a1": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260607-813a95": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260607-97e543": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260607-d689c9": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260607-e27c23": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260608-401287": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260608-4c8108": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260608-ff7e97": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-086833": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-12a3d7": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-26ffa5": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260609-2a92d9": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-49e48c": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-58e5d9": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260609-62a1a7": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260609-77a6f9": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-8d6961": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-9ee2ad": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-bc9bab": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-d24a97": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260609-dac1a3": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260609-ddd4b8": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260610-09f7bd": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260610-7b4955": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260610-98066a": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260610-99d39c": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260610-e6929a": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260611-a42c0b": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260611-d34557": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260611-dedf69": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260612-17c161": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260612-1f4ed8": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260612-9ff1c6": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260612-b20b51": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260612-ce4271": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260612-de141c": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260612-f6362e": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260613-1e5ba4": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260613-51de5b": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260613-53e590": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260613-a5983e": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260614-328420": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260614-337397": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260614-94c366": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260614-b94048": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260615-00ff7a": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260615-6d0ae3": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260615-83f6cb": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260615-d008ea": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260615-d065bf": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260616-240c04": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260616-312ba1": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260616-780f2e": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260616-8b9da9": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260616-99484f": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260616-d70e7e": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260617-5a9ad1": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260617-6b01c4": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260617-cc0834": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260617-d18081": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-0ed34c": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260618-248ce7": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-5008f5": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-53a50a": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-73a023": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260618-8526c8": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-a7a383": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-c552c3": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260618-d244e2": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260618-d84391": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260621-629712": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260622-580d45": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260623-22f1f7": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "grep"
+      ]
+    }
+  },
+  "GE-20260623-c651a1": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 1,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260625-891c48": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW",
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260626-a37306": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260626-c21b02": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep",
+        "gardenSearch-KW"
+      ]
+    }
+  },
+  "GE-20260626-c94109": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 2,
+      "methods": [
+        "gardenSearch-NL"
+      ]
+    }
+  },
+  "GE-20260627-51e402": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 2,
+      "methods": [
+        "grep"
+      ]
+    }
+  }
+}
