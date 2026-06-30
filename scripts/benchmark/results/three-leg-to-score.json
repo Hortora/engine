@@ -1,0 +1,572 @@
+{
+  "GE-20260428-a67806": {
+    "issue-1-reactive-async": {
+      "query_type": "NL",
+      "rank": 0,
+      "title": "casehub-engine Vert.x event-bus handlers lack @Blocking \u2014 JPA consumer calls fail from IO thread",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260526-399a43": {
+    "issue-1-reactive-async": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "quarkus-rest (RESTEasy Reactive) + JDBC Panache requires @Blocking on resource classes \u2014 tests pass without it, production degrades silently",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260518-bee1b3": {
+    "issue-1-reactive-async": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "Virtual-thread offload + CDI self-injection: pattern for safe blocking JPA in a reactive pipeline",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260614-337397": {
+    "issue-2-cdi-wiring": {
+      "query_type": "KW",
+      "rank": 2,
+      "title": "quarkus-langchain4j Ollama extension registers @Default ChatModel \u2014 clashes with @DefaultBean fallback",
+      "benchmark_score": "TODO"
+    },
+    "issue-5-ai-llm-inference": {
+      "query_type": "NL",
+      "rank": 0,
+      "title": "quarkus-langchain4j Ollama extension registers @Default ChatModel \u2014 clashes with @DefaultBean fallback",
+      "benchmark_score": "TODO"
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "quarkus-langchain4j Ollama extension registers @Default ChatModel \u2014 clashes with @DefaultBean fallback",
+      "benchmark_score": "TODO"
+    },
+    "spec2-d3-circular-deps": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "quarkus-langchain4j Ollama extension registers @Default ChatModel \u2014 clashes with @DefaultBean fallback",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260629-83784a": {
+    "issue-2-cdi-wiring": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "Pipe-separated keyword embedding queries are unstable \u2014 1.2% corpus growth causes 76% result set replacement",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260619-479b69": {
+    "issue-3-persistence-migrations": {
+      "query_type": "NL",
+      "rank": 4,
+      "title": "Static entity factory creates JPA child entities without multi-tenancy fields \u2014 NOT NULL INSERT fails",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260619-fe34fc": {
+    "issue-3-persistence-migrations": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "Hibernate named query gains a parameter in one repo \u2014 sibling repo call site silently unbound until runtime",
+      "benchmark_score": "TODO"
+    }
+  },
+  "casehub-work/docs/protocols/casehub/clinical-ledger-assert-type-filter": {
+    "issue-3-persistence-migrations": {
+      "query_type": "KW",
+      "rank": 6,
+      "title": "Ledger count assertions in @QuarkusTest must filter by LedgerEntry subclass",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260628-6599e6": {
+    "issue-3-persistence-migrations": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "casehub-ledger: actor-scoped erasure receipt queries return empty after GDPR erase \u2014 tokenisation severs the link",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260423-4aa1e0": {
+    "issue-3-persistence-migrations": {
+      "query_type": "NL",
+      "rank": 3,
+      "title": "JPA InheritanceType.JOINED forces all hierarchy entities into one persistence unit",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260621-629712": {
+    "issue-4-rest-messaging": {
+      "query_type": "NL",
+      "rank": 2,
+      "title": "Canonical CloudEvent adapter pattern \u2014 7 rules for CDI async adapters",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260428-92e34e": {
+    "issue-4-rest-messaging": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "CDI Event.fireAsync().toCompletableFuture().join() waits until all @ObservesAsync handlers commit",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-0070": {
+    "issue-4-rest-messaging": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "Quarkus Flow `listen` task does not receive from SmallRye in-memory channels",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260615-388a35": {
+    "issue-4-rest-messaging": {
+      "query_type": "NL",
+      "rank": 3,
+      "title": "EndpointCapability.RECEIVE is wrong for poll streams \u2014 use QUERY",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260627-51e402": {
+    "issue-5-ai-llm-inference": {
+      "query_type": "NL",
+      "rank": 2,
+      "title": "@Alternative on a CDI bean silently suppresses all @DefaultBean beans of the same type \u2014 they vanish from the container entirely",
+      "benchmark_score": "TODO"
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "query_type": "NL",
+      "rank": 3,
+      "title": "@Alternative on a CDI bean silently suppresses all @DefaultBean beans of the same type \u2014 they vanish from the container entirely",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260617-d18081": {
+    "issue-5-ai-llm-inference": {
+      "query_type": "NL",
+      "rank": 1,
+      "title": "LangChain4j 1.x: implementing both ChatModel and StreamingChatModel requires explicit overrides for all four shared default methods",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260618-a7a383": {
+    "issue-5-ai-llm-inference": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "LangChain4J 1.14.1 AiMessage and ChatResponse cannot be Mockito-mocked \u2014 use real constructors/builders",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260629-63d619": {
+    "issue-5-ai-llm-inference": {
+      "query_type": "KW",
+      "rank": 6,
+      "title": "SPLADE (MS MARCO) has zero Java domain vocabulary \u2014 expands ChatModel to hotel/beauty/renovation",
+      "benchmark_score": "TODO"
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "KW",
+      "rank": 1,
+      "title": "SPLADE (MS MARCO) has zero Java domain vocabulary \u2014 expands ChatModel to hotel/beauty/renovation",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260614-94c366": {
+    "issue-5-ai-llm-inference": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "quarkus-langchain4j-ollama added via Maven test-scope profile requires mvn clean to invalidate augmentation cache",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260422-f922f3": {
+    "issue-5-ai-llm-inference": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "quarkus-langchain4j-core Quarkus extension stalls @QuarkusTest augmentation when no model provider is configured",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260618-d81cef": {
+    "issue-6-testing-ci": {
+      "query_type": "NL",
+      "rank": 4,
+      "title": "Hibernate dirty-check flushes PanacheEntity field writes inside Panache.withSession() \u2014 even for in-memory test stores",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260629-e6460e": {
+    "issue-6-testing-ci": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "quarkus.arc.selected-alternatives silently ignores %dev. profile overrides \u2014 use exclude-types instead",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260629-59082a": {
+    "issue-6-testing-ci": {
+      "query_type": "KW",
+      "rank": 6,
+      "title": "InMemoryWorkItemStore.scan() filters by currentPrincipal.tenancyId() \u2014 explicit tenancyId on request makes WorkItems invisible",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260529-9d2ad0": {
+    "issue-6-testing-ci": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "Panache count(String, Object...) prepends FROM Entity WHERE \u2014 passing 'WHERE predicate' causes double-WHERE syntax error",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260427-c2b84f": {
+    "issue-6-testing-ci": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "@Alternative @Priority(1) beans in a test-helper jar are invisible to downstream @QuarkusTest \u2014 no Jandex index",
+      "benchmark_score": "TODO"
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "@Alternative @Priority(1) beans in a test-helper jar are invisible to downstream @QuarkusTest \u2014 no Jandex index",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260415-884e48": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 0,
+      "title": "@Alternative @Priority(n) in CDI 4.0/Quarkus globally activates the alternative \u2014 causes AmbiguousResolutionException",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260429-a79d0e": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "KW",
+      "rank": 2,
+      "title": "@Alternative @Priority(N) in Quarkus CDI auto-activates without quarkus.arc.selected-alternatives config",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260609-02c68a": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "KW",
+      "rank": 3,
+      "title": "CDI StartupEvent @Priority ordering: no-priority observer fires at 2500, after @Priority(10) \u2014 not before",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260628-cabe4f": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "@IfBuildProfile + @Alternative + @Priority resolves CDI without selected-alternatives in indexed JARs",
+      "benchmark_score": "TODO"
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "@IfBuildProfile + @Alternative + @Priority resolves CDI without selected-alternatives in indexed JARs",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260628-ea2ac5": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 2,
+      "title": "quarkus.arc.selected-alternatives default priority 1 creates tie with @Priority(1) subclass beans \u2014 two @ApplicationScoped instances with separate state",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260531-1e51d4": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 1,
+      "title": "casehub-engine-persistence-memory @Alternative beans need explicit selected-alternatives for SubCaseGroupRepository and PlanItemStore",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260521-3ce7ca": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 3,
+      "title": "@Alternative @Priority(1) from an external JAR does not override a non-alternative bean in Quarkus \u2014 needs exclude-types + selected-alternatives",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260417-c59817": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 4,
+      "title": "quarkus.arc.selected-alternatives in application.properties activates @Alternative beans in @QuarkusTest \u2014 beans.xml is ignored",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260519-290cfb": {
+    "spec1-d1-cdi-priority-tiers": {
+      "query_type": "NL",
+      "rank": 5,
+      "title": "persistence-memory/ vs testing/ \u2014 in-memory impls belong in persistence-memory/ only when they have a production use case",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-0139": {
+    "spec1-d2-thread-safety": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "`synchronized(key.intern())` causes JVM-wide global pool contention across unrelated instances",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260529-18fc5f": {
+    "spec1-d3-extension-deactivation": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "Quarkus QuarkusTestProfile.getConfigProfile() REPLACES %test profile \u2014 production application.properties becomes active, Dev Services cannot inject URLs",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260417-a405a4": {
+    "spec1-d3-extension-deactivation": {
+      "query_type": "NL",
+      "rank": 2,
+      "title": "quarkus-maven-plugin build goal in extension runtime pom breaks mvn install with datasource error",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260618-08cb96": {
+    "spec1-d3-extension-deactivation": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "Named Hibernate ORM persistence unit requires both @PersistenceUnit qualifier AND packages config for entity discovery",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260422-334eb8": {
+    "spec1-d3-extension-deactivation": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "Quarkus named persistence unit EntityManager injection uses io.quarkus.hibernate.orm.PersistenceUnit \u2014 not jakarta.persistence.PersistenceUnit",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260625-5287ac": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "KW",
+      "rank": 1,
+      "title": "WEIGHTED_MAJORITY attestation aggregation silently masks contradicting verdicts on the same entry",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260525-55d8f6": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "KW",
+      "rank": 2,
+      "title": "Mutiny idiom for synchronous delegation: invoke(delegate::method).replaceWithVoid(), not call-then-return-voidItem",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260616-90a867": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "Scan Java class bytecode in a JAR for annotation presence using Python zipfile + constant-pool string search",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260523-06e8b6": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "KW",
+      "rank": 6,
+      "title": "Panache PanacheEntity.list(query) ignores query limit \u2014 loads all rows into heap before Java-side truncation",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260421-9498ff": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "WorkItemService.delegate() must run strategy BEFORE clearing assigneeId or Hibernate auto-flush corrupts workload counts",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260609-2254cc": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 0,
+      "title": "MemoryQuery default 20-item CHRONOLOGICAL limit silently truncates time-window post-filters",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260421-ef0a4e": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 1,
+      "title": "Refactoring tests to extend an abstract base class silently removes implementation-specific test methods",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260521-49e7fd": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 2,
+      "title": "CDI delegate pattern: reactive in-memory store wraps blocking store to share state across both interfaces in @QuarkusTest",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260420-c1d394": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 4,
+      "title": "Zero-duplication reactive test doubles: wrap InMemory*Store in a delegation shell returning Uni",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260519-f33c66": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 5,
+      "title": "'Reactive' Quarkus service classes may use blocking services or Panache statics internally \u2014 CDI @Alternative in-memory stores don't intercept those paths",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260421-4a9364": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "JpaWorkItemStore.scan() with assigneeId also matches candidateUsers LIKE '%actorId%'",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260530-4387cb": {
+    "spec1-d4-protocol-compliance": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "casehub-qhorus MessageService methods using Panache static calls bypass InMemory store in @QuarkusTest",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260601-81be07": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "Resolve CDI ambiguity between two competing @DefaultBean implementations by introducing a concrete non-default bean",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260604-5bb2e7": {
+    "spec2-d2-chatmodel-adaptation": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "CircuitBreakerOpenException escapes AgentInvocationException wrapper in Quarkus langchain4j agents",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260609-75e00d": {
+    "spec2-d3-circular-deps": {
+      "query_type": "NL",
+      "rank": 0,
+      "title": "Package-private test constructor + @PostConstruct null guard enables CDI bean unit testing without a container",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260607-1ebb9c": {
+    "spec2-d3-circular-deps": {
+      "query_type": "NL",
+      "rank": 6,
+      "title": "@Transactional on @PostConstruct is silently ignored \u2014 Arc proxy not created yet",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260422-3242bf": {
+    "spec2-d3-circular-deps": {
+      "query_type": "KW",
+      "rank": 4,
+      "title": "Use Instance<T> for optional CDI injection \u2014 resolves gracefully to null when no bean exists",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260525-fd4868": {
+    "spec2-d3-circular-deps": {
+      "query_type": "KW",
+      "rank": 5,
+      "title": "LangChain4j 1.x: ChatLanguageModel renamed to ChatModel; chat() replaced by doChat() as extension point",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260526-1653dc": {
+    "spec2-d3-circular-deps": {
+      "query_type": "NL",
+      "rank": 2,
+      "title": "@All List<T> in Quarkus/ArC gives testable multi-bean injection without Instance<T>",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260418-03a6f4": {
+    "spec2-d3-circular-deps": {
+      "query_type": "NL",
+      "rank": 4,
+      "title": "Config-driven CDI strategy selection: Instance<T>.select(NamedLiteral.of(name)).get() in @PostConstruct",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260614-eaa3e7": {
+    "spec2-d3-circular-deps": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "@BeforeAll System.setProperty() arrives after @Startup @PostConstruct in @QuarkusTest",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260505-48085a": {
+    "spec2-d4-exception-mapper": {
+      "query_type": "KW",
+      "rank": 4,
+      "title": "static new ObjectMapper() silently fails to serialize Instant in Quarkus \u2014 use @Inject ObjectMapper",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260602-a4d290": {
+    "spec2-d4-exception-mapper": {
+      "query_type": "KW",
+      "rank": 6,
+      "title": "new ObjectMapper(new YAMLFactory()) silently produces null record fields \u2014 findAndRegisterModules() required",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260605-8b9118": {
+    "spec2-d4-exception-mapper": {
+      "query_type": "KW",
+      "rank": 7,
+      "title": "Jackson readValue() silently accepts trailing content unless FAIL_ON_TRAILING_TOKENS is enabled",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260618-a677f1": {
+    "spec2-d4-exception-mapper": {
+      "query_type": "NL",
+      "rank": 4,
+      "title": "java.net.http.HttpClient.send() does NOT throw for 4xx/5xx \u2014 returns HttpResponse with statusCode()",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260612-4f9a47": {
+    "spec2-d4-exception-mapper": {
+      "query_type": "NL",
+      "rank": 5,
+      "title": "Quarkus REST client interface with @Path at class level silently registers as a server resource \u2014 shadows the real endpoint",
+      "benchmark_score": "TODO"
+    }
+  },
+  "GE-20260608-bde9a4": {
+    "spec2-d4-exception-mapper": {
+      "query_type": "NL",
+      "rank": 7,
+      "title": "RESTEasy Reactive: return CompletionStage<Response> to chain async engine calls without @Blocking",
+      "benchmark_score": "TODO"
+    }
+  }
+}
