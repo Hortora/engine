@@ -51,13 +51,15 @@ public class GardenMetadataExtractor implements MetadataExtractor {
         if (fm.get("domain") instanceof String s) metadata.put("domain", s);
         if (fm.get("type") instanceof String s) metadata.put("type", s);
         if (fm.get("score") instanceof Number n) metadata.put("score", String.valueOf(n.intValue()));
-        if (fm.get("tags") instanceof List<?> tags) {
-            metadata.put("tags", String.join(", ", tags.stream().map(Object::toString).toList()));
-        }
         if (fm.get("submitted") != null) {
             metadata.put("submitted", String.valueOf(fm.get("submitted")));
         }
 
-        return new ExtractionResult(combinedContent, metadata);
+        Map<String, List<String>> listMetadata = new LinkedHashMap<>();
+        if (fm.get("tags") instanceof List<?> tags) {
+            listMetadata.put("tags", tags.stream().map(Object::toString).toList());
+        }
+
+        return new ExtractionResult(combinedContent, metadata, listMetadata);
     }
 }

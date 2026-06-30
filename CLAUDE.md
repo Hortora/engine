@@ -9,7 +9,8 @@
 **engine** — the Hortora garden retrieval service. A Quarkus LangChain4j application that indexes garden entries into Qdrant and exposes them via a MCP server for AI assistant consumption.
 
 Phase 1: dense-only retrieval — LangChain4j + Qdrant + Ollama + MCP HTTP server.
-Phase 2 (current): hybrid search — SPLADE sparse embeddings + cross-encoder reranking via `casehub-inference-quarkus` (ONNX Runtime). Dense+sparse RRF fusion and reranking activate when ONNX models are configured.
+Phase 2: hybrid search — SPLADE sparse embeddings + cross-encoder reranking via `casehub-inference-quarkus` (ONNX Runtime). Dense+sparse RRF fusion and reranking activate when ONNX models are configured.
+Phase 3 (current): three-leg retrieval — BM25 keyword matching via Qdrant Document vectors as a third RRF leg alongside dense and sparse. Metadata payload filtering (domain, type, tags) exposed through `gardenSearch` MCP tool.
 
 ## Stack
 
@@ -31,6 +32,7 @@ Phase 2 (current): hybrid search — SPLADE sparse embeddings + cross-encoder re
 - **Long-running service, not stdio** — Qdrant loads its index once; stdio per-session cold-start is unacceptable at corpus scale
 - **Garden entries are the chunks** — no document splitting; entries (50–200 lines) are the retrieval unit
 - **Federation in this service** — canonical/child chain walk is Hortora-specific logic, lives here not in any shared module
+- **Three-leg RRF with Qdrant-native BM25** — `HybridCaseRetriever` uses three server-side RRF prefetch legs: dense (nomic-embed-text), sparse (SPLADE), and BM25 (Qdrant Document vectors with `qdrant/bm25` model). BM25 addresses the keyword catastrophe where dense embeddings fail on Java identifiers (`ChatModel`, `@DefaultBean`). `CamelCaseExpander` preprocesses text for BM25 at ingestion time. All three legs fuse inside Qdrant in a single gRPC call.
 
 ## Build
 

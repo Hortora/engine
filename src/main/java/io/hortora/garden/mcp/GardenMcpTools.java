@@ -29,10 +29,13 @@ public class GardenMcpTools {
     String gardenSearch(
             @ToolArg(description = "Natural language description of the problem, symptom, or topic to search for") String query,
             @ToolArg(description = "Optional: filter by domain (e.g. jvm, tools, python). Leave empty to search all domains.", required = false) String domain,
+            @ToolArg(description = "Optional: filter by entry type (gotcha, technique, undocumented, pattern)", required = false) String type,
+            @ToolArg(description = "Optional: comma-separated tags to filter by (entries matching ANY tag are returned)", required = false) String tags,
             @ToolArg(description = "Maximum number of entries to return (default 8)", required = false) Integer limit) {
 
         List<SearchResult> results = searchResource.searchFor(query,
-                domain != null && !domain.isBlank() ? List.of(domain) : null, limit);
+                domain != null && !domain.isBlank() ? List.of(domain) : null,
+                type, tags, limit);
 
         if (results.isEmpty()) {
             return "No relevant garden entries found for: " + query;

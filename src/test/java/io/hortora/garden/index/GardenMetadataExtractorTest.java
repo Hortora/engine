@@ -52,13 +52,14 @@ class GardenMetadataExtractorTest {
     }
 
     @Test
-    void extractsTagsAsCommaSeparatedString() throws Exception {
+    void extractsTagsAsListMetadata() throws Exception {
         byte[] content = Files.readAllBytes(
                 Path.of("src/test/resources/fixtures/ge-test-hibernate-lazy.md"));
 
         ExtractionResult result = extractor.extract("jvm/ge-test.md", content);
 
-        assertThat(result.metadata()).containsEntry("tags", "hibernate, lazy-loading, transactions");
+        assertThat(result.listMetadata().get("tags")).containsExactly("hibernate", "lazy-loading", "transactions");
+        assertThat(result.metadata().get("tags")).isNull();
     }
 
     @Test
@@ -126,5 +127,21 @@ class GardenMetadataExtractorTest {
 
         assertThat(result.body()).isEmpty();
         assertThat(result.metadata()).isEmpty();
+    }
+
+    @Test
+    void tagsExtractedAsListMetadata() {
+        String content = """
+            ---
+            title: "Test entry"
+            domain: jvm
+            tags: [cdi, quarkus, bean-discovery]
+            ---
+            Body text here.
+            """;
+        ExtractionResult result = extractor.extract("test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("tags")).containsExactly("cdi", "quarkus", "bean-discovery");
+        assertThat(result.metadata().get("tags")).isNull();
     }
 }

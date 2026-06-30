@@ -42,6 +42,8 @@ public class SearchResource {
     public List<SearchResult> search(
             @QueryParam("q") String query,
             @QueryParam("domain") List<String> domains,
+            @QueryParam("type") String type,
+            @QueryParam("tags") String tags,
             @QueryParam("limit") Integer limit,
             @HeaderParam("X-Federation-Visited") String visited) {
 
@@ -50,12 +52,12 @@ public class SearchResource {
         }
 
         int maxResults = resolveLimit(limit);
-        return doSearch(query, domains, maxResults, visited);
+        return doSearch(query, domains, type, tags, maxResults, visited);
     }
 
-    public List<SearchResult> searchFor(String query, List<String> domains, Integer limit) {
+    public List<SearchResult> searchFor(String query, List<String> domains, String type, String tags, Integer limit) {
         int maxResults = resolveLimit(limit);
-        return doSearch(query, domains, maxResults, null);
+        return doSearch(query, domains, type, tags, maxResults, null);
     }
 
     private static int resolveLimit(Integer limit) {
@@ -63,7 +65,7 @@ public class SearchResource {
         return Math.min(limit, MAX_LIMIT);
     }
 
-    List<SearchResult> doSearch(String query, List<String> domains, int maxResults, String visitedHeader) {
+    List<SearchResult> doSearch(String query, List<String> domains, String type, String tags, int maxResults, String visitedHeader) {
         Set<String> visited = parseVisited(visitedHeader);
 
         if (visited.contains(federationConfig.gardenId())) {
@@ -74,7 +76,7 @@ public class SearchResource {
 
         boolean depthExceeded = visited.size() > federationConfig.maxDepth();
 
-        List<SearchResult> ownResults = searchLocal(query, domains, maxResults);
+        List<SearchResult> ownResults = searchLocal(query, domains, type, tags, maxResults);
 
         if (depthExceeded) {
             return ownResults;
@@ -83,9 +85,9 @@ public class SearchResource {
         return chainWalker.walk(query, domains, maxResults, ownResults, visited);
     }
 
-    private List<SearchResult> searchLocal(String query, List<String> domains, int maxResults) {
+    private List<SearchResult> searchLocal(String query, List<String> domains, String type, String tags, int maxResults) {
         CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
-        PayloadFilter filter = buildDomainFilter(domains);
+        PayloadFilter filter = buildFilter(domains, type, tags);
 
         List<RetrievedChunk> chunks = caseRetriever.retrieve(RetrievalQuery.of(query), corpusRef, maxResults, filter);
 
@@ -105,12 +107,35 @@ public class SearchResource {
         return results;
     }
 
+    static PayloadFilter buildFilter(List<String> domains, String type, String tags) {
+        List<PayloadFilter> filters = new ArrayList<>();
+
+        if (domains != null && !domains.isEmpty()) {
+            List<String> nonBlank = domains.stream().filter(d -> d != null && !d.isBlank()).toList();
+            if (!nonBlank.isEmpty()) {
+                filters.add(nonBlank.size() == 1
+                    ? PayloadFilter.eq("domain", nonBlank.getFirst())
+                    : PayloadFilter.in("domain", nonBlank));
+            }
+        }
+        if (type != null && !type.isBlank()) {
+            filters.add(PayloadFilter.eq("type", type));
+        }
+        if (tags != null && !tags.isBlank()) {
+            List<String> tagList = Arrays.stream(tags.split(","))
+                .map(String::trim).filter(s -> !s.isEmpty()).toList();
+            if (!tagList.isEmpty()) {
+                filters.add(PayloadFilter.in("tags", tagList));
+            }
+        }
+
+        if (filters.isEmpty()) return null;
+        if (filters.size() == 1) return filters.getFirst();
+        return new PayloadFilter.And(filters);
+    }
+
     static PayloadFilter buildDomainFilter(List<String> domains) {
-        if (domains == null || domains.isEmpty()) return null;
-        List<String> nonBlank = domains.stream().filter(d -> d != null && !d.isBlank()).toList();
-        if (nonBlank.isEmpty()) return null;
-        if (nonBlank.size() == 1) return PayloadFilter.eq("domain", nonBlank.getFirst());
-        return PayloadFilter.in("domain", nonBlank);
+        return buildFilter(domains, null, null);
     }
 
     private static Set<String> parseVisited(String header) {
