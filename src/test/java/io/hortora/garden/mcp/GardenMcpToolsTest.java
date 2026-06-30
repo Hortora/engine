@@ -152,4 +152,13 @@ class GardenMcpToolsTest {
                 r -> assertThat(r).contains("No relevant garden entries found")
         );
     }
+
+    @Test
+    void gardenSearchIncludesMetadataComment() {
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null);
+
+        assertThat(result).contains("<!-- search_meta:");
+        assertThat(result).contains("returned=");
+        assertThat(result).contains("requested=");
+    }
 }

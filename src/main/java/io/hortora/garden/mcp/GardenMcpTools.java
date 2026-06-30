@@ -5,6 +5,7 @@ import io.casehub.rag.EmbeddingIngestor;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
 import io.hortora.garden.inference.CollectionMigration;
+import io.hortora.garden.search.AdaptiveResult;
 import io.hortora.garden.search.SearchResource;
 import io.hortora.garden.search.SearchResult;
 import io.quarkiverse.mcp.server.Tool;
@@ -25,30 +26,52 @@ public class GardenMcpTools {
     @Inject FederationConfig federationConfig;
     @Inject CollectionMigration collectionMigration;
 
-    @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption.")
+    @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption. Results are adaptively extended when a dense cluster of relevant entries exists beyond the requested limit.")
     String gardenSearch(
             @ToolArg(description = "Natural language description of the problem, symptom, or topic to search for") String query,
             @ToolArg(description = "Optional: filter by domain (e.g. jvm, tools, python). Leave empty to search all domains.", required = false) String domain,
             @ToolArg(description = "Optional: filter by entry type (gotcha, technique, undocumented, pattern)", required = false) String type,
             @ToolArg(description = "Optional: comma-separated tags to filter by (entries matching ANY tag are returned)", required = false) String tags,
-            @ToolArg(description = "Maximum number of entries to return (default 8)", required = false) Integer limit) {
+            @ToolArg(description = "Maximum number of entries to return (default 8, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit) {
 
-        List<SearchResult> results = searchResource.searchFor(query,
+        AdaptiveResult adaptive = searchResource.searchAdaptive(query,
                 domain != null && !domain.isBlank() ? List.of(domain) : null,
                 type, tags, limit);
 
-        if (results.isEmpty()) {
+        if (adaptive.results().isEmpty()) {
             return "No relevant garden entries found for: " + query;
         }
 
-        return results.stream()
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("<!-- search_meta: returned=").append(adaptive.results().size())
+          .append(" available=").append(adaptive.availableAboveFloor())
+          .append(" requested=").append(adaptive.requestedLimit())
+          .append(" extended=").append(adaptive.extended())
+          .append(" -->\n");
+
+        if (adaptive.extended() || adaptive.availableAboveFloor() > adaptive.results().size()) {
+            sb.append("*Showing ").append(adaptive.results().size())
+              .append(" results (").append(adaptive.requestedLimit()).append(" requested");
+            if (adaptive.availableAboveFloor() > adaptive.results().size()) {
+                sb.append(", ").append(adaptive.availableAboveFloor())
+                  .append(" above relevance threshold in corpus");
+            }
+            sb.append("). Use a higher limit to see more.*\n");
+        }
+
+        sb.append("\n");
+
+        sb.append(adaptive.results().stream()
                 .map(r -> "## " + provenanceLabel(r) + " " + r.title()
                         + "\n**ID:** " + extractDocumentId(r.id())
                         + " · **Domain:** " + r.domain()
                         + " · **Type:** " + r.type()
                         + " · **Relevance:** " + String.format("%.2f", r.relevance())
                         + "\n\n" + stripTitlePrefix(r.title(), r.body()))
-                .collect(Collectors.joining("\n\n---\n\n"));
+                .collect(Collectors.joining("\n\n---\n\n")));
+
+        return sb.toString();
     }
 
     @Tool(description = "Get the status of the garden index: how many entries are indexed and where the garden is located.")

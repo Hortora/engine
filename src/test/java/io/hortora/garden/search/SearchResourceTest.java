@@ -14,6 +14,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static io.hortora.garden.search.SearchResource.adaptiveExtend;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -234,5 +235,102 @@ class SearchResourceTest {
         // This test verifies the filter is constructed correctly
         List<SearchResult> results = searchResource.searchFor("Hibernate", List.of("jvm"), "gotcha", "hibernate", null);
         assertThat(results).hasSizeGreaterThanOrEqualTo(0);
+    }
+
+    // --- adaptiveExtend tests ---
+
+    static SearchResult result(String id, double relevance) {
+        return new SearchResult(id, "title-" + id, "jvm", "gotcha", 8, "body", relevance, "garden", "GE");
+    }
+
+    @Test
+    void adaptiveExtend_fewerThanLimit_returnsAll() {
+        var candidates = List.of(result("a", 0.9), result("b", 0.8));
+        var adaptive = adaptiveExtend(candidates, 5, 0.3);
+
+        assertThat(adaptive.results()).hasSize(2);
+        assertThat(adaptive.requestedLimit()).isEqualTo(5);
+        assertThat(adaptive.extended()).isFalse();
+        assertThat(adaptive.availableAboveFloor()).isEqualTo(2);
+    }
+
+    @Test
+    void adaptiveExtend_exactlyAtLimit_noExtension() {
+        var candidates = List.of(
+                result("a", 0.9), result("b", 0.85), result("c", 0.80),
+                result("d", 0.3)); // big gap after position 3
+        var adaptive = adaptiveExtend(candidates, 3, 0.3);
+
+        assertThat(adaptive.results()).hasSize(3);
+        assertThat(adaptive.extended()).isFalse();
+    }
+
+    @Test
+    void adaptiveExtend_denseCluster_extends() {
+        var candidates = List.of(
+                result("a", 0.90), result("b", 0.88), result("c", 0.86),
+                result("d", 0.84), result("e", 0.82), result("f", 0.80));
+        var adaptive = adaptiveExtend(candidates, 3, 0.3);
+
+        assertThat(adaptive.results()).hasSize(6);
+        assertThat(adaptive.extended()).isTrue();
+        assertThat(adaptive.availableAboveFloor()).isEqualTo(6);
+    }
+
+    @Test
+    void adaptiveExtend_gapAtLimitBoundary_noExtension() {
+        var candidates = List.of(
+                result("a", 0.90), result("b", 0.88), result("c", 0.86),
+                result("d", 0.50), result("e", 0.48));
+        var adaptive = adaptiveExtend(candidates, 3, 0.3);
+
+        assertThat(adaptive.results()).hasSize(3);
+        assertThat(adaptive.extended()).isFalse();
+        assertThat(adaptive.availableAboveFloor()).isEqualTo(5);
+    }
+
+    @Test
+    void adaptiveExtend_belowFloor_stopsEvenIfGapSmall() {
+        var candidates = List.of(
+                result("a", 0.90), result("b", 0.88),
+                result("c", 0.29), result("d", 0.28)); // gap small but below floor 0.3
+        var adaptive = adaptiveExtend(candidates, 2, 0.3);
+
+        assertThat(adaptive.results()).hasSize(2);
+        assertThat(adaptive.extended()).isFalse();
+        assertThat(adaptive.availableAboveFloor()).isEqualTo(2);
+    }
+
+    @Test
+    void adaptiveExtend_availableCountsAboveFloor() {
+        var candidates = List.of(
+                result("a", 0.90), result("b", 0.85), result("c", 0.80),
+                result("d", 0.40), // above floor 0.3
+                result("e", 0.20), // below floor
+                result("f", 0.10)); // below floor
+        var adaptive = adaptiveExtend(candidates, 2, 0.3);
+
+        assertThat(adaptive.availableAboveFloor()).isEqualTo(4);
+    }
+
+    @Test
+    void adaptiveExtend_partialClusterExtension() {
+        var candidates = List.of(
+                result("a", 0.90), result("b", 0.88),
+                result("c", 0.86), result("d", 0.84),
+                result("e", 0.50), result("f", 0.48)); // gap at position 4→5
+        var adaptive = adaptiveExtend(candidates, 2, 0.3);
+
+        assertThat(adaptive.results()).hasSize(4);
+        assertThat(adaptive.extended()).isTrue();
+    }
+
+    @Test
+    void adaptiveExtend_emptyList() {
+        var adaptive = adaptiveExtend(List.of(), 5, 0.3);
+
+        assertThat(adaptive.results()).isEmpty();
+        assertThat(adaptive.extended()).isFalse();
+        assertThat(adaptive.availableAboveFloor()).isEqualTo(0);
     }
 }

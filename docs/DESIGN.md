@@ -88,6 +88,6 @@ BM25 keyword matching as a third RRF retrieval leg alongside dense and sparse, u
 - **`HybridCaseRetriever`** (neural-text) uses three server-side RRF prefetch legs: dense (nomic-embed-text), sparse (SPLADE), and BM25 (Qdrant Document vectors with `qdrant/bm25` model). All three legs fuse inside Qdrant in a single gRPC call.
 - **`CamelCaseExpander`** (neural-text) preprocesses text for BM25 at ingestion time: `DefaultBean` → `Default Bean DefaultBean`. Applied to both title+body content and metadata fields.
 - **`GardenMetadataExtractor`** emits tags as list metadata (not comma-separated string) for Qdrant payload filtering.
-- **`gardenSearch` MCP tool** gains `type` and `tags` filter parameters. Filters are applied as Qdrant payload conditions on all three retrieval legs simultaneously.
+- **`gardenSearch` MCP tool** gains `type` and `tags` filter parameters. Filters are applied as Qdrant payload conditions on all three retrieval legs simultaneously. Adaptive result extension over-fetches 2x the requested limit, then extends through dense score clusters (gap < 0.05, above relevance floor) so deep result clusters are not cut off at the default limit of 8. A metadata comment in the response reports total available count.
 - **`CollectionMigration`** extended to detect collections missing the `bm25` sparse vector and trigger re-indexing.
-- Benchmark validation: three-leg achieves 94% precision (vs 45% dense-only) across 14 real-world scenarios. See `docs/comparison/hybrid-benchmark.md` and `docs/comparison/retrieval-research.md`.
+- Benchmark validation: three-leg achieves 89.3% precision across all 224 scored entries (14 scenarios × 2 query types × 8 results). See `docs/comparison/hybrid-benchmark.md` and `docs/comparison/retrieval-research.md`.
