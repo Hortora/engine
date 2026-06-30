@@ -19,7 +19,8 @@
           "relevance": 4.988836765289307,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "casehub-engine/GE-20260428-a67806.md",
@@ -31,7 +32,8 @@
           "relevance": 4.929764270782471,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260428-fd7a65.md",
@@ -43,7 +45,8 @@
           "relevance": 4.657370567321777,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260603-fdc6d5.md",
@@ -55,7 +58,8 @@
           "relevance": 4.3206787109375,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260529-ff186e.md",
@@ -67,7 +71,8 @@
           "relevance": 3.1280179023742676,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260526-399a43.md",
@@ -79,7 +84,8 @@
           "relevance": 1.7032713890075684,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260604-ed1b02.md",
@@ -91,7 +97,8 @@
           "relevance": 1.5276386737823486,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260518-bee1b3.md",
@@ -103,7 +110,8 @@
           "relevance": 1.3473620414733887,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -128,7 +136,8 @@
           "relevance": 5.9302473068237305,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260428-fd7a65.md",
@@ -140,7 +149,8 @@
           "relevance": 5.439073085784912,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260518-e4fa52.md",
@@ -152,7 +162,8 @@
           "relevance": 5.386128902435303,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260603-fdc6d5.md",
@@ -164,7 +175,8 @@
           "relevance": 3.7125675678253174,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260529-ff186e.md",
@@ -176,7 +188,8 @@
           "relevance": 3.415526866912842,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260604-96d82a.md",
@@ -188,7 +201,8 @@
           "relevance": 3.3206889629364014,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260604-ed1b02.md",
@@ -200,7 +214,8 @@
           "relevance": 2.7009267807006836,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260518-a61d1b.md",
@@ -212,7 +227,8 @@
           "relevance": 2.383176326751709,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -237,7 +253,8 @@
           "relevance": 5.464867115020752,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-fcf0d9.md",
@@ -249,7 +266,8 @@
           "relevance": 3.5999276638031006,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260614-337397.md",
@@ -261,7 +279,8 @@
           "relevance": 3.116863250732422,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-81be07.md",
@@ -273,7 +292,8 @@
           "relevance": 3.081727981567383,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260623-c651a1.md",
@@ -285,7 +305,8 @@
           "relevance": 2.498816728591919,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260422-ebb91d.md",
@@ -297,7 +318,8 @@
           "relevance": 2.403507947921753,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260517-9e571a.md",
@@ -309,7 +331,8 @@
           "relevance": 2.25484299659729,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260629-83784a.md",
@@ -321,7 +344,8 @@
           "relevance": 1.0540132522583008,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
@@ -346,7 +370,8 @@
           "relevance": 6.68184232711792,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-fcf0d9.md",
@@ -358,7 +383,8 @@
           "relevance": 6.225600719451904,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260623-c651a1.md",
@@ -370,7 +396,8 @@
           "relevance": 6.0289435386657715,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260517-9e571a.md",
@@ -382,7 +409,8 @@
           "relevance": 5.820721626281738,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260422-ebb91d.md",
@@ -394,7 +422,8 @@
           "relevance": 5.6686625480651855,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260531-9118e7.md",
@@ -406,7 +435,8 @@
           "relevance": 5.398308277130127,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260515-fd3156.md",
@@ -418,7 +448,8 @@
           "relevance": 5.295114040374756,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260415-884e48.md",
@@ -430,7 +461,8 @@
           "relevance": 4.6900529861450195,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -455,7 +487,8 @@
           "relevance": 5.140931606292725,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260609-58e5d9.md",
@@ -467,7 +500,8 @@
           "relevance": 4.209693908691406,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260616-240c04.md",
@@ -479,7 +513,8 @@
           "relevance": 0.05935065075755119,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-ledger/GE-20260612-17c161.md",
@@ -491,7 +526,8 @@
           "relevance": -0.004943475127220154,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260619-479b69.md",
@@ -503,7 +539,8 @@
           "relevance": -1.051224708557129,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260619-fe34fc.md",
@@ -515,7 +552,8 @@
           "relevance": -1.1372703313827515,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-work/docs/protocols/casehub/clinical-ledger-assert-type-filter.md",
@@ -527,7 +565,8 @@
           "relevance": -1.689232587814331,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-ledger/GE-20260628-6599e6.md",
@@ -539,7 +578,8 @@
           "relevance": -1.9877856969833374,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
@@ -564,7 +604,8 @@
           "relevance": 6.707741737365723,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260605-5d0034.md",
@@ -576,7 +617,8 @@
           "relevance": 3.688998222351074,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260609-58e5d9.md",
@@ -588,7 +630,8 @@
           "relevance": 3.123762607574463,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260423-4aa1e0.md",
@@ -600,7 +643,8 @@
           "relevance": 2.215179204940796,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260619-479b69.md",
@@ -612,7 +656,8 @@
           "relevance": 1.6331719160079956,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260429-d20380.md",
@@ -624,7 +669,8 @@
           "relevance": -0.5479810833930969,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260420-86180e.md",
@@ -636,7 +682,8 @@
           "relevance": -1.0530619621276855,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260607-1c0a05.md",
@@ -648,7 +695,8 @@
           "relevance": -1.3326597213745117,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -673,7 +721,8 @@
           "relevance": 0.9528942704200745,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260621-629712.md",
@@ -685,7 +734,8 @@
           "relevance": -0.18784981966018677,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260531-e1ce47.md",
@@ -697,7 +747,8 @@
           "relevance": -0.501919150352478,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260529-e43076.md",
@@ -709,7 +760,8 @@
           "relevance": -1.1940199136734009,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260517-f31786.md",
@@ -721,7 +773,8 @@
           "relevance": -1.3070378303527832,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260428-92e34e.md",
@@ -733,7 +786,8 @@
           "relevance": -1.686930775642395,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260527-cad5ba.md",
@@ -745,7 +799,8 @@
           "relevance": -1.712051510810852,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-0070.md",
@@ -757,7 +812,8 @@
           "relevance": -2.972830057144165,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -782,7 +838,8 @@
           "relevance": 4.274840831756592,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260531-e1ce47.md",
@@ -794,7 +851,8 @@
           "relevance": 0.5802164673805237,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260621-629712.md",
@@ -806,7 +864,8 @@
           "relevance": -0.031864605844020844,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260615-388a35.md",
@@ -818,7 +877,8 @@
           "relevance": -0.24867601692676544,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260423-daef97.md",
@@ -830,7 +890,8 @@
           "relevance": -0.31326839327812195,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260527-cad5ba.md",
@@ -842,7 +903,8 @@
           "relevance": -0.3275805711746216,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260517-f31786.md",
@@ -854,7 +916,8 @@
           "relevance": -0.7333968877792358,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "java/GE-20260505-8c57c2.md",
@@ -866,7 +929,8 @@
           "relevance": -0.8067420125007629,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -891,7 +955,8 @@
           "relevance": 2.617227554321289,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260614-337397.md",
@@ -903,7 +968,8 @@
           "relevance": 2.4924917221069336,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260525-fd4868.md",
@@ -915,7 +981,8 @@
           "relevance": 2.363542079925537,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260627-51e402.md",
@@ -927,7 +994,8 @@
           "relevance": 1.790855050086975,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260617-d18081.md",
@@ -939,7 +1007,8 @@
           "relevance": 0.8490177989006042,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260618-a7a383.md",
@@ -951,7 +1020,8 @@
           "relevance": 0.7324628829956055,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260629-63d619.md",
@@ -963,7 +1033,8 @@
           "relevance": 0.07814794033765793,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260614-94c366.md",
@@ -975,7 +1046,8 @@
           "relevance": -0.48442813754081726,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -1000,7 +1072,8 @@
           "relevance": 2.354717493057251,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260617-d18081.md",
@@ -1012,7 +1085,8 @@
           "relevance": 0.14643694460391998,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260627-51e402.md",
@@ -1024,7 +1098,8 @@
           "relevance": -0.1759483963251114,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260603-301b80.md",
@@ -1036,7 +1111,8 @@
           "relevance": -0.4851331114768982,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260528-e9564b.md",
@@ -1048,7 +1124,8 @@
           "relevance": -1.2070906162261963,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260525-fd4868.md",
@@ -1060,7 +1137,8 @@
           "relevance": -1.3764020204544067,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260422-f922f3.md",
@@ -1072,7 +1150,8 @@
           "relevance": -2.0117034912109375,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260613-1e5ba4.md",
@@ -1084,7 +1163,8 @@
           "relevance": -2.025386095046997,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -1109,7 +1189,8 @@
           "relevance": 3.694624662399292,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260521-3ce7ca.md",
@@ -1121,7 +1202,8 @@
           "relevance": 2.4483044147491455,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-cee623.md",
@@ -1133,7 +1215,8 @@
           "relevance": 1.3420343399047852,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260618-d81cef.md",
@@ -1145,7 +1228,8 @@
           "relevance": 0.6380050182342529,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260519-f33c66.md",
@@ -1157,7 +1241,8 @@
           "relevance": 0.6186891198158264,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260629-e6460e.md",
@@ -1169,7 +1254,8 @@
           "relevance": 0.5350101590156555,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260629-59082a.md",
@@ -1181,7 +1267,8 @@
           "relevance": -1.4712061882019043,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260529-9d2ad0.md",
@@ -1193,7 +1280,8 @@
           "relevance": -1.882383108139038,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -1218,7 +1306,8 @@
           "relevance": 6.701801776885986,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260521-3ce7ca.md",
@@ -1230,7 +1319,8 @@
           "relevance": 5.359086990356445,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260519-f33c66.md",
@@ -1242,7 +1332,8 @@
           "relevance": 5.1585307121276855,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260530-4387cb.md",
@@ -1254,7 +1345,8 @@
           "relevance": 4.713769912719727,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260618-d81cef.md",
@@ -1266,7 +1358,8 @@
           "relevance": 4.274572372436523,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-engine/GE-20260531-1e51d4.md",
@@ -1278,7 +1371,8 @@
           "relevance": 3.8389673233032227,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260427-c2b84f.md",
@@ -1290,7 +1384,8 @@
           "relevance": 3.7811036109924316,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260512-c246b0.md",
@@ -1302,7 +1397,8 @@
           "relevance": 3.673633575439453,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -1327,7 +1423,8 @@
           "relevance": 2.2242026329040527,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260629-63d619.md",
@@ -1339,7 +1436,8 @@
           "relevance": 1.901740312576294,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260429-a79d0e.md",
@@ -1351,7 +1449,8 @@
           "relevance": 1.781511902809143,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260609-02c68a.md",
@@ -1363,7 +1462,8 @@
           "relevance": 1.735856056213379,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260628-cabe4f.md",
@@ -1375,7 +1475,8 @@
           "relevance": 1.6398887634277344,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260623-c651a1.md",
@@ -1387,7 +1488,8 @@
           "relevance": 1.3684378862380981,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260628-ea2ac5.md",
@@ -1399,7 +1501,8 @@
           "relevance": 0.7356042861938477,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260528-f0a75c.md",
@@ -1411,7 +1514,8 @@
           "relevance": -0.5097765326499939,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -1436,7 +1540,8 @@
           "relevance": 1.014070987701416,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "casehub-engine/GE-20260531-1e51d4.md",
@@ -1448,7 +1553,8 @@
           "relevance": 0.30867812037467957,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260628-ea2ac5.md",
@@ -1460,7 +1566,8 @@
           "relevance": 0.22194501757621765,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260521-3ce7ca.md",
@@ -1472,7 +1579,8 @@
           "relevance": -0.06237615644931793,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260417-c59817.md",
@@ -1484,7 +1592,8 @@
           "relevance": -0.6766133308410645,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260519-290cfb.md",
@@ -1496,7 +1605,8 @@
           "relevance": -1.1957637071609497,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260427-c2b84f.md",
@@ -1508,7 +1618,8 @@
           "relevance": -1.2071993350982666,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260628-cabe4f.md",
@@ -1520,7 +1631,8 @@
           "relevance": -1.2422144412994385,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -1545,7 +1657,8 @@
           "relevance": 3.879335880279541,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260610-98066a.md",
@@ -1557,7 +1670,8 @@
           "relevance": 3.6482136249542236,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260522-98b286.md",
@@ -1569,7 +1683,8 @@
           "relevance": 3.541959285736084,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260529-d8156d.md",
@@ -1581,7 +1696,8 @@
           "relevance": 2.941805839538574,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260607-3ded98.md",
@@ -1593,7 +1709,8 @@
           "relevance": 2.047618865966797,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260602-047ac4.md",
@@ -1605,7 +1722,8 @@
           "relevance": 1.655911922454834,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260423-c8d8cb.md",
@@ -1617,7 +1735,8 @@
           "relevance": 1.5185121297836304,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "java/GE-0139.md",
@@ -1629,7 +1748,8 @@
           "relevance": 1.0993517637252808,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -1654,7 +1774,8 @@
           "relevance": 4.305436611175537,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260514-421a6e.md",
@@ -1666,7 +1787,8 @@
           "relevance": 1.7953040599822998,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260607-067ace.md",
@@ -1678,7 +1800,8 @@
           "relevance": 0.37531575560569763,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260617-6b01c4.md",
@@ -1690,7 +1813,8 @@
           "relevance": 0.20388835668563843,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260529-d8156d.md",
@@ -1702,7 +1826,8 @@
           "relevance": -0.2738479971885681,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260618-0ed34c.md",
@@ -1714,7 +1839,8 @@
           "relevance": -0.40945306420326233,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 0
         },
         {
           "id": "java/GE-0139.md",
@@ -1726,7 +1852,8 @@
           "relevance": -0.4993758797645569,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260423-c8d8cb.md",
@@ -1738,7 +1865,8 @@
           "relevance": -1.183975100517273,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -1763,7 +1891,8 @@
           "relevance": 4.957833766937256,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260420-45d53b.md",
@@ -1775,7 +1904,8 @@
           "relevance": 2.4590651988983154,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260420-dcec35.md",
@@ -1787,7 +1917,8 @@
           "relevance": 1.1581748723983765,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260429-21e6cf.md",
@@ -1799,7 +1930,8 @@
           "relevance": 0.6931984424591064,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260422-f86f42.md",
@@ -1811,7 +1943,8 @@
           "relevance": 0.6803529858589172,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260529-18fc5f.md",
@@ -1823,7 +1956,8 @@
           "relevance": 0.6780341863632202,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260423-fce720.md",
@@ -1835,7 +1969,8 @@
           "relevance": -0.7625125646591187,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "casehub-qhorus/GE-20260508-492336.md",
@@ -1847,7 +1982,8 @@
           "relevance": -0.7889020442962646,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -1872,7 +2008,8 @@
           "relevance": 4.394880771636963,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260429-21e6cf.md",
@@ -1884,7 +2021,8 @@
           "relevance": 3.936923027038574,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260417-a405a4.md",
@@ -1896,7 +2034,8 @@
           "relevance": 3.5351152420043945,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260420-dcec35.md",
@@ -1908,7 +2047,8 @@
           "relevance": 3.509629964828491,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260420-45d53b.md",
@@ -1920,7 +2060,8 @@
           "relevance": 3.026620864868164,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260423-fce720.md",
@@ -1932,7 +2073,8 @@
           "relevance": 2.743579626083374,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260618-08cb96.md",
@@ -1944,7 +2086,8 @@
           "relevance": 2.3753774166107178,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260422-334eb8.md",
@@ -1956,7 +2099,8 @@
           "relevance": 1.5911451578140259,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -1981,7 +2125,8 @@
           "relevance": -5.923791408538818,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260625-5287ac.md",
@@ -1993,7 +2138,8 @@
           "relevance": -8.036382675170898,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260525-55d8f6.md",
@@ -2005,7 +2151,8 @@
           "relevance": -8.581727981567383,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 0
         },
         {
           "id": "casehub-ledger/GE-20260429-2e1c4f.md",
@@ -2017,7 +2164,8 @@
           "relevance": -8.601381301879883,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 0
         },
         {
           "id": "java/GE-20260416-39d854.md",
@@ -2029,7 +2177,8 @@
           "relevance": -8.662909507751465,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 0
         },
         {
           "id": "tools/GE-20260616-90a867.md",
@@ -2041,7 +2190,8 @@
           "relevance": -9.65722942352295,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260523-06e8b6.md",
@@ -2053,7 +2203,8 @@
           "relevance": -10.050743103027344,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-work/GE-20260421-9498ff.md",
@@ -2065,7 +2216,8 @@
           "relevance": -10.15621566772461,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
@@ -2090,7 +2242,8 @@
           "relevance": -0.03622938320040703,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "tools/GE-20260421-ef0a4e.md",
@@ -2102,7 +2255,8 @@
           "relevance": -0.6419443488121033,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260521-49e7fd.md",
@@ -2114,7 +2268,8 @@
           "relevance": -0.6544932126998901,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260501-311bd8.md",
@@ -2126,7 +2281,8 @@
           "relevance": -3.667044162750244,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260420-c1d394.md",
@@ -2138,7 +2294,8 @@
           "relevance": -4.236329078674316,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260519-f33c66.md",
@@ -2150,7 +2307,8 @@
           "relevance": -4.281302452087402,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-work/GE-20260421-4a9364.md",
@@ -2162,7 +2320,8 @@
           "relevance": -4.321005821228027,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260530-4387cb.md",
@@ -2174,7 +2333,8 @@
           "relevance": -4.51954984664917,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -2199,7 +2359,8 @@
           "relevance": 5.046417236328125,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260623-c651a1.md",
@@ -2211,7 +2372,8 @@
           "relevance": 4.239596843719482,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260513-4f26a7.md",
@@ -2223,7 +2385,8 @@
           "relevance": 4.162146091461182,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260427-543663.md",
@@ -2235,7 +2398,8 @@
           "relevance": 3.7190723419189453,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-fcf0d9.md",
@@ -2247,7 +2411,8 @@
           "relevance": 3.133547306060791,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260614-337397.md",
@@ -2259,7 +2424,8 @@
           "relevance": 2.8736608028411865,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260415-884e48.md",
@@ -2271,7 +2437,8 @@
           "relevance": 2.8322701454162598,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-81be07.md",
@@ -2283,7 +2450,8 @@
           "relevance": 2.348560333251953,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -2308,7 +2476,8 @@
           "relevance": 5.476387023925781,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260623-c651a1.md",
@@ -2320,7 +2489,8 @@
           "relevance": 5.132539749145508,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260513-4f26a7.md",
@@ -2332,7 +2502,8 @@
           "relevance": 4.927656650543213,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260427-543663.md",
@@ -2344,7 +2515,8 @@
           "relevance": 4.4097747802734375,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260415-884e48.md",
@@ -2356,7 +2528,8 @@
           "relevance": 4.059665679931641,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-fcf0d9.md",
@@ -2368,7 +2541,8 @@
           "relevance": 3.7803752422332764,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260422-ebb91d.md",
@@ -2380,7 +2554,8 @@
           "relevance": 3.423419952392578,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260628-cabe4f.md",
@@ -2392,7 +2567,8 @@
           "relevance": 2.311767101287842,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 2
         }
       ],
       "latency_ms": [
@@ -2417,7 +2593,8 @@
           "relevance": 4.548087120056152,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260529-0c80ca.md",
@@ -2429,7 +2606,8 @@
           "relevance": 4.030332088470459,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260525-fd4868.md",
@@ -2441,7 +2619,8 @@
           "relevance": 3.482726812362671,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260618-8526c8.md",
@@ -2453,7 +2632,8 @@
           "relevance": 3.4190165996551514,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260627-51e402.md",
@@ -2465,7 +2645,8 @@
           "relevance": -0.7362422347068787,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 1
         },
         {
           "id": "casehub-engine/GE-20260618-248ce7.md",
@@ -2477,7 +2658,8 @@
           "relevance": -1.6836588382720947,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260528-e9564b.md",
@@ -2489,7 +2671,8 @@
           "relevance": -2.533963203430176,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260529-0b8284.md",
@@ -2501,7 +2684,8 @@
           "relevance": -3.4477643966674805,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
@@ -2526,7 +2710,8 @@
           "relevance": 4.994159698486328,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260529-0c80ca.md",
@@ -2538,7 +2723,8 @@
           "relevance": 4.352527141571045,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260525-fd4868.md",
@@ -2550,7 +2736,8 @@
           "relevance": 2.985361099243164,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260627-51e402.md",
@@ -2562,7 +2749,8 @@
           "relevance": 2.9667277336120605,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260614-337397.md",
@@ -2574,7 +2762,8 @@
           "relevance": 2.7515175342559814,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260603-301b80.md",
@@ -2586,7 +2775,8 @@
           "relevance": 2.4831225872039795,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260618-8526c8.md",
@@ -2598,7 +2788,8 @@
           "relevance": 1.3006772994995117,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260604-5bb2e7.md",
@@ -2610,7 +2801,8 @@
           "relevance": 1.2020111083984375,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -2635,7 +2827,8 @@
           "relevance": -1.0458024740219116,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260609-75e00d.md",
@@ -2647,7 +2840,8 @@
           "relevance": -1.5400744676589966,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260607-1ebb9c.md",
@@ -2659,7 +2853,8 @@
           "relevance": -3.252138614654541,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260626-c94109.md",
@@ -2671,7 +2866,8 @@
           "relevance": -3.344519853591919,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260422-3242bf.md",
@@ -2683,7 +2879,8 @@
           "relevance": -3.670783758163452,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260525-fd4868.md",
@@ -2695,7 +2892,8 @@
           "relevance": -5.244968891143799,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260615-d065bf.md",
@@ -2707,7 +2905,8 @@
           "relevance": -5.673497676849365,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260614-337397.md",
@@ -2719,7 +2918,8 @@
           "relevance": -6.077944278717041,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
@@ -2744,7 +2944,8 @@
           "relevance": 2.716346502304077,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260626-c94109.md",
@@ -2756,7 +2957,8 @@
           "relevance": 2.0372581481933594,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260526-1653dc.md",
@@ -2768,7 +2970,8 @@
           "relevance": 0.8006042838096619,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260615-d065bf.md",
@@ -2780,7 +2983,8 @@
           "relevance": 0.634870707988739,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 1
         },
         {
           "id": "quarkus/GE-20260418-03a6f4.md",
@@ -2792,7 +2996,8 @@
           "relevance": 0.10510614514350891,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260627-51e402.md",
@@ -2804,7 +3009,8 @@
           "relevance": -0.44045186042785645,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260607-1ebb9c.md",
@@ -2816,7 +3022,8 @@
           "relevance": -0.8794069290161133,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260614-eaa3e7.md",
@@ -2828,7 +3035,8 @@
           "relevance": -1.9723925590515137,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 1
         }
       ],
       "latency_ms": [
@@ -2853,7 +3061,8 @@
           "relevance": 2.379758596420288,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260601-13fc26.md",
@@ -2865,7 +3074,8 @@
           "relevance": 2.2704200744628906,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260530-3562b0.md",
@@ -2877,7 +3087,8 @@
           "relevance": 1.7414318323135376,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260517-da2a42.md",
@@ -2889,7 +3100,8 @@
           "relevance": 0.8709187507629395,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "quarkus/GE-20260505-48085a.md",
@@ -2901,7 +3113,8 @@
           "relevance": 0.7871461510658264,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 0
         },
         {
           "id": "tools/GE-20260428-13d4ff.md",
@@ -2913,7 +3126,8 @@
           "relevance": 0.604785680770874,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260602-a4d290.md",
@@ -2925,7 +3139,8 @@
           "relevance": -1.1494346857070923,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260605-8b9118.md",
@@ -2937,7 +3152,8 @@
           "relevance": -1.3435635566711426,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
@@ -2962,7 +3178,8 @@
           "relevance": 5.067137241363525,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 0
+          "rank": 0,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260529-636a36.md",
@@ -2974,7 +3191,8 @@
           "relevance": 4.532840728759766,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 1
+          "rank": 1,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260530-3562b0.md",
@@ -2986,7 +3204,8 @@
           "relevance": 3.277618646621704,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 2
+          "rank": 2,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260525-00cbde.md",
@@ -2998,7 +3217,8 @@
           "relevance": 3.1833105087280273,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 3
+          "rank": 3,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260618-a677f1.md",
@@ -3010,7 +3230,8 @@
           "relevance": 1.595400094985962,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 4
+          "rank": 4,
+          "benchmark_score": 1
         },
         {
           "id": "jvm/GE-20260612-4f9a47.md",
@@ -3022,7 +3243,8 @@
           "relevance": 1.1684913635253906,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 5
+          "rank": 5,
+          "benchmark_score": 0
         },
         {
           "id": "jvm/GE-20260517-da2a42.md",
@@ -3034,7 +3256,8 @@
           "relevance": 0.9930639266967773,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 6
+          "rank": 6,
+          "benchmark_score": 2
         },
         {
           "id": "jvm/GE-20260608-bde9a4.md",
@@ -3046,7 +3269,8 @@
           "relevance": 0.9720974564552307,
           "source": "garden",
           "sourcePrefix": "GE",
-          "rank": 7
+          "rank": 7,
+          "benchmark_score": 0
         }
       ],
       "latency_ms": [
