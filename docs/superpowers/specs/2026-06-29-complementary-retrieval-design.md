@@ -345,3 +345,33 @@ Re-run the #27 benchmark methodology with the new three-leg retrieval. Compare a
 ## Dependencies
 
 No new external dependencies. BM25 scoring, tokenization, and inverted index are implemented in ~200 lines of Java. The `rag` module's existing dependencies (Qdrant client, LangChain4j, quarkus-scheduler) are unchanged.
+
+## Outcome (2026-06-30)
+
+Implementation diverged from the planned architecture in one significant way: BM25 runs as **Qdrant-native Document vectors**, not Java-side RRF with an in-process index.
+
+### What changed
+
+| Planned | Actual | Why |
+|---------|--------|-----|
+| Java-side RRF via `RrfFusion.fuse()` | Qdrant-native server-side RRF | Qdrant v1.18 added Document vector inference — BM25 tokenization happens server-side, eliminating the need for a Java BM25 index on the retrieval path |
+| In-process `BM25Index` as retrieval leg | `BM25Index` exists but is unused on retrieval path | Qdrant-native BM25 via `qdrant/bm25` model handles scoring server-side |
+| `BM25PayloadFilterEvaluator` for in-memory filtering | Qdrant payload conditions on all three legs | All filtering happens server-side via gRPC filter conditions |
+| Three separate retrieval calls + Java-side fusion | Single Qdrant gRPC call with three prefetch legs | Server-side RRF — simpler, lower latency |
+
+### What shipped as designed
+
+- `CamelCaseExpander` — camelCase splitting for BM25 tokenization (applied at ingestion time)
+- `ExtractionResult` / `ChunkInput` `listMetadata()` — tags as list values
+- `QdrantPointBuilder` — list metadata storage, metadata payload indexes
+- `gardenSearch` MCP tool — type/tags filter parameters
+- `CollectionMigration` — detects missing BM25 sparse vector, triggers re-index
+- Cross-repo ownership split — neural-text carries retrieval, engine carries MCP enrichment
+
+### Architecture delta
+
+The Qdrant-native approach is a net simplification: fewer moving parts, no Java-side fusion code on the retrieval path, all three legs + filtering in one gRPC round-trip. The in-process `BM25Index` and `BM25IndexRegistry` remain in neural-text as they were built during implementation, but are not exercised on the retrieval path — Qdrant handles BM25 scoring server-side via Document vectors.
+
+### Benchmark results
+
+Three-leg benchmark (2026-06-30) validated the architecture: **45% → 94% precision** across 14 real-world scenarios. BM25 was the dominant contributor to closing the keyword gap. Full results in `docs/comparison/hybrid-benchmark.md` and `docs/comparison/retrieval-research.md`.

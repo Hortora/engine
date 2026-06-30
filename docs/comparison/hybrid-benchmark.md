@@ -139,29 +139,99 @@ dev mode.
 retrieval uses brute-force scan. These latency numbers are not extrapolatable to
 larger corpora.
 
+## Phase 3 — Three-Leg Retrieval (dense + SPLADE + BM25)
+
+*2026-06-30 · Refs #29*
+
+BM25 was implemented as a third RRF retrieval leg via Qdrant-native Document vectors
+(v1.18+), not the originally planned Java-side RRF with in-process index. All three
+legs fuse inside Qdrant in a single gRPC call. `CamelCaseExpander` preprocesses text
+at ingestion so BM25 tokenizes `DefaultBean` → `Default Bean DefaultBean`.
+
+### Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| Dense embedding model | nomic-embed-text (Ollama, 768-dim, cosine) |
+| SPLADE model | prithivida/Splade_PP_en_v1 (DistilBERT, MS MARCO) |
+| Cross-encoder | cross-encoder/ms-marco-MiniLM-L-6-v2 (MS MARCO) |
+| BM25 | Qdrant Document vectors (`qdrant/bm25` model) |
+| Named vectors | `dense`, `sparse` (SPLADE), `bm25` |
+| RRF | Qdrant-native, three prefetch legs |
+| Indexed points | 2,026 |
+
+### Headline Results
+
+**Overall precision: 45% → 94%.** BM25 closes the keyword gap.
+
+| Scenario | Dense | Three-leg | Delta | Failure mode |
+|----------|-------|-----------|-------|-------------|
+| issue-2-cdi-wiring/KW | 0% | 100% | +100pp | VOCABULARY_GAP |
+| issue-5-ai-llm-inference/KW | 0% | 100% | +100pp | VOCABULARY_GAP |
+| issue-5-ai-llm-inference/NL | 17% | 100% | +83pp | VOCABULARY_GAP |
+| spec1-d1-cdi-priority-tiers/KW | 0% | 100% | +100pp | VOCABULARY_GAP |
+| spec1-d2-thread-safety/KW | 50% | 100% | +50pp | UNAMBIGUOUS_TERM |
+| spec2-d1-cdi-tier-coexistence/KW | 40% | 100% | +60pp | VOCABULARY_GAP |
+| spec2-d2-chatmodel-adaptation/KW | 50% | 100% | +50pp | VOCABULARY_GAP |
+| spec2-d2-chatmodel-adaptation/NL | 50% | 100% | +50pp | VOCABULARY_GAP |
+
+Keyword-gap average: 43% → 89%. Non-keyword-gap: 47% → 98% (zero regressions).
+
+### BM25's Marginal Contribution Beyond SPLADE
+
+Comparing three-leg vs dense+splade isolates what BM25 adds:
+
+| Scenario | Dense+SPLADE | Three-leg | BM25 added |
+|----------|-------------|-----------|------------|
+| issue-2-cdi-wiring/KW | 57% | 100% | +43pp |
+| spec1-d1-cdi-priority-tiers/KW | 50% | 100% | +50pp |
+| spec1-d4-protocol-compliance/NL | 50% | 100% | +50pp |
+| spec2-d3-circular-deps/KW | 60% | 100% | +40pp |
+
+BM25 is the dominant contributor. SPLADE alone did not close the keyword gap.
+
+### Latency
+
+| Config | Median | Overhead |
+|--------|--------|----------|
+| dense-only | 28ms | baseline |
+| dense+splade | 43ms | +15ms |
+| three-leg | 256ms | +228ms (BM25 + three-way RRF) |
+
+256ms is 9.1x dense-only but still sub-second — acceptable for AI assistant retrieval.
+
+### Caveats
+
+- 87 new entries are unscored. True precision may be higher once scored.
+- Corpus grew 1,984 → 2,026 between runs.
+
+Raw results: `scripts/benchmark/results/three-leg.json`
+
 ## What Comes Next
 
-### Already filed (neural-text, can start now):
+### Completed (neural-text):
 
-| # | Issue | Priority | What it fixes |
-|---|-------|----------|---------------|
-| #47 | Qdrant full-text index on content | **Highest** | Foundation for BM25 — enables exact keyword matching |
-| #48 | BM25 as third RRF retrieval leg | Second | Composes keyword matching with semantic search |
-| #49 | Code-domain embedding model evaluation | Third | Better dense embeddings for Java vocabulary |
-| #50 | Keyword payload indexes (sourceDocumentId, tenantId) | Housekeeping | Performance for filtered operations |
-| #51 | OnnxInferenceModel input name validation | Bug fix | Accept both BERT/HuggingFace naming conventions |
-| #52 | OnnxInferenceModel rank-3 output support | Bug fix | Handle SPLADE models that need max-pooling |
+| # | Issue | Status |
+|---|-------|--------|
+| #47 | Qdrant full-text index on content | ✅ Closed |
+| #48 | BM25 as third RRF retrieval leg | ✅ Closed |
+| #50 | Keyword payload indexes | ✅ Closed |
+| #53 | CamelCase tokenizer | ✅ Closed |
+| #54 | Metadata validation | ✅ Closed |
 
-### Architecture recommendation:
+### Outstanding (neural-text):
 
-**Three-way RRF is the target architecture:**
-1. **Dense** (nomic-embed-text) — semantic concept matching. Already works well for NL queries.
-2. **BM25** (Qdrant full-text index) — exact keyword matching. Replaces grep's strength within the vector DB.
-3. **Sparse** (SPLADE) — learned term expansion. Only useful with a code-domain model; current web-trained model adds noise.
+| # | Issue | Priority | Notes |
+|---|-------|----------|-------|
+| #51 | OnnxInferenceModel input name validation | Low | Workaround in download-models.sh |
+| #52 | OnnxInferenceModel rank-3 output support | Low | Workaround in download-models.sh |
+| #46 | SPLADE/reranker tuning | Low | BM25 solved the problem SPLADE couldn't |
+| #49 | Code-domain embedding model evaluation | Deferred | Evaluate only if BGE-M3 doesn't handle Java identifiers |
 
-BM25 (#47/#48) is the highest-leverage fix because it directly addresses the failure
-mode that accounts for the most lost scenarios. Code-domain models (#49) are the
-long-term architectural fix for the dense embedding quality.
+### Architecture roadmap:
+
+See `docs/comparison/retrieval-research.md` for the full literature survey and track 3
+recommendations (BGE-M3 adoption, ColBERT reranking, convex combination fusion).
 
 ## Methodology
 

@@ -80,3 +80,14 @@ SPLADE sparse embeddings + cross-encoder reranking via `casehub-inference-quarku
 - `HybridSearchProducer` bridges `@Inference`-qualified ONNX models to `SparseEmbedder` and `CrossEncoderReranker` via `@LookupIfProperty` — beans are genuinely non-resolvable when ONNX models aren't configured, so the engine falls back to dense-only transparently.
 - `CollectionMigration` detects dense-only Qdrant collections at startup and triggers re-indexing when SPLADE is newly enabled.
 - Dense + sparse RRF fusion and cross-encoder reranking activate when ONNX models are configured via `casehub.inference.models.splade.model-path` and `casehub.inference.models.reranker.model-path`.
+
+## Phase 3 — Three-Leg Retrieval (current)
+
+BM25 keyword matching as a third RRF retrieval leg alongside dense and sparse, using Qdrant-native Document vectors (v1.18+). Addresses the keyword catastrophe where dense embeddings fail on Java identifiers (`ChatModel`, `@DefaultBean`, `ConcurrentHashMap`).
+
+- **`HybridCaseRetriever`** (neural-text) uses three server-side RRF prefetch legs: dense (nomic-embed-text), sparse (SPLADE), and BM25 (Qdrant Document vectors with `qdrant/bm25` model). All three legs fuse inside Qdrant in a single gRPC call.
+- **`CamelCaseExpander`** (neural-text) preprocesses text for BM25 at ingestion time: `DefaultBean` → `Default Bean DefaultBean`. Applied to both title+body content and metadata fields.
+- **`GardenMetadataExtractor`** emits tags as list metadata (not comma-separated string) for Qdrant payload filtering.
+- **`gardenSearch` MCP tool** gains `type` and `tags` filter parameters. Filters are applied as Qdrant payload conditions on all three retrieval legs simultaneously.
+- **`CollectionMigration`** extended to detect collections missing the `bm25` sparse vector and trigger re-indexing.
+- Benchmark validation: three-leg achieves 94% precision (vs 45% dense-only) across 14 real-world scenarios. See `docs/comparison/hybrid-benchmark.md` and `docs/comparison/retrieval-research.md`.
