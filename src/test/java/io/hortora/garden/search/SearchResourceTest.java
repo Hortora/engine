@@ -1,9 +1,9 @@
 package io.hortora.garden.search;
 
-import io.casehub.rag.ChunkInput;
-import io.casehub.rag.CorpusRef;
-import io.casehub.rag.PayloadFilter;
-import io.casehub.rag.testing.InMemoryEmbeddingIngestor;
+import io.casehub.neocortex.rag.ChunkInput;
+import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.PayloadFilter;
+import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

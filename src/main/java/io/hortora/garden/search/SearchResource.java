@@ -1,10 +1,10 @@
 package io.hortora.garden.search;
 
-import io.casehub.rag.CaseRetriever;
-import io.casehub.rag.CorpusRef;
-import io.casehub.rag.PayloadFilter;
-import io.casehub.rag.RetrievalQuery;
-import io.casehub.rag.RetrievedChunk;
+import io.casehub.neocortex.rag.CaseRetriever;
+import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.PayloadFilter;
+import io.casehub.neocortex.rag.RetrievalQuery;
+import io.casehub.neocortex.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.ChainWalker;
 import io.hortora.garden.federation.FederationConfig;

@@ -1,13 +1,13 @@
 package io.hortora.garden.inference;
 
 import com.google.common.util.concurrent.Futures;
-import io.casehub.inference.EmbeddingMode;
-import io.casehub.inference.MultiModalEmbedder;
-import io.casehub.rag.CorpusRef;
-import io.casehub.rag.CursorStore;
-import io.casehub.rag.EmbeddingIngestor;
-import io.casehub.rag.runtime.RagConfig;
-import io.casehub.rag.runtime.TenancyStrategy;
+import io.casehub.neocortex.inference.EmbeddingMode;
+import io.casehub.neocortex.inference.MultiModalEmbedder;
+import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.CursorStore;
+import io.casehub.neocortex.rag.EmbeddingIngestor;
+import io.casehub.neocortex.rag.runtime.RagConfig;
+import io.casehub.neocortex.rag.runtime.TenancyStrategy;
 import io.hortora.garden.config.GardenConfig;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.Collections.CollectionConfig;

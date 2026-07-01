@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-inference-bge-m3</artifactId>
+            <artifactId>casehub-neocortex-inference-bge-m3</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -64,27 +64,27 @@
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-corpus-api</artifactId>
+            <artifactId>casehub-neocortex-corpus-api</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-corpus</artifactId>
+            <artifactId>casehub-neocortex-corpus</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-rag-api</artifactId>
+            <artifactId>casehub-neocortex-rag-api</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-rag</artifactId>
+            <artifactId>casehub-neocortex-rag</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-inference-quarkus</artifactId>
+            <artifactId>casehub-neocortex-inference-quarkus</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -121,13 +121,13 @@
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-rag-testing</artifactId>
+            <artifactId>casehub-neocortex-rag-testing</artifactId>
             <version>0.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.casehub</groupId>
-            <artifactId>casehub-inference-inmem</artifactId>
+            <artifactId>casehub-neocortex-inference-inmem</artifactId>
             <version>0.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>

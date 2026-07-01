@@ -1,8 +1,8 @@
 package io.hortora.garden.mcp;
 
-import io.casehub.rag.ChunkInput;
-import io.casehub.rag.CorpusRef;
-import io.casehub.rag.testing.InMemoryEmbeddingIngestor;
+import io.casehub.neocortex.rag.ChunkInput;
+import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;

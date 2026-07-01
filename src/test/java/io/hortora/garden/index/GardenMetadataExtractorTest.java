@@ -1,6 +1,6 @@
 package io.hortora.garden.index;
 
-import io.casehub.rag.ExtractionResult;
+import io.casehub.neocortex.rag.ExtractionResult;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;

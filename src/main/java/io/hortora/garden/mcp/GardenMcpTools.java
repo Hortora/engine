@@ -1,7 +1,7 @@
 package io.hortora.garden.mcp;
 
-import io.casehub.rag.CorpusRef;
-import io.casehub.rag.EmbeddingIngestor;
+import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.EmbeddingIngestor;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
 import io.hortora.garden.inference.CollectionMigration;

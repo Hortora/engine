@@ -1,9 +1,9 @@
 package io.hortora.garden.inference;
 
-import io.casehub.inference.InferenceModel;
-import io.casehub.inference.MultiModalEmbedder;
-import io.casehub.inference.bgem3.BgeM3Embedder;
-import io.casehub.inference.quarkus.Inference;
+import io.casehub.neocortex.inference.InferenceModel;
+import io.casehub.neocortex.inference.MultiModalEmbedder;
+import io.casehub.neocortex.inference.bgem3.BgeM3Embedder;
+import io.casehub.neocortex.inference.quarkus.Inference;
 import io.quarkus.arc.lookup.LookupIfProperty;
 import io.quarkus.arc.properties.StringValueMatch;
 import jakarta.enterprise.context.ApplicationScoped;

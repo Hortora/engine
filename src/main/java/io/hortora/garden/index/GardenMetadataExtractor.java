@@ -1,7 +1,7 @@
 package io.hortora.garden.index;
 
-import io.casehub.rag.ExtractionResult;
-import io.casehub.rag.MetadataExtractor;
+import io.casehub.neocortex.rag.ExtractionResult;
+import io.casehub.neocortex.rag.MetadataExtractor;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.yaml.snakeyaml.Yaml;
 

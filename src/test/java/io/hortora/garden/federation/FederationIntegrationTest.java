@@ -1,9 +1,9 @@
 package io.hortora.garden.federation;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import io.casehub.rag.ChunkInput;
-import io.casehub.rag.CorpusRef;
-import io.casehub.rag.testing.InMemoryEmbeddingIngestor;
+import io.casehub.neocortex.rag.ChunkInput;
+import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;

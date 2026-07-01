@@ -1,8 +1,8 @@
 package io.hortora.garden.inference;
 
-import io.casehub.inference.InferenceModel;
-import io.casehub.inference.inmem.InMemoryInferenceModel;
-import io.casehub.inference.quarkus.Inference;
+import io.casehub.neocortex.inference.InferenceModel;
+import io.casehub.neocortex.inference.inmem.InMemoryInferenceModel;
+import io.casehub.neocortex.inference.quarkus.Inference;
 import io.quarkus.test.Mock;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;

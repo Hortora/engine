@@ -1,6 +1,6 @@
 package io.hortora.garden.inference;
 
-import io.casehub.inference.MultiModalEmbedder;
+import io.casehub.neocortex.inference.MultiModalEmbedder;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
