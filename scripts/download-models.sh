@@ -2,16 +2,21 @@
 set -euo pipefail
 
 MODEL_DIR="${HOME}/.hortora/models"
-
-# BGE-M3 checksums — update after ONNX export is delivered
-CHECKSUM_BGE_M3_MODEL="placeholder"
-CHECKSUM_BGE_M3_TOKENIZER="placeholder"
+SCRIPT_DIR="$(dirname "$0")"
+CHECKSUM_FILE="${SCRIPT_DIR}/bge-m3-checksums.sha256"
 
 verify_checksum() {
-    local file="$1" expected="$2"
-    if [ "$expected" = "placeholder" ]; then
-        echo "  ! checksum verification skipped (placeholder)"
-        return 0
+    local file="$1" name="$2"
+    if [ ! -f "$CHECKSUM_FILE" ]; then
+        echo "  ✗ checksum file not found: $CHECKSUM_FILE"
+        echo "    Run the export script first, then commit the checksums file."
+        return 1
+    fi
+    local expected
+    expected=$(grep "  ${name}$" "$CHECKSUM_FILE" | awk '{print $1}')
+    if [ -z "$expected" ]; then
+        echo "  ✗ no checksum for ${name} in $CHECKSUM_FILE"
+        return 1
     fi
     local actual
     actual=$(shasum -a 256 "$file" | awk '{print $1}')
@@ -24,46 +29,58 @@ verify_checksum() {
     return 0
 }
 
-download_file() {
-    local target="$1" repo="$2" path="$3" expected="$4"
-    local url="https://huggingface.co/${repo}/resolve/main/${path}"
-    local dir
-    dir=$(dirname "$target")
-    mkdir -p "$dir"
-
-    if [ -f "$target" ]; then
-        if verify_checksum "$target" "$expected"; then
-            echo "  ✓ verified: $target"
-            return 0
-        fi
-        echo "  ↓ re-downloading (checksum mismatch): $url"
-        rm -f "$target"
-    else
-        echo "  ↓ downloading: $url"
-    fi
-
-    curl -fSL --retry 3 -o "${target}.tmp" "$url"
-    if ! verify_checksum "${target}.tmp" "$expected"; then
-        rm -f "${target}.tmp"
-        echo "  ✗ downloaded file failed checksum verification"
-        return 1
-    fi
-    mv "${target}.tmp" "$target"
-    echo "  ✓ saved and verified: $target"
-}
-
-echo "Hortora ONNX Model Downloader"
-echo "=============================="
+echo "Hortora ONNX Model Verifier"
+echo "============================"
 echo ""
 echo "Target: ${MODEL_DIR}"
 echo ""
 
+MISSING=0
+
 echo "BGE-M3 (dense + sparse + ColBERT embeddings):"
-download_file "${MODEL_DIR}/bge-m3/model.onnx" "BAAI/bge-m3" "onnx/model.onnx" "$CHECKSUM_BGE_M3_MODEL"
-download_file "${MODEL_DIR}/bge-m3/tokenizer.json" "BAAI/bge-m3" "tokenizer.json" "$CHECKSUM_BGE_M3_TOKENIZER"
+
+# model.onnx — produced by export script, not downloadable
+if [ -f "${MODEL_DIR}/bge-m3/model.onnx" ]; then
+    if verify_checksum "${MODEL_DIR}/bge-m3/model.onnx" "model.onnx"; then
+        echo "  ✓ verified: ${MODEL_DIR}/bge-m3/model.onnx"
+    else
+        MISSING=1
+    fi
+else
+    echo "  ✗ not found: ${MODEL_DIR}/bge-m3/model.onnx"
+    MISSING=1
+fi
+
+# tokenizer.json — produced by export script alongside model.onnx
+if [ -f "${MODEL_DIR}/bge-m3/tokenizer.json" ]; then
+    if verify_checksum "${MODEL_DIR}/bge-m3/tokenizer.json" "tokenizer.json"; then
+        echo "  ✓ verified: ${MODEL_DIR}/bge-m3/tokenizer.json"
+    else
+        MISSING=1
+    fi
+else
+    echo "  ✗ not found: ${MODEL_DIR}/bge-m3/tokenizer.json"
+    MISSING=1
+fi
+
+if [ "$MISSING" -eq 1 ]; then
+    echo ""
+    echo "BGE-M3 model not found or checksum mismatch."
+    echo ""
+    echo "This model requires a one-time local export (~2-5 min, ~8GB RAM):"
+    echo ""
+    echo "  pip install -r scripts/requirements-export.txt"
+    echo "  python scripts/export_bge_m3.py"
+    echo ""
+    echo "The export downloads ~2.2GB of PyTorch weights, converts to ONNX,"
+    echo "and writes the model to ~/.hortora/models/bge-m3/"
+    exit 1
+fi
 
 echo ""
-echo "Downloads complete. Add to application.properties (or %dev profile):"
+echo "All models verified."
+echo ""
+echo "Add to application.properties (or %dev profile):"
 echo ""
 echo "  %dev.casehub.inference.models.bge-m3.model-path=${MODEL_DIR}/bge-m3/model.onnx"
 echo "  %dev.casehub.inference.models.bge-m3.tokenizer-path=${MODEL_DIR}/bge-m3/tokenizer.json"

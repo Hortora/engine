@@ -1,0 +1,7 @@
+torch>=2.2
+transformers>=4.38,<5.0
+onnx>=1.14
+onnxruntime>=1.17
+onnxscript>=0.1
+huggingface_hub>=0.20
+pytest>=7.0
