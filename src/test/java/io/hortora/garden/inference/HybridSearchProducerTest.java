@@ -1,7 +1,6 @@
 package io.hortora.garden.inference;
 
-import io.casehub.inference.splade.SparseEmbedder;
-import io.casehub.inference.tasks.CrossEncoderReranker;
+import io.casehub.inference.MultiModalEmbedder;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
@@ -18,31 +17,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HybridSearchProducerTest {
 
     @Inject
-    Instance<SparseEmbedder> sparseEmbedderInstance;
-
-    @Inject
-    Instance<CrossEncoderReranker> rerankerInstance;
+    Instance<MultiModalEmbedder> multiModalEmbedderInstance;
 
     @Test
-    void sparseEmbedderIsResolvableWhenConfigured() {
-        assertThat(sparseEmbedderInstance.isResolvable()).isTrue();
-        assertThat(sparseEmbedderInstance.get()).isNotNull();
+    void multiModalEmbedderIsResolvableWhenConfigured() {
+        assertThat(multiModalEmbedderInstance.isResolvable()).isTrue();
+        assertThat(multiModalEmbedderInstance.get()).isNotNull();
     }
 
     @Test
-    void rerankerIsResolvableWhenConfigured() {
-        assertThat(rerankerInstance.isResolvable()).isTrue();
-        assertThat(rerankerInstance.get()).isNotNull();
+    void multiModalEmbedderProducesDenseEmbedding() {
+        var embedder = multiModalEmbedderInstance.get();
+        var embedding = embedder.embed("test text");
+        assertThat(embedding.dense()).hasSize(embedder.denseDimension());
+    }
+
+    @Test
+    void multiModalEmbedderProducesSparseEmbedding() {
+        var embedder = multiModalEmbedderInstance.get();
+        var embedding = embedder.embed("test text");
+        assertThat(embedding.sparse()).isNotNull();
     }
 
     public static class WithModelsProfile implements QuarkusTestProfile {
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.of(
-                "casehub.inference.models.splade.model-path", "stub",
-                "casehub.inference.models.splade.tokenizer-path", "stub",
-                "casehub.inference.models.reranker.model-path", "stub",
-                "casehub.inference.models.reranker.tokenizer-path", "stub",
+                "casehub.inference.models.bge-m3.model-path", "stub",
+                "casehub.inference.models.bge-m3.tokenizer-path", "stub",
                 "quarkus.arc.exclude-types", "io.hortora.garden.inference.CollectionMigration,io.hortora.garden.mcp.GardenMcpTools"
             );
         }
