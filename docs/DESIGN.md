@@ -23,7 +23,7 @@ Single-module Maven project (`io.hortora:engine`).
 
 **`GardenMetadataExtractor`** — implements neural-text's `MetadataExtractor` SPI. Parses `.md` files with YAML frontmatter. Returns `ExtractionResult(body, metadata)` where body = `title + "\n\n" + body` for embedding quality. Non-`.md` files and files without frontmatter return empty content (skipped by ingestion). Extracts: title, domain, type, score, tags, submitted.
 
-**`SearchResource`** — `GET /search?q=&domain=&limit=`. Delegates local search to `CaseRetriever.retrieve()` with `PayloadFilter` for domain filtering (single domain → `Eq`, multiple → `In`). Maps `RetrievedChunk` to `SearchResult` with metadata extraction and provenance tagging. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, delegation to `ChainWalker` for upstream/peer queries.
+**`SearchResource`** — `GET /search?q=&domain=&type=&tags=&limit=`. Delegates local search to `CaseRetriever.retrieve()` with `PayloadFilter` for domain/type/tags filtering (single domain → `Eq`, multiple → `In`). Maps `RetrievedChunk` to `SearchResult` with metadata extraction and provenance tagging. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, delegation to `ChainWalker` for upstream/peer queries. All filter parameters (domain, type, tags) are propagated to federated nodes.
 
 **`GardenMcpTools`** — `@Tool`-annotated CDI bean. `garden_search` calls `SearchResource.searchFor()` and formats full entry text for LLM consumption with provenance labels (`[own]` for local, `[prefix]` for remote). `garden_status` returns index count (via `EmbeddingIngestor.listDocuments()`) and garden path.
 
@@ -31,9 +31,9 @@ Single-module Maven project (`io.hortora:engine`).
 
 **`FederationConfigParser`** — `@ApplicationScoped`. `@Observes StartupEvent` for fail-fast validation. `@Produces @Singleton FederationConfig`. Falls back to default canonical config when no SCHEMA.md or no `federation:` block.
 
-**`ChainWalker`** — `@ApplicationScoped`. Creates `RemoteGardenClient` instances at `@PostConstruct`. `walk()` orchestrates the full federation path: upstream sequential walk with short-circuit, peer parallel fan-out via `ManagedExecutor`, deduplication by id+source, tier-grouped relevance-sorted merge, truncation to limit. Degrades gracefully on timeout/failure.
+**`ChainWalker`** — `@ApplicationScoped`. Creates `RemoteGardenClient` instances at `@PostConstruct`. `walk()` orchestrates the full federation path: upstream sequential walk with short-circuit, peer parallel fan-out via `ManagedExecutor`, deduplication by id+source, tier-grouped relevance-sorted merge, truncation to limit. Propagates domain, type, and tags filters to all federated nodes. Degrades gracefully on timeout/failure.
 
-**`RemoteGardenClient`** — package-private JAX-RS interface for HTTP calls to upstream/peer gardens. Clients created programmatically via `QuarkusRestClientBuilder` with 5s read timeout.
+**`RemoteGardenClient`** — package-private JAX-RS interface for HTTP calls to upstream/peer gardens. Accepts query, domain, type, tags, limit, and visited header as parameters. Clients created programmatically via `QuarkusRestClientBuilder` with 5s read timeout.
 
 ## Federation Model
 

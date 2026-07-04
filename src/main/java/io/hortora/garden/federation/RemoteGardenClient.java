@@ -18,6 +18,8 @@ interface RemoteGardenClient {
     List<SearchResult> search(
             @QueryParam("q") String query,
             @QueryParam("domain") List<String> domains,
+            @QueryParam("type") String type,
+            @QueryParam("tags") String tags,
             @QueryParam("limit") int limit,
             @HeaderParam("X-Federation-Visited") String visited
     );

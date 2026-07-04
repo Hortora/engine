@@ -51,8 +51,8 @@ public class ChainWalker {
         }
     }
 
-    public List<SearchResult> walk(String query, List<String> domains, int limit,
-                                    List<SearchResult> ownResults, Set<String> visited) {
+    public List<SearchResult> walk(String query, List<String> domains, String type, String tags,
+                                    int limit, List<SearchResult> ownResults, Set<String> visited) {
         if (!config.hasFederation()) {
             return ownResults;
         }
@@ -76,7 +76,7 @@ public class ChainWalker {
                 int tier = upstreamIndex + 1; // parent=1, grandparent=2, etc.
                 try {
                     RemoteGardenClient client = upstreamClients.get(ref.url());
-                    List<SearchResult> results = client.search(query, domains, limit, visitedHeader);
+                    List<SearchResult> results = client.search(query, domains, type, tags, limit, visitedHeader);
                     results.forEach(r -> all.add(new TieredResult(r, tier)));
 
                     if (!sufficient && isSufficientCombined(all, limit)) {
@@ -96,7 +96,7 @@ public class ChainWalker {
             List<Callable<List<SearchResult>>> peerCalls = config.peers().stream()
                     .map(ref -> (Callable<List<SearchResult>>) () -> {
                         RemoteGardenClient client = peerClients.get(ref.url());
-                        return client.search(query, domains, limit, visitedHeader);
+                        return client.search(query, domains, type, tags, limit, visitedHeader);
                     })
                     .toList();
 

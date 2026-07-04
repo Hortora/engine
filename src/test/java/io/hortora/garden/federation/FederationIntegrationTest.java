@@ -102,6 +102,25 @@ class FederationIntegrationTest {
     }
 
     @Test
+    void typeAndTagsForwardedToUpstream() {
+        wireMock.stubFor(get(urlPathEqualTo("/search"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[]")));
+
+        given()
+                .queryParam("q", "test query")
+                .queryParam("type", "gotcha")
+                .queryParam("tags", "hibernate,cdi")
+        .when()
+                .get("/search");
+
+        wireMock.verify(getRequestedFor(urlPathEqualTo("/search"))
+                .withQueryParam("type", com.github.tomakehurst.wiremock.client.WireMock.equalTo("gotcha"))
+                .withQueryParam("tags", com.github.tomakehurst.wiremock.client.WireMock.equalTo("hibernate,cdi")));
+    }
+
+    @Test
     void upstreamTimeoutReturnsOwnResults() {
         wireMock.stubFor(get(urlPathEqualTo("/search"))
                 .willReturn(aResponse()

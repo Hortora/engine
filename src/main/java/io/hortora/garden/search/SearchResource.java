@@ -91,7 +91,7 @@ public class SearchResource {
             return ownResults;
         }
 
-        return chainWalker.walk(query, domains, maxResults, ownResults, visited);
+        return chainWalker.walk(query, domains, type, tags, maxResults, ownResults, visited);
     }
 
     private List<SearchResult> searchLocal(String query, List<String> domains, String type, String tags, int maxResults) {

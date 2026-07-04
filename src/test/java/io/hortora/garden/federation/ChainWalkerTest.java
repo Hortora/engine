@@ -34,7 +34,7 @@ class ChainWalkerTest {
         configureCanonical();
         var own = List.of(result("e1", HIGH, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, LIMIT, own, visited());
+        var results = walker.walk("query", null, null, null, LIMIT, own, visited());
         assertThat(results).isEqualTo(own);
     }
 
@@ -46,7 +46,7 @@ class ChainWalkerTest {
                 result("e2", HIGH, "my-garden", "MG"),
                 result("e3", HIGH, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, LIMIT, own, visited());
+        var results = walker.walk("query", null, null, null, LIMIT, own, visited());
         assertThat(results).hasSize(3);
         assertThat(upstreamClient.callCount).isZero();
     }
@@ -59,7 +59,7 @@ class ChainWalkerTest {
                 result("u1", HIGH, "parent-garden", "PG"),
                 result("u2", HIGH, "parent-garden", "PG"));
 
-        var results = walker.walk("query", null, LIMIT, own, visited());
+        var results = walker.walk("query", null, null, null, LIMIT, own, visited());
         assertThat(results).hasSize(3);
         assertThat(upstreamClient.callCount).isEqualTo(1);
         assertThat(results.get(0).source()).isEqualTo("my-garden");
@@ -86,7 +86,7 @@ class ChainWalkerTest {
         walker.setUpstreamClient("http://grandparent", upstream2);
 
         var own = List.of(result("e1", LOW, "my-garden", "MG"));
-        var results = walker.walk("query", null, LIMIT, own, visited());
+        var results = walker.walk("query", null, null, null, LIMIT, own, visited());
 
         assertThat(upstream1.callCount).isEqualTo(1);
         assertThat(upstream2.callCount).isZero();
@@ -100,7 +100,7 @@ class ChainWalkerTest {
                 result("e2", HIGH, "my-garden", "MG"),
                 result("e3", HIGH, "my-garden", "MG"));
 
-        walker.walk("query", null, LIMIT, own, visited());
+        walker.walk("query", null, null, null, LIMIT, own, visited());
         assertThat(peerClient.callCount).isZero();
     }
 
@@ -116,7 +116,7 @@ class ChainWalkerTest {
         peerClient.response = List.of(result("p1", HIGH, "peer-garden", "PR"));
         var own = List.of(result("e1", LOW, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, LIMIT, own, visited());
+        var results = walker.walk("query", null, null, null, LIMIT, own, visited());
         assertThat(peerClient.callCount).isEqualTo(1);
         assertThat(results).anyMatch(r -> r.source().equals("peer-garden"));
     }
@@ -132,7 +132,7 @@ class ChainWalkerTest {
                 result("e1", 0.40, "my-garden", "MG"),
                 result("e2", 0.60, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, 10, own, visited());
+        var results = walker.walk("query", null, null, null, 10, own, visited());
 
         // Own tier first (sorted by relevance desc), then parent tier
         assertThat(results.get(0).id()).isEqualTo("e2"); // own, higher relevance
@@ -156,7 +156,7 @@ class ChainWalkerTest {
         peerClient.response = List.of(result("p1", 0.95, "peer-garden", "PR"));
         var own = List.of(result("e1", LOW, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, 10, own, visited());
+        var results = walker.walk("query", null, null, null, 10, own, visited());
 
         // own, then parent, then peer — even though peer has highest relevance
         assertThat(results.get(0).source()).isEqualTo("my-garden");
@@ -173,7 +173,7 @@ class ChainWalkerTest {
 
         var own = List.of(result("e1", LOW, "my-garden", "MG")); // same id, different source — not a dup
 
-        var results = walker.walk("query", null, 10, own, visited());
+        var results = walker.walk("query", null, null, null, 10, own, visited());
         assertThat(results).hasSize(2); // my-garden/e1 + parent/e1, not 3
     }
 
@@ -183,7 +183,7 @@ class ChainWalkerTest {
         upstreamClient.shouldThrow = true;
 
         var own = List.of(result("e1", LOW, "my-garden", "MG"));
-        var results = walker.walk("query", null, LIMIT, own, visited());
+        var results = walker.walk("query", null, null, null, LIMIT, own, visited());
 
         // Should still return own results despite upstream failure
         assertThat(results).hasSize(1);
@@ -199,7 +199,7 @@ class ChainWalkerTest {
                 result("g1", 0.85, "grandparent-garden", "GG"));
 
         var own = List.of(result("e1", LOW, "my-garden", "MG"));
-        var results = walker.walk("query", null, 10, own, visited());
+        var results = walker.walk("query", null, null, null, 10, own, visited());
 
         // All source values pass through unchanged
         assertThat(results).extracting(SearchResult::source)
@@ -218,7 +218,7 @@ class ChainWalkerTest {
                 result("e1", HIGH, "my-garden", "MG"),
                 result("e2", HIGH, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, 3, own, visited());
+        var results = walker.walk("query", null, null, null, 3, own, visited());
         assertThat(results).hasSize(3);
     }
 
@@ -239,7 +239,7 @@ class ChainWalkerTest {
                 result("e2", HIGH, "my-garden", "MG"),
                 result("e3", HIGH, "my-garden", "MG"));
 
-        var results = walker.walk("query", null, 10, own, visited());
+        var results = walker.walk("query", null, null, null, 10, own, visited());
         assertThat(alwaysClient.callCount).isEqualTo(1);
         assertThat(results).anyMatch(r -> r.source().equals("always-garden"));
     }
@@ -250,9 +250,22 @@ class ChainWalkerTest {
         upstreamClient.response = List.of();
 
         var visited = new LinkedHashSet<>(Set.of("my-garden"));
-        walker.walk("query", null, LIMIT, List.of(result("e1", LOW, "my-garden", "MG")), visited);
+        walker.walk("query", null, null, null, LIMIT, List.of(result("e1", LOW, "my-garden", "MG")), visited);
 
         assertThat(upstreamClient.lastVisited).contains("my-garden");
+    }
+
+    @Test
+    void typeAndTagsPassedToUpstream() {
+        configureChild();
+        upstreamClient.response = List.of();
+
+        var visited = new LinkedHashSet<>(Set.of("my-garden"));
+        walker.walk("query", null, "gotcha", "qdrant,cdi", LIMIT,
+                List.of(result("e1", LOW, "my-garden", "MG")), visited);
+
+        assertThat(upstreamClient.lastType).isEqualTo("gotcha");
+        assertThat(upstreamClient.lastTags).isEqualTo("qdrant,cdi");
     }
 
     // --- Helpers ---
@@ -297,11 +310,16 @@ class ChainWalkerTest {
         boolean shouldThrow = false;
         int callCount = 0;
         String lastVisited;
+        String lastType;
+        String lastTags;
 
         @Override
-        public List<SearchResult> search(String query, List<String> domains, int limit, String visited) {
+        public List<SearchResult> search(String query, List<String> domains, String type, String tags,
+                                         int limit, String visited) {
             callCount++;
             lastVisited = visited;
+            lastType = type;
+            lastTags = tags;
             if (shouldThrow) {
                 throw new RuntimeException("Connection timeout");
             }
