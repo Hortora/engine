@@ -1,0 +1,171 @@
+{
+  "issue-1-reactive-async": {
+    "context": "casehubio/engine#542: CaseContextChangedEventHandler throws BlockingOperationNotAllowedException because JPA EntityManager calls execute on the Vert.x event loop thread. Fix: add @Blocking or dispatch via emitOn(Infrastructure.getDefaultWorkerPool()).",
+    "entries": [
+      {
+        "ge_id": "GE-20260518-bee1b3",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "Virtual-thread offload + CDI self-injection: pattern for safe blocking JPA in a reactive pipeline",
+        "body": "Virtual-thread offload + CDI self-injection: pattern for safe blocking JPA in a reactive pipeline\n\n## Virtual-thread offload + CDI self-injection: pattern for safe blocking JPA in a reactive pipeline\n\n### What it is\n\nWhen a blocking JPA repository must be called from a reactive (`Uni`-returning) context, combine two patterns:\n\n1. **Virtual-thread offload** via `runSubscriptionOn(Infrastructure.getDefaultWorkerPool())` \u2014 moves execution off the Vert.x IO thread\n2. **CDI self-injection** \u2014 calls t"
+      }
+    ]
+  },
+  "issue-2-cdi-wiring": {
+    "context": "casehubio/work#264: NoOpGroupMembershipProvider is @ApplicationScoped (effectively @Default) but should be @DefaultBean. When both it and platform's MockGroupMembershipProvider (@DefaultBean) are on classpath, Quarkus throws AmbiguousResolutionException.",
+    "entries": [
+      {
+        "ge_id": "GE-20260609-26ffa5",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "@ApplicationScoped POJO + @Produces for same type causes CDI ambiguous bean resolution",
+        "body": "@ApplicationScoped POJO + @Produces for same type causes CDI ambiguous bean resolution\n\n# @ApplicationScoped POJO + @Produces for same type causes CDI ambiguous bean resolution\n\n## Symptom\n\n`AmbiguousResolutionException` or `UnsatisfiedDependencyException` at Quarkus build time when trying to inject a type that has both a class-level `@ApplicationScoped` annotation and a separate `@Produces @ApplicationScoped` method.\n\n## Context\n\nA class is annotated with `@ApplicationScoped` and has an `@Injec"
+      }
+    ]
+  },
+  "issue-4-rest-messaging": {
+    "context": "casehubio/platform#98: Spec defining CloudEvent foundation \u2014 io.cloudevents.CloudEvent as CDI event type, StreamContext SPI, five classpath-activated stream modules (Kafka, AMQP, webhook, poll, Camel) firing Event<CloudEvent>.fireAsync() with tenancy propagation.",
+    "entries": [
+      {
+        "ge_id": "GE-20260605-fa1a51",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "PlanItemCompletedEvent only fires for worker completions \u2014 context signals bypass it entirely",
+        "body": "PlanItemCompletedEvent only fires for worker completions \u2014 context signals bypass it entirely\n\n### Symptom\n\nAn `@ObservesAsync PlanItemCompletedEvent` handler receives events for some binding completions but not others. No error, no warning. Bindings completed via worker execution (qhorus DONE, WorkItem completion) fire the event; bindings completed via `caseHub.signal()` (context update that satisfies a binding condition) do not.\n\n### Context\n\n`PlanItemCompletedEvent` is a CDI event in `io.case"
+      }
+    ]
+  },
+  "issue-6-testing-ci": {
+    "context": "casehubio/engine#576: InMemoryWorkItemTemplateStore (@Alternative @Priority(100)) wins CDI over JpaWorkItemTemplateStore. Tests write via Panache static methods (H2) but read via injected in-memory store (empty ConcurrentHashMap).",
+    "entries": [
+      {
+        "ge_id": "GE-20260629-d6deca",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "JPA test fixtures break silently when API migrates from direct object pass to store lookup",
+        "body": "JPA test fixtures break silently when API migrates from direct object pass to store lookup\n\n## Symptom\n\nAfter migrating an API from accepting an in-memory entity object to accepting an ID and doing a store lookup internally, existing tests fail with wrong-value assertions \u2014 not compilation errors. The test appears to set up the entity correctly, but the asserted fields have default/null values instead of the test-specific ones.\n\nExample: 5 tests in `WorkItemTemplateServiceResolutionTest` failed "
+      },
+      {
+        "ge_id": "GE-20260629-e6460e",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "quarkus.arc.selected-alternatives silently ignores %dev. profile overrides \u2014 use exclude-types instead",
+        "body": "quarkus.arc.selected-alternatives silently ignores %dev. profile overrides \u2014 use exclude-types instead\n\n### Symptom\n`%dev.quarkus.arc.selected-alternatives` is set in `application.properties` alongside a non-profiled `quarkus.arc.selected-alternatives`. In dev mode, the `@Alternative` beans listed in the `%dev.` value are never activated \u2014 ArC throws `UnsatisfiedResolutionException` for the interfaces they implement, even though the beans exist on the classpath and have Jandex indices.\n\n### Cont"
+      },
+      {
+        "ge_id": "GE-20260528-3d3847",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "@Transactional on @BeforeAll static methods in @QuarkusTest has no effect \u2014 CDI interceptors cannot intercept static methods; results in ContextNotActive at runtime",
+        "body": "@Transactional on @BeforeAll static methods in @QuarkusTest has no effect \u2014 CDI interceptors cannot intercept static methods; results in ContextNotActive at runtime\n\n## Symptom\n\n`@BeforeAll @Transactional static void seedData()` appears to work but occasionally throws `ContextNotActive` at runtime, or the `@Transactional` annotation is silently ignored:\n\n```\nio.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method\n    Caused by: jakarta.enterprise.context.ContextNotActiveEx"
+      },
+      {
+        "ge_id": "GE-20260530-63f1cb",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "@EntityListeners @PrePersist callbacks don't fire in non-JPA (in-memory) repository implementations",
+        "body": "@EntityListeners @PrePersist callbacks don't fire in non-JPA (in-memory) repository implementations\n\n### Symptom\n\nBehavior implemented in a `@PrePersist` `@EntityListeners` callback (e.g. ENFORCE mode,\naudit enrichment, hash computation) is silently skipped when using an in-memory repository\ninstead of the JPA implementation.\n\n### Context\n\nProjects that ship both a JPA repository and an in-memory alternative (`@Alternative @Priority(1)`)\nfor test isolation. The in-memory repo calls business logi"
+      }
+    ]
+  },
+  "spec1-d1-cdi-priority-tiers": {
+    "context": "Spec: persistence-memory module. Extraction of in-memory stores into new persistence-memory/ module with @Alternative @Priority(100) as Tier 3 in CDI ladder, thread-safe data structures, Quarkus extension deactivation.",
+    "entries": [
+      {
+        "ge_id": "GE-20260630-9d8cbe",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "@Priority is NOT @Inherited \u2014 CDI proxy classes silently drop it from reflection, making bean ordering undefined",
+        "body": "@Priority is NOT @Inherited \u2014 CDI proxy classes silently drop it from reflection, making bean ordering undefined\n\n## @Priority is NOT @Inherited \u2014 CDI proxy classes silently drop it from reflection\n\n### Symptom\n\nBean iteration order from `Instance<T>` is silently non-deterministic despite\n`@Priority` annotations on all implementations. Sorting by\n`resolver.getClass().getAnnotation(Priority.class)` returns `null` for every\nbean, so all beans get `Integer.MAX_VALUE` and ordering is undefined.\n\n###"
+      },
+      {
+        "ge_id": "GE-20260630-9d8cbe",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "@Priority is NOT @Inherited \u2014 CDI proxy classes silently drop it from reflection, making bean ordering undefined",
+        "body": "@Priority is NOT @Inherited \u2014 CDI proxy classes silently drop it from reflection, making bean ordering undefined\n\n## @Priority is NOT @Inherited \u2014 CDI proxy classes silently drop it from reflection\n\n### Symptom\n\nBean iteration order from `Instance<T>` is silently non-deterministic despite\n`@Priority` annotations on all implementations. Sorting by\n`resolver.getClass().getAnnotation(Priority.class)` returns `null` for every\nbean, so all beans get `Integer.MAX_VALUE` and ordering is undefined.\n\n###"
+      }
+    ]
+  },
+  "spec1-d2-thread-safety": {
+    "context": "Spec: persistence-memory module. Data structure migration to ConcurrentHashMap/CopyOnWriteArrayList for lock-free concurrency with READ COMMITTED semantics in in-memory stores.",
+    "entries": [
+      {
+        "ge_id": "GE-20260522-bc642c",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "ArrayList unsafe for @ObservesAsync test captures \u2014 @ObservesAsync dispatches on managed executor thread, not test thread",
+        "body": "ArrayList unsafe for @ObservesAsync test captures \u2014 @ObservesAsync dispatches on managed executor thread, not test thread\n\n## ArrayList unsafe for @ObservesAsync test captures \u2014 @ObservesAsync dispatches on managed executor thread, not test thread\n\n### Symptom\n\nA `@QuarkusTest` integration test uses Awaitility to wait for a message captured by a test double:\n\n```java\nAwaitility.await().atMost(5, SECONDS).until(() -> !connector.sent().isEmpty());\nassertThat(connector.sent()).hasSize(1);\n```\n\nThe "
+      }
+    ]
+  },
+  "spec1-d3-extension-deactivation": {
+    "context": "Spec: persistence-memory module. Quarkus extension deactivation at build time to prevent JPA validation when using in-memory persistence instead of database.",
+    "entries": [
+      {
+        "ge_id": "GE-20260420-cbd0fa",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "Quarkus Hibernate Reactive @QuarkusTest cannot use H2 \u2014 vertx-jdbc-client alone doesn't register the reactive pool factory",
+        "body": "Quarkus Hibernate Reactive @QuarkusTest cannot use H2 \u2014 vertx-jdbc-client alone doesn't register the reactive pool factory\n\n## Symptom\n\n`@QuarkusTest` with `quarkus.datasource.reactive=true` (set via `@TestProfile`) and `vertx-jdbc-client` on the classpath fails at context startup:\n\n```\nNo reactive datasource configured\n```\n\nor the reactive Hibernate session is never initialised and all `@RunOnVertxContext` tests are skipped/fail. Adding `quarkus.datasource.reactive.url=h2:mem:...` doesn't help."
+      },
+      {
+        "ge_id": "GE-20260612-8e925b",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "Quarkus quarkus.hibernate-orm.<pu-name>.sql-load-script for named PU \u2014 import.sql only runs for the default PU",
+        "body": "Quarkus quarkus.hibernate-orm.<pu-name>.sql-load-script for named PU \u2014 import.sql only runs for the default PU\n\n### Symptom\nNative SQL tables (not JPA entities) are missing after `database.generation=drop-and-create` even though `import.sql` exists in `src/test/resources`. The table was expected to be created by the SQL script.\n\n### Context\nA test uses a named Hibernate ORM persistence unit (e.g. `quarkus`) configured via `quarkus.hibernate-orm.qhorus.datasource=qhorus`. After switching to `drop"
+      }
+    ]
+  },
+  "spec1-d4-protocol-compliance": {
+    "context": "Spec: persistence-memory module. Protocol compliance: aggregate methods must iterate the full data set, not delegate to scan which applies pagination and silently truncates results.",
+    "entries": [
+      {
+        "ge_id": "GE-20260602-c4a68a",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "Dual-constructor aggregator: CDI constructor with ManagedExecutor + package-private test constructor for plain JUnit",
+        "body": "Dual-constructor aggregator: CDI constructor with ManagedExecutor + package-private test constructor for plain JUnit\n\n## The Technique\n\nAggregators or services that use `ManagedExecutor` for CDI-context-safe parallel execution can expose a second package-private constructor for plain JUnit testing. The test constructor accepts contributors directly, sets executor to null, and switches to sequential execution:\n\n```java\n@ApplicationScoped\npublic class ActorStateAggregator {\n\nprivate final List<Act"
+      }
+    ]
+  },
+  "spec2-d3-circular-deps": {
+    "context": "Spec: agent-langchain4j interop. Circular dependency prevention via Instance<ChatModel> filtering at @PostConstruct and graceful deactivation patterns for the bidirectional adapter.",
+    "entries": [
+      {
+        "ge_id": "GE-20260609-8d6961",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "@Alternative @Qualifier on the bean class restricts CDI injection to qualifier-scoped points \u2014 prevents ambiguity with plain interface injection",
+        "body": "@Alternative @Qualifier on the bean class restricts CDI injection to qualifier-scoped points \u2014 prevents ambiguity with plain interface injection\n\n### What a skilled developer would do instead\n\nPlace the CDI qualifier only on the injection point (`@Inject @CrossTenant CrossTenantChannelStore`). This is the canonical CDI usage. When an `@Alternative @Priority(1)` bean is added to the same interface, developers either add `@Any` to the injection point or use `@Produces` to disambiguate \u2014 both requi"
+      },
+      {
+        "ge_id": "GE-20260523-53430a",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "Quarkus Arc resolves CDI cycles between @ApplicationScoped beans via client proxies \u2014 even with constructor injection",
+        "body": "Quarkus Arc resolves CDI cycles between @ApplicationScoped beans via client proxies \u2014 even with constructor injection\n\n### Symptom\nCode review flags a CDI cycle between two `@ApplicationScoped` beans as Critical \u2014 \"application will not start.\" The cycle exists in the injection graph: `A \u2192 B (constructor injection) \u2192 A`. But the full build and all `@QuarkusTest` suites pass without any startup error.\n\n### Context\n`MessageService` (`@ApplicationScoped`) was given a field-injected `ChannelGateway`."
+      }
+    ]
+  },
+  "spec2-d4-exception-mapper": {
+    "context": "Spec: agent-langchain4j interop. MissingTenancyExceptionMapper returning 403 Forbidden for missing tenancy context exceptions in Quarkus RESTEasy Reactive.",
+    "entries": [
+      {
+        "ge_id": "GE-20260414-614675",
+        "query_type": "KW",
+        "config": "bge-m3-four-signal",
+        "title": "Use Optional<String> in @ConfigMapping for optional string properties that can be legitimately absent",
+        "body": "Use Optional<String> in @ConfigMapping for optional string properties that can be legitimately absent\n\n## Use Optional<String> in @ConfigMapping for optional string properties that can be legitimately absent\n\n**ID:** GE-20260414-614675\n**Stack:** Quarkus 3.32.2, SmallRye Config, quarkus-extension-processor\n\n### What the technique does\n\nIn a `@ConfigMapping` interface, return `Optional<String>` (instead of `String` with a workaround default) for properties that are legitimately optional \u2014 where t"
+      },
+      {
+        "ge_id": "GE-20260617-36c6b5",
+        "query_type": "NL",
+        "config": "bge-m3-four-signal",
+        "title": "@Blocking required on quarkus-rest JAX-RS handlers that contain polling loops \u2014 omitting it starves the event loop and blocks concurrent requests",
+        "body": "@Blocking required on quarkus-rest JAX-RS handlers that contain polling loops \u2014 omitting it starves the event loop and blocks concurrent requests\n\n### Context\nA JAX-RS handler method contains a synchronous polling loop (`Thread.sleep()` + repeated JPA reads) that runs for an extended period (seconds to minutes). The handler is in an application using `quarkus-rest` (RESTEasy Reactive), not `quarkus-resteasy` (Classic).\n\n### The non-obvious part\nIn `quarkus-rest`, JAX-RS handler methods run on th"
+      }
+    ]
+  }
+}

@@ -177,15 +177,31 @@ class CollectionMigrationTest {
     }
 
     @Test
-    void noOpWhenCollectionDoesNotExist() throws Exception {
+    void noOpWhenCollectionDoesNotExistAndNoCursor() throws Exception {
         when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
         when(qdrantClient.collectionExistsAsync("hortora_garden"))
                 .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.empty());
 
         migration.onStartup(null);
 
         verify(qdrantClient, never()).getCollectionInfoAsync(any());
         verify(embeddingIngestor, never()).deleteCorpus(any());
+        verify(cursorStore, never()).save(any(), any());
+    }
+
+    @Test
+    void clearsStaleCursorWhenCollectionDoesNotExist() throws Exception {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(qdrantClient.collectionExistsAsync("hortora_garden"))
+                .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.of("{\"file.md\":123}"));
+
+        migration.onStartup(null);
+
+        verify(qdrantClient, never()).getCollectionInfoAsync(any());
+        verify(embeddingIngestor, never()).deleteCorpus(any());
+        verify(cursorStore).save("garden", "");
     }
 
     @Test

@@ -33,3 +33,23 @@ def test_compute_median_all_none():
     """Test that compute_median returns None when all values are None."""
     assert compute_median([None, None, None]) is None
     assert compute_median([]) is None
+
+def test_main_accepts_min_points_argument(monkeypatch, tmp_path):
+    """--min-points overrides MIN_INDEXED_POINTS for wait_for_readiness."""
+    import benchmark.run_queries as rq
+
+    captured_min = {}
+
+    original_wait = rq.wait_for_readiness
+    def fake_wait(engine_url=rq.ENGINE_URL, qdrant_url=rq.QDRANT_URL, min_points=rq.MIN_INDEXED_POINTS):
+        captured_min["value"] = min_points
+        return min_points
+
+    monkeypatch.setattr(rq, "wait_for_readiness", fake_wait)
+    monkeypatch.setattr(rq, "run_all_queries", lambda eu: [])
+    monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr("sys.argv", ["run_queries.py", "test-config", "--min-points", "2500"])
+
+    rq.main()
+
+    assert captured_min["value"] == 2500

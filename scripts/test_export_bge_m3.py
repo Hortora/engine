@@ -144,3 +144,59 @@ def test_onnx_scatter_handles_repeated_tokens():
         onnx_sparse = onnx_out[1]
 
         np.testing.assert_allclose(pt_out["sparse"].numpy(), onnx_sparse, atol=1e-4)
+
+
+def test_check_idempotent_fails_without_data_file():
+    """check_idempotent must return False when model.onnx.data is missing."""
+    # This test doesn't need the model — it tests filesystem check logic
+    import sys
+    import hashlib
+    from types import ModuleType
+    from unittest.mock import patch
+
+    # Create minimal mock modules
+    torch_mock = ModuleType('torch')
+    transformers_mock = ModuleType('transformers')
+    transformers_mock.AutoTokenizer = type('AutoTokenizer', (), {})
+    numpy_mock = ModuleType('numpy')
+    ort_mock = ModuleType('onnxruntime')
+    bgem3_mock = ModuleType('bgem3_model')
+    bgem3_mock.BGEM3InferenceModel = type('BGEM3InferenceModel', (), {})
+
+    with patch.dict('sys.modules', {
+        'torch': torch_mock,
+        'transformers': transformers_mock,
+        'numpy': numpy_mock,
+        'onnxruntime': ort_mock,
+        'bgem3_model': bgem3_mock,
+    }):
+        from export_bge_m3 import check_idempotent, MODEL_DIR, CHECKSUM_FILE
+
+        original_model_dir = MODEL_DIR
+        original_checksum_file = CHECKSUM_FILE
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir)
+            # Create model.onnx and tokenizer.json but NOT model.onnx.data
+            (tmp_path / "model.onnx").write_bytes(b"fake-onnx-graph")
+            (tmp_path / "tokenizer.json").write_bytes(b"fake-tokenizer")
+
+            checksum_path = tmp_path / "checksums.sha256"
+            # Write checksums matching the fake files
+            model_hash = hashlib.sha256(b"fake-onnx-graph").hexdigest()
+            tokenizer_hash = hashlib.sha256(b"fake-tokenizer").hexdigest()
+            checksum_path.write_text(
+                f"{model_hash}  model.onnx\n"
+                f"fakehash  model.onnx.data\n"
+                f"{tokenizer_hash}  tokenizer.json\n"
+            )
+
+            # Monkey-patch module globals
+            import export_bge_m3
+            export_bge_m3.MODEL_DIR = tmp_path
+            export_bge_m3.CHECKSUM_FILE = checksum_path
+            try:
+                assert check_idempotent() is False
+            finally:
+                export_bge_m3.MODEL_DIR = original_model_dir
+                export_bge_m3.CHECKSUM_FILE = original_checksum_file

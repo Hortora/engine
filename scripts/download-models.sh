@@ -51,6 +51,18 @@ else
     MISSING=1
 fi
 
+# model.onnx.data — external weights produced by export script
+if [ -f "${MODEL_DIR}/bge-m3/model.onnx.data" ]; then
+    if verify_checksum "${MODEL_DIR}/bge-m3/model.onnx.data" "model.onnx.data"; then
+        echo "  ✓ verified: ${MODEL_DIR}/bge-m3/model.onnx.data"
+    else
+        MISSING=1
+    fi
+else
+    echo "  ✗ not found: ${MODEL_DIR}/bge-m3/model.onnx.data"
+    MISSING=1
+fi
+
 # tokenizer.json — produced by export script alongside model.onnx
 if [ -f "${MODEL_DIR}/bge-m3/tokenizer.json" ]; then
     if verify_checksum "${MODEL_DIR}/bge-m3/tokenizer.json" "tokenizer.json"; then

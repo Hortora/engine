@@ -64,6 +64,11 @@ public class CollectionMigration {
 
         try {
             if (!qdrantClient.collectionExistsAsync(collectionName).get()) {
+                if (cursorStore.load(gardenConfig.id()).isPresent()) {
+                    Log.infof("Collection '%s' does not exist but cursor found — clearing cursor to force re-indexing",
+                            collectionName);
+                    cursorStore.save(gardenConfig.id(), "");
+                }
                 return;
             }
 

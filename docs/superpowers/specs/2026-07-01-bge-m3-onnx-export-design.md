@@ -197,7 +197,7 @@ Start engine with real model (`quarkus:dev`, `%dev` properties uncommented). Ind
 
 ### Level 3 — Benchmark (deferred)
 
-Run existing benchmark harness (`scripts/benchmark/run_queries.py`) against BGE-M3-powered engine. Compare against 94% baseline from #27. This is #33/#34 scope — not part of this issue.
+Run existing benchmark harness (`scripts/benchmark/run_queries.py`) against BGE-M3-powered engine. Compare against 94% baseline from #27. This is #36 scope — not part of this issue.
 
 ## Scope
 

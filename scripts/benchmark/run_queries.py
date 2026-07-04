@@ -58,7 +58,8 @@ def check_qdrant_ready(qdrant_url: str = QDRANT_URL) -> int:
     return data["result"]["points_count"]
 
 
-def wait_for_readiness(engine_url: str = ENGINE_URL, qdrant_url: str = QDRANT_URL):
+def wait_for_readiness(engine_url: str = ENGINE_URL, qdrant_url: str = QDRANT_URL,
+                       min_points: int = MIN_INDEXED_POINTS):
     print("Waiting for engine readiness...")
     for attempt in range(60):
         try:
@@ -76,7 +77,7 @@ def wait_for_readiness(engine_url: str = ENGINE_URL, qdrant_url: str = QDRANT_UR
         try:
             count = check_qdrant_ready(qdrant_url)
             print(f"  Indexed points: {count}")
-            if count >= MIN_INDEXED_POINTS and count == prev_count:
+            if count >= min_points and count == prev_count:
                 stable_checks += 1
                 if stable_checks >= 2:
                     print(f"Indexing complete: {count} points")
@@ -139,29 +140,30 @@ def run_all_queries(engine_url: str = ENGINE_URL) -> list[dict]:
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: run_queries.py <config-name> [engine-url]")
-        sys.exit(1)
-
-    config_name = sys.argv[1]
-    engine_url = sys.argv[2] if len(sys.argv) > 2 else ENGINE_URL
+    import argparse
+    parser = argparse.ArgumentParser(description="Run benchmark queries against the engine REST API")
+    parser.add_argument("config_name", help="Configuration name (used as output filename)")
+    parser.add_argument("engine_url", nargs="?", default=ENGINE_URL, help="Engine base URL")
+    parser.add_argument("--min-points", type=int, default=MIN_INDEXED_POINTS,
+                        help=f"Minimum indexed points before starting (default: {MIN_INDEXED_POINTS})")
+    args = parser.parse_args()
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    point_count = wait_for_readiness(engine_url)
+    point_count = wait_for_readiness(args.engine_url, min_points=args.min_points)
 
-    print(f"\nRunning benchmark for config: {config_name}")
-    results = run_all_queries(engine_url)
+    print(f"\nRunning benchmark for config: {args.config_name}")
+    results = run_all_queries(args.engine_url)
 
     output = {
-        "config": config_name,
+        "config": args.config_name,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "point_count": point_count,
         "num_passes": NUM_PASSES,
         "results": results,
     }
 
-    output_path = RESULTS_DIR / f"{config_name}.json"
+    output_path = RESULTS_DIR / f"{args.config_name}.json"
     output_path.write_text(json.dumps(output, indent=2))
     print(f"\nResults written to {output_path}")
 

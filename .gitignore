@@ -48,3 +48,4 @@ src/test/resources/fixtures/_state/
 .certs/
 wksp
 scripts/__pycache__/
+.venv/

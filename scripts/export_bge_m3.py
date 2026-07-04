@@ -6,9 +6,10 @@ Usage:
     python scripts/export_bge_m3.py
 
 Produces:
-    ~/.hortora/models/bge-m3/model.onnx     — three-head ONNX (~2.2GB)
-    ~/.hortora/models/bge-m3/tokenizer.json  — XLM-RoBERTa tokenizer
-    scripts/bge-m3-checksums.sha256          — SHA-256 checksums for both
+    ~/.hortora/models/bge-m3/model.onnx       — ONNX graph (~3MB)
+    ~/.hortora/models/bge-m3/model.onnx.data  — external weights (~2.2GB)
+    ~/.hortora/models/bge-m3/tokenizer.json   — XLM-RoBERTa tokenizer
+    scripts/bge-m3-checksums.sha256           — SHA-256 checksums for all three
 
 Note: O2 optimization via onnxruntime.transformers.optimizer is not used —
 it fails on this model size with protobuf serialization errors.
@@ -44,8 +45,9 @@ def sha256(path: Path) -> str:
 def check_idempotent() -> bool:
     """Return True if model already exported and checksums match."""
     model_path = MODEL_DIR / "model.onnx"
+    data_path = MODEL_DIR / "model.onnx.data"
     tokenizer_path = MODEL_DIR / "tokenizer.json"
-    if not model_path.exists() or not tokenizer_path.exists():
+    if not model_path.exists() or not data_path.exists() or not tokenizer_path.exists():
         return False
     if not CHECKSUM_FILE.exists():
         return False
@@ -54,9 +56,11 @@ def check_idempotent() -> bool:
         parts = line.strip().split("  ", 1)
         if len(parts) == 2:
             expected[parts[1]] = parts[0]
-    if "model.onnx" not in expected or "tokenizer.json" not in expected:
+    if "model.onnx" not in expected or "model.onnx.data" not in expected or "tokenizer.json" not in expected:
         return False
     if sha256(model_path) != expected["model.onnx"]:
+        return False
+    if sha256(data_path) != expected["model.onnx.data"]:
         return False
     if sha256(tokenizer_path) != expected["tokenizer.json"]:
         return False
@@ -64,7 +68,7 @@ def check_idempotent() -> bool:
 
 
 def export_onnx(model: BGEM3InferenceModel, output_path: str, opset_version: int = OPSET_VERSION):
-    """Export the model to ONNX format."""
+    """Export the model to ONNX format with external data for large models."""
     dummy_input = {
         "input_ids": torch.randint(0, model.config.vocab_size, (1, 32)),
         "attention_mask": torch.ones(1, 32, dtype=torch.long),
@@ -83,6 +87,7 @@ def export_onnx(model: BGEM3InferenceModel, output_path: str, opset_version: int
             "sparse":         {0: "batch_size"},
             "colbert":        {0: "batch_size", 1: "sequence"},
         },
+        external_data=True,
     )
 
 
@@ -157,13 +162,16 @@ def validate(model: BGEM3InferenceModel, onnx_path: str):
 
 def write_checksums(model_path: Path, tokenizer_path: Path):
     """Write SHA-256 checksums to scripts/bge-m3-checksums.sha256."""
+    data_path = model_path.parent / "model.onnx.data"
     model_hash = sha256(model_path)
+    data_hash = sha256(data_path)
     tokenizer_hash = sha256(tokenizer_path)
-    content = f"{model_hash}  model.onnx\n{tokenizer_hash}  tokenizer.json\n"
+    content = f"{model_hash}  model.onnx\n{data_hash}  model.onnx.data\n{tokenizer_hash}  tokenizer.json\n"
     CHECKSUM_FILE.write_text(content)
     print(f"\nChecksums written to {CHECKSUM_FILE}")
-    print(f"  model.onnx:     {model_hash}")
-    print(f"  tokenizer.json: {tokenizer_hash}")
+    print(f"  model.onnx:      {model_hash}")
+    print(f"  model.onnx.data: {data_hash}")
+    print(f"  tokenizer.json:  {tokenizer_hash}")
 
 
 def main():
@@ -171,6 +179,7 @@ def main():
     if check_idempotent():
         print("Model already exported and verified — checksums match.")
         print(f"  {MODEL_DIR / 'model.onnx'}")
+        print(f"  {MODEL_DIR / 'model.onnx.data'}")
         print(f"  {MODEL_DIR / 'tokenizer.json'}")
         sys.exit(0)
 
@@ -199,15 +208,13 @@ def main():
         print("Validating ONNX output against PyTorch...")
         validate(model, onnx_path)
 
-        # Atomic rename
+        # Atomic replace: data first, then graph, then tokenizer
         final_model = MODEL_DIR / "model.onnx"
+        final_data = MODEL_DIR / "model.onnx.data"
         final_tokenizer = MODEL_DIR / "tokenizer.json"
-        if final_model.exists():
-            os.remove(final_model)
-        if final_tokenizer.exists():
-            os.remove(final_tokenizer)
-        shutil.move(str(tmp_dir / "model.onnx"), str(final_model))
-        shutil.move(str(tokenizer_tmp), str(final_tokenizer))
+        os.replace(str(tmp_dir / "model.onnx.data"), str(final_data))
+        os.replace(str(tmp_dir / "model.onnx"), str(final_model))
+        os.replace(str(tokenizer_tmp), str(final_tokenizer))
 
         # Write checksums
         write_checksums(final_model, final_tokenizer)

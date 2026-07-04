@@ -16,7 +16,7 @@ Phase 4 (current): BGE-M3 adoption — single ONNX model producing dense (1024-d
 ## Stack
 
 - **Quarkus 3.36.x** — runtime
-- **casehub-rag** — neural-text RAG module (`CaseRetriever`, `EmbeddingIngestor`, `CorpusIngestionService`); Qdrant integration via `casehub-rag`, not direct client
+- **casehub-neocortex-rag** — neocortex RAG module (`CaseRetriever`, `EmbeddingIngestor`, `CorpusIngestionService`); Qdrant integration via `casehub-neocortex-rag`, not direct client
 - **casehub-inference-quarkus** — ONNX inference CDI wiring; engine bridges `@Inference("bge-m3")` to `MultiModalEmbedder` via `BgeM3Embedder`
 - **casehub-inference-bge-m3** — `BgeM3Embedder` producing dense + sparse + ColBERT from BGE-M3 ONNX model
 - **casehub-corpus-api + casehub-corpus** — filesystem change detection (`FlatChangeSource`, `WatchableChangeSource`)
@@ -26,9 +26,9 @@ Phase 4 (current): BGE-M3 adoption — single ONNX model producing dense (1024-d
 
 ## Key Design Decisions
 
-- **BGE-M3 via MultiModalEmbedder** — `HybridSearchProducer` produces a single `MultiModalEmbedder` bean from `@Inference("bge-m3")` via `@LookupIfProperty`; non-resolvable when the ONNX model path isn't configured. `MultiModalEmbedder` replaces the previous `EmbeddingModel` + `SparseEmbedder` + `CrossEncoderReranker` triple. `CollectionMigration` detects dimension mismatch (768→1024) or missing ColBERT config and triggers re-indexing.
+- **BGE-M3 via MultiModalEmbedder** — `HybridSearchProducer` produces a single `MultiModalEmbedder` bean from `@Inference("bge-m3")` via `@LookupIfProperty`; non-resolvable when the ONNX model path isn't configured. `MultiModalEmbedder` replaces the previous `EmbeddingModel` + `SparseEmbedder` + `CrossEncoderReranker` triple. `CollectionMigration` detects dimension mismatch (768→1024) or missing ColBERT config and triggers re-indexing. Also clears stale cursors when the Qdrant collection is absent — prevents silent zero-ingestion on fresh deployments.
 - **Incremental re-indexing** — cursor-based change detection via `FlatChangeSource` (directory-watcher); live filesystem watching after startup sync
-- **neural-text RAG delegation** — ingestion and retrieval via `casehub-rag` SPIs (`EmbeddingIngestor`, `CaseRetriever`); engine provides `CorpusIngestionBinding` via CDI, neural-text handles Qdrant lifecycle, collection schema, and cursor management
+- **neocortex RAG delegation** — ingestion and retrieval via `casehub-neocortex-rag` SPIs (`EmbeddingIngestor`, `CaseRetriever`); engine provides `CorpusIngestionBinding` via CDI, neural-text handles Qdrant lifecycle, collection schema, and cursor management
 - **Fixed tenant ID** — `CorpusRef("hortora", gardenConfig.id())`; collection name `hortora_garden` under `SEPARATE_COLLECTIONS` tenancy strategy
 - **Long-running service, not stdio** — Qdrant loads its index once; stdio per-session cold-start is unacceptable at corpus scale
 - **Garden entries are the chunks** — no document splitting; entries (50–200 lines) are the retrieval unit
@@ -50,7 +50,7 @@ The engine is a long-running service — native image's fast startup provides no
 
 ## Dev Services
 
-In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestInferenceModelProducer` routes `@Inference("bge-m3")` to `InMemoryInferenceModel.returningMulti()` — no ONNX Runtime or real models needed. In dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`. Run `scripts/export_bge_m3.py` to produce the BGE-M3 ONNX model (one-time, ~2.2GB download + export), then `scripts/download-models.sh` to verify checksums, then uncomment the `%dev` model paths in `application.properties`.
+In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestInferenceModelProducer` routes `@Inference("bge-m3")` to `InMemoryInferenceModel.returningMulti()` — no ONNX Runtime or real models needed. In dev mode, start Qdrant manually: `docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant`. Run `scripts/export_bge_m3.py` to produce the BGE-M3 ONNX model (one-time, ~2.2GB download + export), then `scripts/download-models.sh` to verify checksums. The `%dev` model paths are pre-configured in `application.properties`. Sequence length is capped at 768 tokens (Qdrant ColBERT multi-vector limit: 1M floats = 1024 dim × ~1023 max tokens).
 
 ## Project Artifacts
 
@@ -64,7 +64,7 @@ Paths that are project content (not workspace noise).
 | `docs/superpowers/specs/` | Design specs |
 | `docs/superpowers/plans/` | Implementation plans |
 | `scripts/` | Development scripts (ONNX model download, benchmark harness) |
-| `docs/comparison/` | Retrieval benchmark reports (#27 dense-only, #28 hybrid) |
+| `docs/comparison/` | Retrieval benchmark reports (#27 dense-only, #28 hybrid, #36 BGE-M3) |
 
 ## Work Tracking
 
