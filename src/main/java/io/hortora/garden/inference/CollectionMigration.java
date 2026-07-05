@@ -59,6 +59,7 @@ public class CollectionMigration {
         }
 
         MultiModalEmbedder embedder = multiModalEmbedderInstance.get();
+        validateColbertLimit(embedder);
         CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
         String collectionName = ragConfig.tenancyStrategy().collectionName(corpusRef);
 
@@ -107,6 +108,20 @@ public class CollectionMigration {
             Log.warn("Interrupted during collection migration check", e);
         } catch (ExecutionException e) {
             Log.warn("Failed to check collection for migration", e.getCause());
+        }
+    }
+
+    private void validateColbertLimit(MultiModalEmbedder embedder) {
+        if (embedder.colbertDimension().isEmpty()) {
+            return;
+        }
+        int colbertDim = embedder.colbertDimension().getAsInt();
+        long totalFloats = (long) embedder.maxSequenceLength() * colbertDim;
+        int limit = ragConfig.maxMultivectorFloats();
+        if (totalFloats > limit) {
+            throw new IllegalStateException(
+                    "ColBERT multi-vector size exceeds limit: maxSequenceLength=%d × colbertDimension=%d = %d floats > maxMultivectorFloats=%d. Reduce max-sequence-length or raise casehub.rag.max-multivector-floats."
+                            .formatted(embedder.maxSequenceLength(), colbertDim, totalFloats, limit));
         }
     }
 
