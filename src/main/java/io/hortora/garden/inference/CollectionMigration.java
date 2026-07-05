@@ -59,6 +59,7 @@ public class CollectionMigration {
         }
 
         MultiModalEmbedder embedder = multiModalEmbedderInstance.get();
+        validateColbertLimit(embedder);
         CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
         String collectionName = ragConfig.tenancyStrategy().collectionName(corpusRef);
 
@@ -114,6 +115,20 @@ public class CollectionMigration {
      * Extracts the dense vector dimension from collection params.
      * Returns -1 if dimension cannot be determined.
      */
+    private void validateColbertLimit(MultiModalEmbedder embedder) {
+        if (embedder.colbertDimension().isEmpty()) {
+            return;
+        }
+        int colbertDim = embedder.colbertDimension().getAsInt();
+        long totalFloats = (long) embedder.maxSequenceLength() * colbertDim;
+        int limit = ragConfig.maxMultivectorFloats();
+        if (totalFloats > limit) {
+            throw new IllegalStateException(
+                    "ColBERT multi-vector size exceeds limit: maxSequenceLength=%d × colbertDimension=%d = %d floats > maxMultivectorFloats=%d. Reduce max-sequence-length or raise casehub.rag.max-multivector-floats."
+                            .formatted(embedder.maxSequenceLength(), colbertDim, totalFloats, limit));
+        }
+    }
+
     static int extractDenseDimension(CollectionParams params) {
         VectorsConfig vectorsConfig = params.getVectorsConfig();
         if (vectorsConfig.hasParams()) {

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.util.OptionalInt;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -211,6 +212,69 @@ class CollectionMigrationTest {
         migration.onStartup(null);
 
         verifyNoInteractions(qdrantClient, embeddingIngestor, cursorStore);
+    }
+
+    @Test
+    void colbertValidationPassesWithinLimit() {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(768);
+        when(multiModalEmbedder.colbertDimension()).thenReturn(OptionalInt.of(1024));
+        when(ragConfig.maxMultivectorFloats()).thenReturn(1_000_000);
+        when(qdrantClient.collectionExistsAsync("hortora_garden"))
+                .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.empty());
+
+        migration.onStartup(null);
+        // 768 * 1024 = 786,432 < 1,000,000 — no exception
+    }
+
+    @Test
+    void colbertValidationFailsExceedingLimit() {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(1024);
+        when(multiModalEmbedder.colbertDimension()).thenReturn(OptionalInt.of(1024));
+        when(ragConfig.maxMultivectorFloats()).thenReturn(1_000_000);
+
+        // 1024 * 1024 = 1,048,576 > 1,000,000
+        assertThrows(IllegalStateException.class, () -> migration.onStartup(null));
+    }
+
+    @Test
+    void colbertValidationSkippedWhenNoColbert() {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(8192);
+        when(multiModalEmbedder.colbertDimension()).thenReturn(OptionalInt.empty());
+        when(qdrantClient.collectionExistsAsync("hortora_garden"))
+                .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.empty());
+
+        migration.onStartup(null);
+        // No ColBERT — validation skipped even with huge maxSequenceLength
+    }
+
+    @Test
+    void colbertValidationBoundaryExact() {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(976);
+        when(multiModalEmbedder.colbertDimension()).thenReturn(OptionalInt.of(1024));
+        when(ragConfig.maxMultivectorFloats()).thenReturn(1_000_000);
+        when(qdrantClient.collectionExistsAsync("hortora_garden"))
+                .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.empty());
+
+        // 976 * 1024 = 999,424 < 1,000,000 — passes
+        migration.onStartup(null);
+    }
+
+    @Test
+    void colbertValidationBoundaryOneOver() {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(977);
+        when(multiModalEmbedder.colbertDimension()).thenReturn(OptionalInt.of(1024));
+        when(ragConfig.maxMultivectorFloats()).thenReturn(1_000_000);
+
+        // 977 * 1024 = 1,000,448 > 1,000,000 — fails
+        assertThrows(IllegalStateException.class, () -> migration.onStartup(null));
     }
 
     @Test
