@@ -111,10 +111,6 @@ public class CollectionMigration {
         }
     }
 
-    /**
-     * Extracts the dense vector dimension from collection params.
-     * Returns -1 if dimension cannot be determined.
-     */
     private void validateColbertLimit(MultiModalEmbedder embedder) {
         if (embedder.colbertDimension().isEmpty()) {
             return;
@@ -129,6 +125,10 @@ public class CollectionMigration {
         }
     }
 
+    /**
+     * Extracts the dense vector dimension from collection params.
+     * Returns -1 if dimension cannot be determined.
+     */
     static int extractDenseDimension(CollectionParams params) {
         VectorsConfig vectorsConfig = params.getVectorsConfig();
         if (vectorsConfig.hasParams()) {
