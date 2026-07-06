@@ -21,8 +21,10 @@ READINESS_POLL_S = 5
 MIN_INDEXED_POINTS = 1900
 
 
-def search(query: str, base_url: str = ENGINE_URL, limit: int = 8) -> tuple[str, float]:
-    url = f"{base_url}/search?q={urllib.parse.quote(query)}&limit={limit}"
+def search(query: str, base_url: str = ENGINE_URL, limit: int | None = None) -> tuple[str, float]:
+    url = f"{base_url}/search?q={urllib.parse.quote(query)}"
+    if limit is not None:
+        url += f"&limit={limit}"
     start = time.monotonic()
     req = urllib.request.Request(url)
     with urllib.request.urlopen(req, timeout=30) as resp:
@@ -91,7 +93,7 @@ def wait_for_readiness(engine_url: str = ENGINE_URL, qdrant_url: str = QDRANT_UR
     raise RuntimeError("Indexing did not stabilise")
 
 
-def run_all_queries(engine_url: str = ENGINE_URL) -> list[dict]:
+def run_all_queries(engine_url: str = ENGINE_URL, limit: int | None = None) -> list[dict]:
     queries = []
     for scenario in SCENARIOS:
         for qt, query_text in [("KW", scenario.kw_query), ("NL", scenario.nl_query)]:
@@ -100,7 +102,7 @@ def run_all_queries(engine_url: str = ENGINE_URL) -> list[dict]:
     print(f"Warmup pass ({len(queries)} queries)...")
     for q in queries:
         try:
-            search(q["query_text"], engine_url)
+            search(q["query_text"], engine_url, limit=limit)
         except Exception as e:
             print(f"  Warmup failed for {q['scenario_id']}/{q['query_type']}: {e}")
         time.sleep(QUERY_PAUSE_S)
@@ -111,7 +113,7 @@ def run_all_queries(engine_url: str = ENGINE_URL) -> list[dict]:
         entries_per_pass = []
         for pass_num in range(NUM_PASSES):
             try:
-                body, elapsed_ms = search(q["query_text"], engine_url)
+                body, elapsed_ms = search(q["query_text"], engine_url, limit=limit)
                 entries = parse_search_response(body)
                 latencies.append(elapsed_ms)
                 entries_per_pass.append(entries)
@@ -146,6 +148,8 @@ def main():
     parser.add_argument("engine_url", nargs="?", default=ENGINE_URL, help="Engine base URL")
     parser.add_argument("--min-points", type=int, default=MIN_INDEXED_POINTS,
                         help=f"Minimum indexed points before starting (default: {MIN_INDEXED_POINTS})")
+    parser.add_argument("--limit", type=int, default=None,
+                        help="Override result limit per query (default: use server default)")
     args = parser.parse_args()
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -153,7 +157,7 @@ def main():
     point_count = wait_for_readiness(args.engine_url, min_points=args.min_points)
 
     print(f"\nRunning benchmark for config: {args.config_name}")
-    results = run_all_queries(args.engine_url)
+    results = run_all_queries(args.engine_url, limit=args.limit)
 
     output = {
         "config": args.config_name,

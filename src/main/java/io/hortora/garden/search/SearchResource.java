@@ -30,7 +30,7 @@ import java.util.Set;
 @ApplicationScoped
 public class SearchResource {
 
-    static final int DEFAULT_LIMIT = 8;
+    static final int DEFAULT_LIMIT = 16;
     static final int MAX_LIMIT = 50;
     static final int OVERFETCH_MULTIPLIER = 2;
     static final double GAP_THRESHOLD = 0.05;

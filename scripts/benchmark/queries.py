@@ -72,7 +72,7 @@ SCENARIOS: list[Scenario] = [
         nl_query="ChatModel adapter bridging LangChain4j interface to Claude AgentSession for native prompt caching — LLM provider integration with token cost optimization",
         grep_pattern=r"ChatModel|AgentSession|prompt.cach|LangChain4j",
         baseline_verdict="grep-win",
-        failure_modes=["VOCABULARY_GAP", "DOMAIN_ABSENCE"],
+        failure_modes=["VOCABULARY_GAP"],
     ),
     Scenario(
         id="issue-6-testing-ci",
@@ -133,7 +133,7 @@ SCENARIOS: list[Scenario] = [
         nl_query="In-memory store aggregate methods must not delegate to scan because scan applies pagination which silently truncates aggregation results",
         grep_pattern=r"scan.*pagination|aggregate.*scan|no.scan.delegation|pagination.*truncat",
         baseline_verdict="grep-marginal",
-        failure_modes=["DOMAIN_ABSENCE"],
+        failure_modes=["POLYSEMY"],
     ),
     # Spec 2 domains (agent-langchain4j-interop-design.md)
     Scenario(

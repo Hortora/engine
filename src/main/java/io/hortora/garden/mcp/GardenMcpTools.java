@@ -32,7 +32,7 @@ public class GardenMcpTools {
             @ToolArg(description = "Optional: filter by domain (e.g. jvm, tools, python). Leave empty to search all domains.", required = false) String domain,
             @ToolArg(description = "Optional: filter by entry type (gotcha, technique, undocumented, pattern)", required = false) String type,
             @ToolArg(description = "Optional: comma-separated tags to filter by (entries matching ANY tag are returned)", required = false) String tags,
-            @ToolArg(description = "Maximum number of entries to return (default 8, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit) {
+            @ToolArg(description = "Maximum number of entries to return (default 16, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit) {
 
         AdaptiveResult adaptive = searchResource.searchAdaptive(query,
                 domain != null && !domain.isBlank() ? List.of(domain) : null,
