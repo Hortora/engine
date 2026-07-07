@@ -34,6 +34,7 @@ Phase 4 (current): BGE-M3 adoption — single ONNX model producing dense (1024-d
 - **Garden entries are the chunks** — no document splitting; entries (50–200 lines) are the retrieval unit
 - **Federation in this service** — canonical/child chain walk is Hortora-specific logic, lives here not in any shared module
 - **Four-signal retrieval with ColBERT reranking** — `HybridCaseRetriever` uses three server-side RRF prefetch legs: dense (BGE-M3 1024-dim), sparse (BGE-M3 learned lexical), and BM25 (Qdrant Document vectors with `qdrant/bm25` model). ColBERT MAX_SIM rescores the RRF results via Qdrant multi-vectors — replaces client-side cross-encoder reranking. BM25 stays as complementary lexical leg; `CamelCaseExpander` preprocesses text for BM25 at ingestion time.
+- **HyDE query expansion (experimental)** — `SessionQueryExpander` uses `AgentProvider.openSession()` to maintain a persistent Claude session for generating hypothetical documents. Activated via `casehub.rag.expansion.enabled=true` + `casehub.rag.expansion.mode=session`. Benchmark shows +7% relevant entries found but 2 scenario regressions — waiting on neocortex #116 (always include original query in RRF) to eliminate regressions. Engine-side prompt tuning (domain-aware, shorter hypotheticals, confidence gating) is the next optimisation step.
 
 ## Build
 
