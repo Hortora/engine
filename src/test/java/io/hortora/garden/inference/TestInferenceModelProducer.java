@@ -40,6 +40,7 @@ public class TestInferenceModelProducer {
                     "sparse", new float[][]{ deterministicSparse(BGE_M3_SPARSE_VOCAB) },
                     "colbert", new float[][]{ {0.5f, 0.5f}, {0.3f, 0.7f} }
             ));
+            case "reranker" -> InMemoryInferenceModel.returning(0.5f);
             default -> throw new IllegalStateException(
                     "No test InferenceModel configured for name '" + name + "'");
         };

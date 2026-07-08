@@ -110,6 +110,7 @@ public class SearchResource {
                     parseScore(chunk.metadata().get("score")),
                     chunk.content(),
                     chunk.relevanceScore(),
+                    parseDouble(chunk.metadata().get("_crossEncoderScore")),
                     federationConfig.gardenId(),
                     federationConfig.idPrefix()));
         }
@@ -189,6 +190,15 @@ public class SearchResource {
             return s != null && !s.isEmpty() ? Integer.parseInt(s) : 0;
         } catch (NumberFormatException e) {
             return 0;
+        }
+    }
+
+    private static Double parseDouble(String s) {
+        if (s == null || s.isEmpty()) return null;
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 }

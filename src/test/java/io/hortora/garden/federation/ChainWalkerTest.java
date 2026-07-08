@@ -298,7 +298,7 @@ class ChainWalkerTest {
     }
 
     private static SearchResult result(String id, double relevance, String source, String prefix) {
-        return new SearchResult(id, "Title " + id, "jvm", "gotcha", 8, "Body", relevance, source, prefix);
+        return new SearchResult(id, "Title " + id, "jvm", "gotcha", 8, "Body", relevance, null, source, prefix);
     }
 
     private static Set<String> visited() {

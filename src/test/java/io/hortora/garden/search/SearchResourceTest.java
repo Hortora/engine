@@ -240,7 +240,7 @@ class SearchResourceTest {
     // --- adaptiveExtend tests ---
 
     static SearchResult result(String id, double relevance) {
-        return new SearchResult(id, "title-" + id, "jvm", "gotcha", 8, "body", relevance, "garden", "GE");
+        return new SearchResult(id, "title-" + id, "jvm", "gotcha", 8, "body", relevance, null, "garden", "GE");
     }
 
     @Test

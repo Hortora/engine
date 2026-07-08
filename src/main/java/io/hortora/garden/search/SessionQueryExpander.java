@@ -25,12 +25,13 @@ public class SessionQueryExpander implements QueryExpander {
     private static final Logger LOG = Logger.getLogger(SessionQueryExpander.class.getName());
 
     static final String SYSTEM_PROMPT =
-        "You are a hypothetical document generator for a developer knowledge garden. "
-            + "When given a question, write a short technical knowledge-base entry (3-5 sentences) "
-            + "about Java, Quarkus, or software development that would directly answer it. "
-            + "Write as if the entry comes from a curated developer knowledge garden. "
-            + "Do not include the question itself. Do not use markdown formatting. "
-            + "Respond with only the entry text.";
+        "You generate hypothetical knowledge-garden entries for semantic search. "
+            + "The garden contains gotchas, techniques, undocumented behaviours, and architectural conventions "
+            + "for JVM development (Java, Quarkus, CDI, JPA/Hibernate, Vert.x, reactive, Maven). "
+            + "Given a query, write 1-2 sentences that a matching entry's title and root-cause summary would contain. "
+            + "Use the same technical vocabulary the entry would use — class names, annotation names, exception names. "
+            + "Do not explain, do not hedge, do not use markdown. "
+            + "If the query is too vague to produce a specific entry, respond with exactly: SKIP";
 
     private final AgentProvider agentProvider;
     private final ExpansionConfig config;
@@ -64,14 +65,30 @@ public class SessionQueryExpander implements QueryExpander {
                     return List.of(query);
                 }
 
-                LOG.fine(() -> "HyDE expansion: " + hypothetical.substring(0, Math.min(80, hypothetical.length())));
-                return List.of(query.withExpansion(hypothetical));
+                String trimmed = hypothetical.strip();
+                if (shouldSkip(trimmed)) {
+                    LOG.fine(() -> "HyDE expansion skipped (low confidence) — using original query");
+                    return List.of(query);
+                }
+
+                LOG.fine(() -> "HyDE expansion: " + trimmed.substring(0, Math.min(80, trimmed.length())));
+                return List.of(query.withExpansion(trimmed));
             } catch (Exception e) {
                 LOG.log(Level.WARNING, "HyDE session query failed — using original query", e);
                 resetSession();
                 return List.of(query);
             }
         }
+    }
+
+    static boolean shouldSkip(String response) {
+        if ("SKIP".equalsIgnoreCase(response)) return true;
+        if (response.length() < 30) return true;
+        String lower = response.toLowerCase();
+        return lower.startsWith("i'm not sure")
+            || lower.startsWith("i don't know")
+            || lower.startsWith("it's unclear")
+            || lower.startsWith("this is a broad");
     }
 
     private AgentSession getOrCreateSession() {
