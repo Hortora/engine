@@ -14,9 +14,9 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static io.hortora.garden.search.SearchResource.adaptiveExtend;
-
 import io.quarkus.test.junit.QuarkusTest;
+
+import java.util.Comparator;
 
 @QuarkusTest
 class SearchResourceTest {
@@ -237,100 +237,151 @@ class SearchResourceTest {
         assertThat(results).hasSizeGreaterThanOrEqualTo(0);
     }
 
-    // --- adaptiveExtend tests ---
+    // --- adaptiveFilter tests ---
 
     static SearchResult result(String id, double relevance) {
         return new SearchResult(id, "title-" + id, "jvm", "gotcha", 8, "body", relevance, null, "garden", "GE");
     }
 
-    @Test
-    void adaptiveExtend_fewerThanLimit_returnsAll() {
-        var candidates = List.of(result("a", 0.9), result("b", 0.8));
-        var adaptive = adaptiveExtend(candidates, 5, 0.3);
-
-        assertThat(adaptive.results()).hasSize(2);
-        assertThat(adaptive.requestedLimit()).isEqualTo(5);
-        assertThat(adaptive.extended()).isFalse();
-        assertThat(adaptive.availableAboveFloor()).isEqualTo(2);
+    static SearchResult ceResult(String id, double relevance, double ceScore) {
+        return new SearchResult(id, "title-" + id, "jvm", "gotcha", 8, "body", relevance, ceScore, "garden", "GE");
     }
 
     @Test
-    void adaptiveExtend_exactlyAtLimit_noExtension() {
+    void adaptiveFilter_highSignal_noTrimming() {
         var candidates = List.of(
-                result("a", 0.9), result("b", 0.85), result("c", 0.80),
-                result("d", 0.3)); // big gap after position 3
-        var adaptive = adaptiveExtend(candidates, 3, 0.3);
-
-        assertThat(adaptive.results()).hasSize(3);
-        assertThat(adaptive.extended()).isFalse();
+                ceResult("a", 20.0, 6.7), ceResult("b", 19.0, 6.4),
+                ceResult("c", 21.0, 6.2), ceResult("d", 18.0, 6.0),
+                ceResult("e", 20.5, 5.8), ceResult("f", 19.5, 5.5));
+        var r = SearchResource.adaptiveFilter(candidates, 6, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(6);
+        assertThat(r.trimmed()).isFalse();
+        assertThat(r.extended()).isFalse();
+        assertThat(r.floorFiltered()).isEqualTo(0);
     }
 
     @Test
-    void adaptiveExtend_denseCluster_extends() {
+    void adaptiveFilter_mixed_gapTrims() {
         var candidates = List.of(
-                result("a", 0.90), result("b", 0.88), result("c", 0.86),
-                result("d", 0.84), result("e", 0.82), result("f", 0.80));
-        var adaptive = adaptiveExtend(candidates, 3, 0.3);
-
-        assertThat(adaptive.results()).hasSize(6);
-        assertThat(adaptive.extended()).isTrue();
-        assertThat(adaptive.availableAboveFloor()).isEqualTo(6);
+                ceResult("a", 17.0, 5.1), ceResult("b", 16.0, 4.2),
+                ceResult("c", 15.0, 0.7), ceResult("d", 14.0, 0.1),
+                ceResult("e", 13.0, -0.5));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(3);
+        assertThat(r.trimmed()).isTrue();
+        assertThat(r.floorFiltered()).isEqualTo(1);
     }
 
     @Test
-    void adaptiveExtend_gapAtLimitBoundary_noExtension() {
+    void adaptiveFilter_noMatch_allBelowFloor() {
         var candidates = List.of(
-                result("a", 0.90), result("b", 0.88), result("c", 0.86),
-                result("d", 0.50), result("e", 0.48));
-        var adaptive = adaptiveExtend(candidates, 3, 0.3);
-
-        assertThat(adaptive.results()).hasSize(3);
-        assertThat(adaptive.extended()).isFalse();
-        assertThat(adaptive.availableAboveFloor()).isEqualTo(5);
+                ceResult("a", 15.0, -5.9), ceResult("b", 14.0, -6.6),
+                ceResult("c", 13.0, -7.2), ceResult("d", 12.0, -8.0));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).isEmpty();
+        assertThat(r.trimmed()).isTrue();
+        assertThat(r.floorFiltered()).isEqualTo(4);
     }
 
     @Test
-    void adaptiveExtend_belowFloor_stopsEvenIfGapSmall() {
+    void adaptiveFilter_floorAndGapCooperate() {
         var candidates = List.of(
-                result("a", 0.90), result("b", 0.88),
-                result("c", 0.29), result("d", 0.28)); // gap small but below floor 0.3
-        var adaptive = adaptiveExtend(candidates, 2, 0.3);
-
-        assertThat(adaptive.results()).hasSize(2);
-        assertThat(adaptive.extended()).isFalse();
-        assertThat(adaptive.availableAboveFloor()).isEqualTo(2);
+                ceResult("a", 18.0, 4.5), ceResult("b", 17.0, 4.0),
+                ceResult("c", 16.0, 3.4), ceResult("d", 15.0, -0.4),
+                ceResult("e", 14.0, -0.7));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(3);
+        assertThat(r.trimmed()).isTrue();
+        assertThat(r.floorFiltered()).isEqualTo(2);
     }
 
     @Test
-    void adaptiveExtend_availableCountsAboveFloor() {
+    void adaptiveFilter_denseClusterExtends() {
         var candidates = List.of(
-                result("a", 0.90), result("b", 0.85), result("c", 0.80),
-                result("d", 0.40), // above floor 0.3
-                result("e", 0.20), // below floor
-                result("f", 0.10)); // below floor
-        var adaptive = adaptiveExtend(candidates, 2, 0.3);
-
-        assertThat(adaptive.availableAboveFloor()).isEqualTo(4);
+                ceResult("a", 20.0, 5.0), ceResult("b", 19.0, 4.8),
+                ceResult("c", 21.0, 4.7), ceResult("d", 18.0, 4.6),
+                ceResult("e", 20.5, 4.5), ceResult("f", 19.5, 4.3),
+                ceResult("g", 17.0, 2.0));
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(6);
+        assertThat(r.extended()).isTrue();
+        assertThat(r.trimmed()).isFalse();
     }
 
     @Test
-    void adaptiveExtend_partialClusterExtension() {
+    void adaptiveFilter_noGap_normalTruncation() {
         var candidates = List.of(
-                result("a", 0.90), result("b", 0.88),
+                ceResult("a", 18.0, 3.7), ceResult("b", 17.0, 2.4),
+                ceResult("c", 16.0, 1.5), ceResult("d", 15.0, 1.3),
+                ceResult("e", 14.0, 1.0), ceResult("f", 13.0, 0.8));
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(4);
+        assertThat(r.trimmed()).isFalse();
+        assertThat(r.extended()).isFalse();
+    }
+
+    @Test
+    void adaptiveFilter_fallbackToRelevance() {
+        var candidates = List.of(
+                result("a", 0.9), result("b", 0.88),
                 result("c", 0.86), result("d", 0.84),
-                result("e", 0.50), result("f", 0.48)); // gap at position 4→5
-        var adaptive = adaptiveExtend(candidates, 2, 0.3);
-
-        assertThat(adaptive.results()).hasSize(4);
-        assertThat(adaptive.extended()).isTrue();
+                result("e", 0.82), result("f", 0.80),
+                result("g", 0.3));
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 0.05, 3);
+        assertThat(r.results()).hasSize(6);
+        assertThat(r.extended()).isTrue();
     }
 
     @Test
-    void adaptiveExtend_emptyList() {
-        var adaptive = adaptiveExtend(List.of(), 5, 0.3);
+    void adaptiveFilter_emptyInput() {
+        var r = SearchResource.adaptiveFilter(List.of(), 16, 0.0, 1.5, 3);
+        assertThat(r.results()).isEmpty();
+        assertThat(r.trimmed()).isFalse();
+        assertThat(r.floorFiltered()).isEqualTo(0);
+    }
 
-        assertThat(adaptive.results()).isEmpty();
-        assertThat(adaptive.extended()).isFalse();
-        assertThat(adaptive.availableAboveFloor()).isEqualTo(0);
+    @Test
+    void adaptiveFilter_singleAboveFloor() {
+        var candidates = List.of(ceResult("a", 15.0, 3.5));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(1);
+    }
+
+    @Test
+    void adaptiveFilter_singleBelowFloor() {
+        var candidates = List.of(ceResult("a", 15.0, -1.0));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).isEmpty();
+        assertThat(r.floorFiltered()).isEqualTo(1);
+    }
+
+    @Test
+    void adaptiveFilter_minResultsPreventsOverTrim() {
+        var candidates = List.of(
+                ceResult("a", 18.0, 5.5), ceResult("b", 17.0, 3.6),
+                ceResult("c", 16.0, 3.1), ceResult("d", 15.0, 3.0));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(3);
+    }
+
+    @Test
+    void adaptiveFilter_mixedCeAndNonCe() {
+        var candidates = List.of(
+                ceResult("a", 18.0, 5.0), ceResult("b", 17.0, 3.0),
+                result("c", 0.8), result("d", 0.6));
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        assertThat(r.results()).hasSize(3);
+    }
+
+    @Test
+    void adaptiveFilter_denseOnly_extension() {
+        var candidates = List.of(
+                result("a", 0.90), result("b", 0.88),
+                result("c", 0.87), result("d", 0.86),
+                result("e", 0.85), result("f", 0.84),
+                result("g", 0.50));
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 0.05, 3);
+        assertThat(r.results()).hasSize(6);
+        assertThat(r.extended()).isTrue();
     }
 }

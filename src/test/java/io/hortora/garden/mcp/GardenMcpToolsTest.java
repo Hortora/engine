@@ -48,7 +48,9 @@ class GardenMcpToolsTest {
         assertThat(result).contains("**ID:** GE-20260620-a1b2c3");
         assertThat(result).contains("**Domain:** jvm");
         assertThat(result).contains("**Type:** gotcha");
-        assertThat(result).containsPattern("\\*\\*Relevance:\\*\\* \\d+\\.\\d{2}");
+        assertThat(result).satisfiesAnyOf(
+                r -> assertThat(r).containsPattern("\\*\\*Score:\\*\\* [\\-\\d]+\\.\\d+ \\(CE\\)"),
+                r -> assertThat(r).containsPattern("\\*\\*Relevance:\\*\\* \\d+\\.\\d{2}"));
         assertThat(result).contains("Hibernate lazy loading fails outside transaction.");
     }
 

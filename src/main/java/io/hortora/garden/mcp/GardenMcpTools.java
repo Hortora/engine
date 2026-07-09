@@ -48,9 +48,15 @@ public class GardenMcpTools {
           .append(" available=").append(adaptive.availableAboveFloor())
           .append(" requested=").append(adaptive.requestedLimit())
           .append(" extended=").append(adaptive.extended())
+          .append(" trimmed=").append(adaptive.trimmed())
+          .append(" floor_filtered=").append(adaptive.floorFiltered())
           .append(" -->\n");
 
-        if (adaptive.extended() || adaptive.availableAboveFloor() > adaptive.results().size()) {
+        if (adaptive.trimmed()) {
+            sb.append("*Showing ").append(adaptive.results().size())
+              .append(" results (").append(adaptive.requestedLimit())
+              .append(" requested, trimmed at score gap).*\n");
+        } else if (adaptive.extended() || adaptive.availableAboveFloor() > adaptive.results().size()) {
             sb.append("*Showing ").append(adaptive.results().size())
               .append(" results (").append(adaptive.requestedLimit()).append(" requested");
             if (adaptive.availableAboveFloor() > adaptive.results().size()) {
@@ -67,7 +73,9 @@ public class GardenMcpTools {
                         + "\n**ID:** " + extractDocumentId(r.id())
                         + " · **Domain:** " + r.domain()
                         + " · **Type:** " + r.type()
-                        + " · **Relevance:** " + String.format("%.2f", r.relevance())
+                        + " · " + (r.crossEncoderScore() != null
+                            ? "**Score:** " + String.format("%.1f", r.crossEncoderScore()) + " (CE)"
+                            : "**Relevance:** " + String.format("%.2f", r.relevance()))
                         + "\n\n" + stripTitlePrefix(r.title(), r.body()))
                 .collect(Collectors.joining("\n\n---\n\n")));
 

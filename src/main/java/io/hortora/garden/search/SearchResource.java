@@ -21,6 +21,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,12 +34,13 @@ public class SearchResource {
     static final int DEFAULT_LIMIT = 16;
     static final int MAX_LIMIT = 50;
     static final int OVERFETCH_MULTIPLIER = 2;
-    static final double GAP_THRESHOLD = 0.05;
+
 
     @Inject CaseRetriever caseRetriever;
     @Inject GardenConfig gardenConfig;
     @Inject FederationConfig federationConfig;
     @Inject ChainWalker chainWalker;
+    @Inject SearchConfig searchConfig;
 
     @GET
     public List<SearchResult> search(
@@ -66,7 +68,17 @@ public class SearchResource {
         int requestedLimit = resolveLimit(limit);
         int fetchLimit = Math.min(requestedLimit * OVERFETCH_MULTIPLIER, MAX_LIMIT);
         List<SearchResult> candidates = doSearch(query, domains, type, tags, fetchLimit, null);
-        return adaptiveExtend(candidates, requestedLimit, federationConfig.relevanceThreshold());
+
+        List<SearchResult> sorted = candidates.stream()
+                .sorted(Comparator.comparing(
+                        (SearchResult r) -> r.crossEncoderScore() != null ? 0 : 1)
+                        .thenComparing(r -> r.crossEncoderScore() != null
+                                ? -r.crossEncoderScore() : -r.relevance()))
+                .toList();
+
+        return adaptiveFilter(sorted, requestedLimit,
+                searchConfig.scoreFloor(), searchConfig.gapThreshold(),
+                searchConfig.minResults());
     }
 
     private static int resolveLimit(Integer limit) {
@@ -117,33 +129,98 @@ public class SearchResource {
         return results;
     }
 
-    static AdaptiveResult adaptiveExtend(List<SearchResult> candidates, int requestedLimit, double relevanceFloor) {
-        if (candidates.size() <= requestedLimit) {
-            int aboveFloor = (int) candidates.stream().filter(r -> r.relevance() >= relevanceFloor).count();
-            return new AdaptiveResult(candidates, requestedLimit, aboveFloor, false);
+    static AdaptiveResult adaptiveFilter(List<SearchResult> candidates,
+                                          int requestedLimit,
+                                          double scoreFloor,
+                                          double gapThreshold,
+                                          int minResults) {
+        if (candidates.isEmpty()) {
+            return new AdaptiveResult(List.of(), requestedLimit, 0, false, false, 0);
         }
 
-        int availableAboveFloor = 0;
+        boolean ceMode = candidates.stream().anyMatch(r -> r.crossEncoderScore() != null);
+
+        List<SearchResult> survivors = new ArrayList<>();
+        int floorFiltered = 0;
         for (SearchResult r : candidates) {
-            if (r.relevance() >= relevanceFloor) availableAboveFloor++;
+            double score = primaryScore(r);
+            if (score >= scoreFloor) {
+                survivors.add(r);
+            } else {
+                floorFiltered++;
+            }
         }
 
+        int availableAboveFloor = survivors.size();
+
+        if (survivors.isEmpty()) {
+            return new AdaptiveResult(List.of(), requestedLimit, 0, false,
+                    requestedLimit > 0, floorFiltered);
+        }
+
+        int cutoff;
+        boolean gapFound = false;
+        if (ceMode) {
+            int gapCutoff = findCeGapCutoff(survivors, gapThreshold, minResults);
+            if (gapCutoff >= 0) {
+                cutoff = gapCutoff;
+                gapFound = true;
+            } else {
+                cutoff = Math.min(survivors.size(), requestedLimit);
+            }
+        } else {
+            cutoff = findDenseOnlyCutoff(survivors, requestedLimit);
+        }
+
+        boolean extended = cutoff > requestedLimit;
+        int effectiveCount = Math.min(cutoff, survivors.size());
+        boolean trimmed = effectiveCount < requestedLimit && (floorFiltered > 0 || gapFound);
+
+        return new AdaptiveResult(
+                survivors.subList(0, effectiveCount),
+                requestedLimit,
+                availableAboveFloor,
+                extended,
+                trimmed,
+                floorFiltered);
+    }
+
+    private static int findCeGapCutoff(List<SearchResult> survivors,
+                                        double gapThreshold, int minResults) {
+        for (int i = 0; i < survivors.size() - 1; i++) {
+            Double currentCe = survivors.get(i).crossEncoderScore();
+            Double nextCe = survivors.get(i + 1).crossEncoderScore();
+            if (currentCe != null && nextCe != null) {
+                double gap = currentCe - nextCe;
+                if (gap >= gapThreshold) {
+                    return Math.max(i + 1, minResults);
+                }
+            } else if (currentCe != null && nextCe == null) {
+                return Math.max(i + 1, minResults);
+            }
+        }
+        return -1;
+    }
+
+    private static int findDenseOnlyCutoff(List<SearchResult> survivors,
+                                            int requestedLimit) {
+        if (survivors.size() <= requestedLimit) {
+            return survivors.size();
+        }
         int cutoff = requestedLimit;
-        for (int i = requestedLimit - 1; i < candidates.size() - 1; i++) {
-            double gap = candidates.get(i).relevance() - candidates.get(i + 1).relevance();
-            if (gap < GAP_THRESHOLD && candidates.get(i + 1).relevance() >= relevanceFloor) {
+        for (int i = requestedLimit - 1; i < survivors.size() - 1; i++) {
+            double gap = survivors.get(i).relevance() - survivors.get(i + 1).relevance();
+            if (gap < 0.05) {
                 cutoff = i + 2;
             } else {
                 break;
             }
         }
+        return cutoff;
+    }
 
-        boolean extended = cutoff > requestedLimit;
-        return new AdaptiveResult(
-                candidates.subList(0, Math.min(cutoff, candidates.size())),
-                requestedLimit,
-                availableAboveFloor,
-                extended);
+    private static double primaryScore(SearchResult r) {
+        return r.crossEncoderScore() != null ? r.crossEncoderScore() : r.relevance();
     }
 
     static PayloadFilter buildFilter(List<String> domains, String type, String tags) {

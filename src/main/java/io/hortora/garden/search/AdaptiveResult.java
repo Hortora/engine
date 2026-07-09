@@ -6,5 +6,7 @@ public record AdaptiveResult(
         List<SearchResult> results,
         int requestedLimit,
         int availableAboveFloor,
-        boolean extended) {
+        boolean extended,
+        boolean trimmed,
+        int floorFiltered) {
 }
