@@ -71,6 +71,12 @@
       "methods": [
         "gardenSearch-NL"
       ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260416-39d854": {
@@ -127,6 +133,12 @@
       "methods": [
         "gardenSearch-KW"
       ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260418-03a6f4": {
@@ -151,6 +163,12 @@
       "methods": [
         "gardenSearch-KW",
         "gardenSearch-NL"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -332,6 +350,12 @@
       "benchmark_score": 2,
       "methods": [
         "gardenSearch-NL"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -617,6 +641,12 @@
       "benchmark_score": 1,
       "methods": [
         "grep"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -937,6 +967,12 @@
       "methods": [
         "grep"
       ]
+    },
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260512-a9ad9f": {
@@ -1148,6 +1184,12 @@
       "methods": [
         "gardenSearch-NL"
       ]
+    },
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260518-a61d1b": {
@@ -1311,6 +1353,18 @@
       "benchmark_score": 1,
       "methods": [
         "bge-m3-four-signal"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -1573,6 +1627,12 @@
       "methods": [
         "grep"
       ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260526-1653dc": {
@@ -1674,6 +1734,42 @@
       "methods": [
         "gardenSearch-KW"
       ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260528-e9564b": {
@@ -1766,6 +1862,48 @@
       "methods": [
         "gardenSearch-KW"
       ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260529-636a36": {
@@ -1790,6 +1928,48 @@
       "benchmark_score": 0,
       "methods": [
         "gardenSearch-KW"
+      ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -1919,6 +2099,36 @@
       "methods": [
         "gardenSearch-KW"
       ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260530-63f1cb": {
@@ -1980,6 +2190,42 @@
       "benchmark_score": 0,
       "methods": [
         "gardenSearch-KW"
+      ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -2210,6 +2456,48 @@
       "methods": [
         "gardenSearch-KW"
       ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260602-6cfbdb": {
@@ -2303,6 +2591,12 @@
       "methods": [
         "grep"
       ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260604-81a6a6": {
@@ -2336,6 +2630,12 @@
       "benchmark_score": 0,
       "methods": [
         "grep"
+      ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -2393,6 +2693,12 @@
       "methods": [
         "gardenSearch-KW"
       ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260605-8b9118": {
@@ -2400,6 +2706,18 @@
       "benchmark_score": 0,
       "methods": [
         "gardenSearch-KW"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -2424,6 +2742,12 @@
       "benchmark_score": 0,
       "methods": [
         "grep"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -2584,6 +2908,12 @@
       "benchmark_score": 0,
       "methods": [
         "bge-m3-four-signal"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -2983,6 +3313,24 @@
       "methods": [
         "grep"
       ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260614-94c366": {
@@ -2990,6 +3338,12 @@
       "benchmark_score": 0,
       "methods": [
         "grep"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -3239,6 +3593,42 @@
       "methods": [
         "bge-m3-four-signal"
       ]
+    },
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260618-a7a383": {
@@ -3308,6 +3698,18 @@
         "gardenSearch-KW",
         "gardenSearch-NL"
       ]
+    },
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260622-580d45": {
@@ -3315,6 +3717,12 @@
       "benchmark_score": 0,
       "methods": [
         "gardenSearch-NL"
+      ]
+    },
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -3369,6 +3777,12 @@
         "gardenSearch-KW",
         "gardenSearch-NL"
       ]
+    },
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
     }
   },
   "GE-20260626-a37306": {
@@ -3376,6 +3790,12 @@
       "benchmark_score": 2,
       "methods": [
         "gardenSearch-NL"
+      ]
+    },
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   },
@@ -3557,6 +3977,526 @@
       "benchmark_score": 0,
       "methods": [
         "bge-m3-four-signal"
+      ]
+    }
+  },
+  "GE-20260420-7d28fa": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260423-e92da0": {
+    "issue-1-reactive-async": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260505-48085a": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-4-rest-messaging": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260629-83784a": {
+    "issue-2-cdi-wiring": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0143": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260619-fe34fc": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260628-6599e6": {
+    "issue-3-persistence-migrations": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0070": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260522-5685ba": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260615-388a35": {
+    "issue-4-rest-messaging": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0078": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260628-f4177d": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260629-63d619": {
+    "issue-5-ai-llm-inference": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260424-918740": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260427-c2b84f": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260521-1e95dc": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260529-9d2ad0": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260627-47c1eb": {
+    "issue-6-testing-ci": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0080": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0117": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260519-290cfb": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260609-02c68a": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260613-6527d0": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/clinical-ae-memory-grade-outcome-separation": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/clinical-rbac-endpoint-topology": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/platform-storeall-security-exception-propagation": {
+    "spec1-d1-cdi-priority-tiers": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260623-941ade": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    },
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260623-e9ac8d": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "approaches/security-audit": {
+    "spec1-d2-thread-safety": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260420-dc3c2f": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260422-334eb8": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260529-18fc5f": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 2,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260601-b76fba": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260616-e04575": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260623-95e1e6": {
+    "spec1-d3-extension-deactivation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0016": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0043": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260421-ef0a4e": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260525-55d8f6": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260602-9c056b": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260616-90a867": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/arc42stories-post-generation-quality-gate": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/arc42stories-primary-record-declaration": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/arc42stories-project-repo-placement": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "casehub-work/docs/protocols/casehub/platform-casememorystore-timed-annotation": {
+    "spec1-d4-protocol-compliance": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260520-e15ff0": {
+    "spec2-d1-cdi-tier-coexistence": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260423-af487b": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260609-23438e": {
+    "spec2-d2-chatmodel-adaptation": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260421-1192cd": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260423-a01832": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260612-279b44": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260614-eaa3e7": {
+    "spec2-d3-circular-deps": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-0175": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260420-e61431": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 1,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260602-a4d290": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
+      ]
+    }
+  },
+  "GE-20260618-a677f1": {
+    "spec2-d4-exception-mapper": {
+      "benchmark_score": 0,
+      "methods": [
+        "scored-batch-48"
       ]
     }
   }

@@ -62,7 +62,7 @@ Zero regressions on non-keyword-gap scenarios. BM25 is the dominant contributor 
 
 ### Caveats
 
-- 87 new entries are unscored (appeared in three-leg but absent from #27 baseline). True precision may differ once scored.
+- All entries are now scored (#48). The original 87 unscored entries were predominantly noise (72% scored 0). Three-leg precision adjusted from 94% → 86% once scored. This does not change the delta vs dense-only (+41pp), which remains the dominant finding.
 - Corpus grew 1,984 → 2,026 points between runs (+42 entries).
 - SPLADE/reranker were temporarily enabled for the benchmark and re-commented afterward.
 
