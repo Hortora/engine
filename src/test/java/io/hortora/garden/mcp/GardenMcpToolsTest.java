@@ -2,7 +2,10 @@ package io.hortora.garden.mcp;
 
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.RetrievalQuery;
+import io.casehub.neocortex.rag.RetrievedChunk;
 import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
+import io.casehub.neocortex.rag.testing.InMemoryRetrievalTracker;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,6 +22,9 @@ class GardenMcpToolsTest {
 
     @Inject GardenMcpTools mcpTools;
     @Inject InMemoryEmbeddingIngestor ingestor;
+    @Inject
+            io.casehub.neocortex.rag.testing.InMemoryRetrievalTracker retrievalTracker;
+
 
     private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");
 
@@ -39,6 +46,12 @@ class GardenMcpToolsTest {
                         Map.of("tags", List.of("cdi", "quarkus", "beans")))
         ));
     }
+
+    @BeforeEach
+    void clearTracking() {
+        retrievalTracker.clear();
+    }
+
 
     @Test
     void gardenSearchReturnsFormattedResults() {
@@ -162,5 +175,131 @@ class GardenMcpToolsTest {
         assertThat(result).contains("<!-- search_meta:");
         assertThat(result).contains("returned=");
         assertThat(result).contains("requested=");
+    }
+
+    @Test
+    void gardenUnretrievedReturnsEntriesNeverRetrieved() {
+        String result = mcpTools.gardenUnretrieved(1, null);
+
+        assertThat(result).contains("GE-20260620-a1b2c3");
+        assertThat(result).contains("GE-20260621-d4e5f6");
+    }
+
+    @Test
+    void gardenUnretrievedExcludesRetrievedEntries() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                16);
+
+        String result = mcpTools.gardenUnretrieved(1, null);
+
+        assertThat(result).doesNotContain("GE-20260620-a1b2c3");
+        assertThat(result).contains("GE-20260621-d4e5f6");
+    }
+
+    @Test
+    void gardenUnretrievedExcludesRecentEntries() {
+        String todayId = "jvm/GE-" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE) + "-aabbcc.md";
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput("Recent entry.", todayId,
+                        Map.of("title", "Recent", "domain", "jvm", "type", "gotcha"))));
+
+        String result = mcpTools.gardenUnretrieved(30, null);
+
+        assertThat(result).doesNotContain("aabbcc");
+    }
+
+    @Test
+    void gardenUnretrievedIncludesNonGeEntriesUnconditionally() {
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput("Testing principles.", "approaches/testing.md",
+                        Map.of("title", "Testing", "domain", "approaches", "type", "reference"))));
+
+        String result = mcpTools.gardenUnretrieved(1, null);
+
+        assertThat(result).contains("approaches/testing");
+    }
+
+    @Test
+    void gardenUnretrievedDetectsStaleEntries() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                16);
+
+        String result = mcpTools.gardenUnretrieved(1, 0);
+
+        assertThat(result).contains("Stale entries");
+        assertThat(result).contains("GE-20260620-a1b2c3");
+    }
+
+    @Test
+    void gardenUnretrievedGroupsByDomain() {
+        ingestor.ingest(CORPUS, List.of(
+                new ChunkInput("Python gotcha.", "python/GE-20260101-aabbcc.md",
+                        Map.of("title", "Python gotcha", "domain", "python", "type", "gotcha"))));
+
+        String result = mcpTools.gardenUnretrieved(1, null);
+
+        assertThat(result).contains("### jvm");
+        assertThat(result).contains("### python");
+    }
+
+    @Test
+    void gardenUnretrievedAllRetrievedReturnsPositiveMessage() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                16);
+        retrievalTracker.record(
+                RetrievalQuery.of("CDI"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260621-d4e5f6.md", 0.8, Map.of())),
+                16);
+
+        String result = mcpTools.gardenUnretrieved(1, null);
+
+        assertThat(result).contains("All");
+        assertThat(result).contains("entries have been retrieved");
+    }
+
+    @Test
+    void gardenSearchRecordsRetrievalsViaDecorator() {
+        retrievalTracker.clear();
+        mcpTools.gardenSearch("hibernate lazy", null, null, null, null);
+
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        Set<String> retrievedIds = retrievalTracker.findRetrievedDocumentIds(
+                corpus, java.time.Instant.EPOCH, java.time.Instant.now());
+
+        assertThat(retrievedIds).isNotEmpty();
+    }
+
+    @Test
+    void passesMinDaysFilterExcludesRecentGeEntries() {
+        String recentId = "jvm/GE-" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE) + "-aabbcc.md";
+        assertThat(GardenMcpTools.passesMinDaysFilter(recentId, 30)).isFalse();
+    }
+
+    @Test
+    void passesMinDaysFilterIncludesOldGeEntries() {
+        assertThat(GardenMcpTools.passesMinDaysFilter("jvm/GE-20250101-aabbcc.md", 30)).isTrue();
+    }
+
+    @Test
+    void passesMinDaysFilterIncludesNonGeEntries() {
+        assertThat(GardenMcpTools.passesMinDaysFilter("approaches/testing.md", 30)).isTrue();
+    }
+
+    @Test
+    void passesMinDaysFilterIncludesGeWithoutPath() {
+        assertThat(GardenMcpTools.passesMinDaysFilter("GE-20250101-aabbcc.md", 30)).isTrue();
     }
 }

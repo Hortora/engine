@@ -2,6 +2,7 @@ package io.hortora.garden.mcp;
 
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.EmbeddingIngestor;
+import io.casehub.neocortex.rag.RetrievalTracker;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
 import io.hortora.garden.inference.CollectionMigration;
@@ -14,17 +15,75 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class GardenMcpTools {
 
-    @Inject SearchResource searchResource;
-    @Inject EmbeddingIngestor embeddingIngestor;
-    @Inject GardenConfig config;
-    @Inject FederationConfig federationConfig;
-    @Inject CollectionMigration collectionMigration;
+    @Inject
+    SearchResource      searchResource;
+    @Inject
+    EmbeddingIngestor   embeddingIngestor;
+    @Inject
+    GardenConfig        config;
+    @Inject
+    FederationConfig    federationConfig;
+    @Inject
+    CollectionMigration collectionMigration;
+    @Inject
+    RetrievalTracker retrievalTracker;
+
+    static boolean passesMinDaysFilter(String documentId, int minDays) {
+        String filename = documentId.contains("/")
+                          ? documentId.substring(documentId.lastIndexOf('/') + 1) : documentId;
+        if (filename.matches("GE-\\d{8}-[0-9a-f]{6}\\.md")) {
+            String dateStr = filename.substring(3, 11);
+            try {
+                LocalDate entryDate = LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
+                return ChronoUnit.DAYS.between(entryDate, LocalDate.now()) >= minDays;
+            } catch (DateTimeParseException e) {
+                return true;
+            }
+        }
+        return true;
+    }
+
+    private static Map<String, List<String>> groupByDomain(List<String> documentIds) {
+        return documentIds.stream()
+                          .collect(Collectors.groupingBy(
+                                  id -> id.contains("/") ? id.substring(0, id.indexOf('/')) : "unknown",
+                                  TreeMap::new, Collectors.toList()));
+    }
+
+    static String extractDocumentId(String path) {
+        if (path == null) {
+            return "";
+        }
+        String withoutExt = path.replaceFirst("\\.md$", "");
+        String filename = withoutExt.contains("/")
+                          ? withoutExt.substring(withoutExt.lastIndexOf('/') + 1)
+                          : withoutExt;
+        if (filename.matches("GE-\\d{8}-[0-9a-f]{6}")) {
+            return filename;
+        }
+        return withoutExt;
+    }
+
+    static String stripTitlePrefix(String title, String body) {
+        if (title != null && body != null && body.startsWith(title + "\n\n")) {
+            return body.substring(title.length() + 2);
+        }
+        return body;
+    }
 
     @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption. Results are adaptively extended when a dense cluster of relevant entries exists beyond the requested limit.")
     String gardenSearch(
@@ -35,8 +94,8 @@ public class GardenMcpTools {
             @ToolArg(description = "Maximum number of entries to return (default 16, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit) {
 
         AdaptiveResult adaptive = searchResource.searchAdaptive(query,
-                domain != null && !domain.isBlank() ? List.of(domain) : null,
-                type, tags, limit);
+                                                                domain != null && !domain.isBlank() ? List.of(domain) : null,
+                                                                type, tags, limit);
 
         if (adaptive.results().isEmpty()) {
             return "No relevant garden entries found for: " + query;
@@ -69,15 +128,15 @@ public class GardenMcpTools {
         sb.append("\n");
 
         sb.append(adaptive.results().stream()
-                .map(r -> "## " + provenanceLabel(r) + " " + r.title()
-                        + "\n**ID:** " + extractDocumentId(r.id())
-                        + " · **Domain:** " + r.domain()
-                        + " · **Type:** " + r.type()
-                        + " · " + (r.crossEncoderScore() != null
-                            ? "**Score:** " + String.format("%.1f", r.crossEncoderScore()) + " (CE)"
-                            : "**Relevance:** " + String.format("%.2f", r.relevance()))
-                        + "\n\n" + stripTitlePrefix(r.title(), r.body()))
-                .collect(Collectors.joining("\n\n---\n\n")));
+                          .map(r -> "## " + provenanceLabel(r) + " " + r.title()
+                                    + "\n**ID:** " + extractDocumentId(r.id())
+                                    + " · **Domain:** " + r.domain()
+                                    + " · **Type:** " + r.type()
+                                    + " · " + (r.crossEncoderScore() != null
+                                               ? "**Score:** " + String.format("%.1f", r.crossEncoderScore()) + " (CE)"
+                                               : "**Relevance:** " + String.format("%.2f", r.relevance()))
+                                    + "\n\n" + stripTitlePrefix(r.title(), r.body()))
+                          .collect(Collectors.joining("\n\n---\n\n")));
 
         return sb.toString();
     }
@@ -85,7 +144,7 @@ public class GardenMcpTools {
     @Tool(description = "Get the status of the garden index: how many entries are indexed and where the garden is located.")
     String gardenStatus() {
         CorpusRef corpusRef = new CorpusRef("hortora", config.id());
-        int count;
+        int       count;
         try {
             count = embeddingIngestor.listDocuments(corpusRef).size();
         } catch (Exception e) {
@@ -98,7 +157,7 @@ public class GardenMcpTools {
     @Tool(description = "Trigger a full re-index of the garden corpus. Deletes the current Qdrant collection and resets the cursor so the next ingestion cycle re-embeds all entries. Use after bulk metadata changes, reclassification, or schema evolution.")
     String gardenReindex() {
         CorpusRef corpusRef = new CorpusRef("hortora", config.id());
-        int fileCount;
+        int       fileCount;
         try {
             fileCount = embeddingIngestor.listDocuments(corpusRef).size();
         } catch (Exception e) {
@@ -113,8 +172,72 @@ public class GardenMcpTools {
         }
 
         return "Reindex triggered for garden '" + config.id()
-                + "'. Collection deleted, cursor reset. Re-embedding will complete on next ingestion cycle"
-                + (fileCount >= 0 ? " (" + fileCount + " entries in corpus)." : ".");
+               + "'. Collection deleted, cursor reset. Re-embedding will complete on next ingestion cycle"
+               + (fileCount >= 0 ? " (" + fileCount + " entries in corpus)." : ".");
+    }
+
+    @Tool(description = "List garden entries not retrieved within the tracking window, or stale-retrieved. Retrieval records are retained for a configurable period (default 180 days); 'unretrieved' means no retrieval record exists in that window. Use to identify candidates for review or erasure during harvest sessions.")
+    String gardenUnretrieved(
+            @ToolArg(description = "Minimum age in days — entries indexed less than this many days ago are excluded (default 30)", required = false)
+            Integer minDays,
+            @ToolArg(description = "Stale threshold in days — entries retrieved at some point but not within this window are flagged as stale (default 90). Must be less than the retention period.", required = false)
+            Integer staleDays) {
+
+        int effectiveMinDays   = minDays != null && minDays > 0 ? minDays : 30;
+        int effectiveStaleDays = staleDays != null && staleDays >= 0 ? staleDays : 90;
+
+        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+
+        List<String> allDocuments = embeddingIngestor.listDocuments(corpusRef);
+        Set<String> everRetrieved = retrievalTracker.findRetrievedDocumentIds(
+                corpusRef, Instant.EPOCH, Instant.now());
+
+        List<String> unretrieved = allDocuments.stream()
+                                               .filter(id -> !everRetrieved.contains(id))
+                                               .filter(id -> passesMinDaysFilter(id, effectiveMinDays))
+                                               .sorted()
+                                               .toList();
+
+        Set<String> recentlyRetrieved = retrievalTracker.findRetrievedDocumentIds(
+                corpusRef,
+                Instant.now().minus(effectiveStaleDays, ChronoUnit.DAYS),
+                Instant.now());
+        List<String> stale = allDocuments.stream()
+                                         .filter(everRetrieved::contains)
+                                         .filter(id -> !recentlyRetrieved.contains(id))
+                                         .sorted()
+                                         .toList();
+
+        if (unretrieved.isEmpty() && stale.isEmpty()) {
+            return "All " + allDocuments.size() + " entries have been retrieved within the tracking window.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Tracking window: retrieval records retained for configured period. ")
+          .append("Stale threshold: ").append(effectiveStaleDays).append(" days.\n\n");
+
+        if (!unretrieved.isEmpty()) {
+            sb.append("## Unretrieved entries (").append(unretrieved.size()).append(")\n\n");
+            Map<String, List<String>> byDomain = groupByDomain(unretrieved);
+            for (var entry : byDomain.entrySet()) {
+                sb.append("### ").append(entry.getKey()).append("\n");
+                entry.getValue().forEach(id -> sb.append("- ").append(extractDocumentId(id)).append("\n"));
+                sb.append("\n");
+            }
+        }
+
+        if (!stale.isEmpty()) {
+            sb.append("## Stale entries (").append(stale.size())
+              .append(") — not retrieved in the last ").append(effectiveStaleDays).append(" days\n\n");
+            Map<String, List<String>> byDomain = groupByDomain(stale);
+            for (var entry : byDomain.entrySet()) {
+                sb.append("### ").append(entry.getKey()).append("\n");
+                entry.getValue().forEach(id -> sb.append("- ").append(extractDocumentId(id)).append("\n"));
+                sb.append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 
     private String provenanceLabel(SearchResult result) {
@@ -122,26 +245,5 @@ public class GardenMcpTools {
             return "[own]";
         }
         return "[" + result.sourcePrefix() + "]";
-    }
-
-    static String extractDocumentId(String path) {
-        if (path == null) {
-            return "";
-        }
-        String withoutExt = path.replaceFirst("\\.md$", "");
-        String filename = withoutExt.contains("/")
-                ? withoutExt.substring(withoutExt.lastIndexOf('/') + 1)
-                : withoutExt;
-        if (filename.matches("GE-\\d{8}-[0-9a-f]{6}")) {
-            return filename;
-        }
-        return withoutExt;
-    }
-
-    static String stripTitlePrefix(String title, String body) {
-        if (title != null && body != null && body.startsWith(title + "\n\n")) {
-            return body.substring(title.length() + 2);
-        }
-        return body;
     }
 }
