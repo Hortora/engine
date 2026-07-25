@@ -8,6 +8,7 @@ import io.casehub.neocortex.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.ChainWalker;
 import io.hortora.garden.federation.FederationConfig;
+import io.hortora.garden.index.QueryAugmentingExtractor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -120,7 +121,7 @@ public class SearchResource {
                     chunk.metadata().getOrDefault("domain", ""),
                     chunk.metadata().getOrDefault("type", ""),
                     parseScore(chunk.metadata().get("score")),
-                    chunk.content(),
+                    QueryAugmentingExtractor.stripQueries(chunk.content()),
                     chunk.relevanceScore(),
                     parseDouble(chunk.metadata().get("_crossEncoderScore")),
                     federationConfig.gardenId(),
