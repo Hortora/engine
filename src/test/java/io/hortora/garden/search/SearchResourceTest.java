@@ -16,8 +16,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import io.quarkus.test.junit.QuarkusTest;
 
-import java.util.Comparator;
-
 @QuarkusTest
 class SearchResourceTest {
 
@@ -253,7 +251,7 @@ class SearchResourceTest {
                 ceResult("a", 20.0, 6.7), ceResult("b", 19.0, 6.4),
                 ceResult("c", 21.0, 6.2), ceResult("d", 18.0, 6.0),
                 ceResult("e", 20.5, 5.8), ceResult("f", 19.5, 5.5));
-        var r = SearchResource.adaptiveFilter(candidates, 6, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 6, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(6);
         assertThat(r.trimmed()).isFalse();
         assertThat(r.extended()).isFalse();
@@ -266,7 +264,7 @@ class SearchResourceTest {
                 ceResult("a", 17.0, 5.1), ceResult("b", 16.0, 4.2),
                 ceResult("c", 15.0, 0.7), ceResult("d", 14.0, 0.1),
                 ceResult("e", 13.0, -0.5));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(3);
         assertThat(r.trimmed()).isTrue();
         assertThat(r.floorFiltered()).isEqualTo(1);
@@ -277,7 +275,7 @@ class SearchResourceTest {
         var candidates = List.of(
                 ceResult("a", 15.0, -5.9), ceResult("b", 14.0, -6.6),
                 ceResult("c", 13.0, -7.2), ceResult("d", 12.0, -8.0));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).isEmpty();
         assertThat(r.trimmed()).isTrue();
         assertThat(r.floorFiltered()).isEqualTo(4);
@@ -289,7 +287,7 @@ class SearchResourceTest {
                 ceResult("a", 18.0, 4.5), ceResult("b", 17.0, 4.0),
                 ceResult("c", 16.0, 3.4), ceResult("d", 15.0, -0.4),
                 ceResult("e", 14.0, -0.7));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(3);
         assertThat(r.trimmed()).isTrue();
         assertThat(r.floorFiltered()).isEqualTo(2);
@@ -302,7 +300,7 @@ class SearchResourceTest {
                 ceResult("c", 21.0, 4.7), ceResult("d", 18.0, 4.6),
                 ceResult("e", 20.5, 4.5), ceResult("f", 19.5, 4.3),
                 ceResult("g", 17.0, 2.0));
-        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(6);
         assertThat(r.extended()).isTrue();
         assertThat(r.trimmed()).isFalse();
@@ -314,7 +312,7 @@ class SearchResourceTest {
                 ceResult("a", 18.0, 3.7), ceResult("b", 17.0, 2.4),
                 ceResult("c", 16.0, 1.5), ceResult("d", 15.0, 1.3),
                 ceResult("e", 14.0, 1.0), ceResult("f", 13.0, 0.8));
-        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(4);
         assertThat(r.trimmed()).isFalse();
         assertThat(r.extended()).isFalse();
@@ -327,14 +325,14 @@ class SearchResourceTest {
                 result("c", 0.86), result("d", 0.84),
                 result("e", 0.82), result("f", 0.80),
                 result("g", 0.3));
-        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 0.05, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 0.05, 3, 0.0);
         assertThat(r.results()).hasSize(6);
         assertThat(r.extended()).isTrue();
     }
 
     @Test
     void adaptiveFilter_emptyInput() {
-        var r = SearchResource.adaptiveFilter(List.of(), 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(List.of(), 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).isEmpty();
         assertThat(r.trimmed()).isFalse();
         assertThat(r.floorFiltered()).isEqualTo(0);
@@ -343,14 +341,14 @@ class SearchResourceTest {
     @Test
     void adaptiveFilter_singleAboveFloor() {
         var candidates = List.of(ceResult("a", 15.0, 3.5));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(1);
     }
 
     @Test
     void adaptiveFilter_singleBelowFloor() {
         var candidates = List.of(ceResult("a", 15.0, -1.0));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).isEmpty();
         assertThat(r.floorFiltered()).isEqualTo(1);
     }
@@ -360,7 +358,7 @@ class SearchResourceTest {
         var candidates = List.of(
                 ceResult("a", 18.0, 5.5), ceResult("b", 17.0, 3.6),
                 ceResult("c", 16.0, 3.1), ceResult("d", 15.0, 3.0));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(3);
     }
 
@@ -369,7 +367,7 @@ class SearchResourceTest {
         var candidates = List.of(
                 ceResult("a", 18.0, 5.0), ceResult("b", 17.0, 3.0),
                 result("c", 0.8), result("d", 0.6));
-        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 16, 0.0, 1.5, 3, 0.0);
         assertThat(r.results()).hasSize(3);
     }
 
@@ -380,7 +378,7 @@ class SearchResourceTest {
                 result("c", 0.87), result("d", 0.86),
                 result("e", 0.85), result("f", 0.84),
                 result("g", 0.50));
-        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 0.05, 3);
+        var r = SearchResource.adaptiveFilter(candidates, 4, 0.0, 0.05, 3, 0.0);
         assertThat(r.results()).hasSize(6);
         assertThat(r.extended()).isTrue();
     }

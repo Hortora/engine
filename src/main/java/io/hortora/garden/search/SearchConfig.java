@@ -14,4 +14,8 @@ public interface SearchConfig {
 
     @WithDefault("3")
     int minResults();
+
+    @WithDefault("0.0")
+    double scoreBoostWeight();
+
 }

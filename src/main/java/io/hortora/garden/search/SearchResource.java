@@ -66,21 +66,20 @@ public class SearchResource {
     }
 
     public AdaptiveResult searchAdaptive(String query, List<String> domains, String type, String tags, Integer limit) {
-        int requestedLimit = resolveLimit(limit);
-        int fetchLimit = Math.min(requestedLimit * OVERFETCH_MULTIPLIER, MAX_LIMIT);
-        List<SearchResult> candidates = doSearch(query, domains, type, tags, fetchLimit, null);
+        int                requestedLimit = resolveLimit(limit);
+        int                fetchLimit     = Math.min(requestedLimit * OVERFETCH_MULTIPLIER, MAX_LIMIT);
+        List<SearchResult> candidates     = doSearch(query, domains, type, tags, fetchLimit, null);
+        double             boostWeight    = searchConfig.scoreBoostWeight();
 
         List<SearchResult> sorted = candidates.stream()
-                .sorted(Comparator.comparing(
-                        (SearchResult r) -> r.crossEncoderScore() != null ? 0 : 1)
-                        .thenComparing(r -> r.crossEncoderScore() != null
-                                ? -r.crossEncoderScore() : -r.relevance()))
-                .toList();
+                                              .sorted(Comparator.comparing(
+                                                                        (SearchResult r) -> r.crossEncoderScore() != null ? 0 : 1)
+                                                                .thenComparing(r -> -boostedScore(r, boostWeight)))
+                                              .toList();
 
         return adaptiveFilter(sorted, requestedLimit,
-                searchConfig.scoreFloor(), searchConfig.gapThreshold(),
-                searchConfig.minResults());
-    }
+                              searchConfig.scoreFloor(), searchConfig.gapThreshold(),
+                              searchConfig.minResults(), boostWeight);}
 
     private static int resolveLimit(Integer limit) {
         if (limit == null || limit <= 0) return DEFAULT_LIMIT;
@@ -131,10 +130,10 @@ public class SearchResource {
     }
 
     static AdaptiveResult adaptiveFilter(List<SearchResult> candidates,
-                                          int requestedLimit,
-                                          double scoreFloor,
-                                          double gapThreshold,
-                                          int minResults) {
+                                         int requestedLimit,
+                                         double scoreFloor,
+                                         double gapThreshold,
+                                         int minResults, double boostWeight) {
         if (candidates.isEmpty()) {
             return new AdaptiveResult(List.of(), requestedLimit, 0, false, false, 0);
         }
@@ -144,7 +143,7 @@ public class SearchResource {
         List<SearchResult> survivors = new ArrayList<>();
         int floorFiltered = 0;
         for (SearchResult r : candidates) {
-            double score = primaryScore(r);
+            double score = boostedScore(r, boostWeight);
             if (score >= scoreFloor) {
                 survivors.add(r);
             } else {
@@ -223,6 +222,11 @@ public class SearchResource {
     private static double primaryScore(SearchResult r) {
         return r.crossEncoderScore() != null ? r.crossEncoderScore() : r.relevance();
     }
+
+    static double boostedScore(SearchResult r, double boostWeight) {
+        return primaryScore(r) + (r.score() * boostWeight);
+    }
+
 
     static PayloadFilter buildFilter(List<String> domains, String type, String tags) {
         List<PayloadFilter> filters = new ArrayList<>();
