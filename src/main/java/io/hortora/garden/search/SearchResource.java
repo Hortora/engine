@@ -79,7 +79,8 @@ public class SearchResource {
 
         return adaptiveFilter(sorted, requestedLimit,
                               searchConfig.scoreFloor(), searchConfig.gapThreshold(),
-                              searchConfig.minResults(), boostWeight);}
+                              searchConfig.minResults(), boostWeight);
+    }
 
     private static int resolveLimit(Integer limit) {
         if (limit == null || limit <= 0) return DEFAULT_LIMIT;
@@ -226,7 +227,6 @@ public class SearchResource {
     static double boostedScore(SearchResult r, double boostWeight) {
         return primaryScore(r) + (r.score() * boostWeight);
     }
-
 
     static PayloadFilter buildFilter(List<String> domains, String type, String tags) {
         List<PayloadFilter> filters = new ArrayList<>();
