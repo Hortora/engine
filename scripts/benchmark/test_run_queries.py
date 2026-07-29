@@ -1,6 +1,11 @@
 # scripts/benchmark/test_run_queries.py
+import hashlib
 import json
-from benchmark.run_queries import parse_search_response, compute_median, compute_unscored_pct
+from unittest.mock import patch, MagicMock
+import pytest
+from benchmark.run_queries import (
+    parse_search_response, compute_median, compute_unscored_pct, restore_snapshot,
+)
 
 SAMPLE_RESPONSE = json.dumps([
     {"id": "jvm/GE-20260428-fd7a65.md", "title": "Test entry", "domain": "jvm",
@@ -126,3 +131,145 @@ def test_main_includes_unscored_pct(monkeypatch, tmp_path):
     result = json.loads((tmp_path / "test-config.json").read_text())
     assert "unscored_pct" in result
     assert result["unscored_pct"] == 1.0
+
+
+def _make_snapshot(tmp_path, name="test-snap", point_count=2400, qdrant_version="1.12.6"):
+    snap_dir = tmp_path / name
+    snap_dir.mkdir(parents=True)
+    snapshot_data = b"fake snapshot data"
+    snapshot_file = snap_dir / "collection.snapshot"
+    snapshot_file.write_bytes(snapshot_data)
+    real_sha = hashlib.sha256(snapshot_data).hexdigest()
+    manifest = {
+        "name": name,
+        "point_count": point_count,
+        "created": "2026-07-29T10:00:00Z",
+        "engine_commit": "7abba11",
+        "garden_sha": "973b326a",
+        "qdrant_version": qdrant_version,
+        "qdrant_snapshot_name": "hortora_garden.snapshot",
+        "snapshot_sha256": real_sha,
+        "snapshot_size_bytes": len(snapshot_data),
+        "scoring_sha": "e8f1a2b3",
+    }
+    (snap_dir / "manifest.json").write_text(json.dumps(manifest))
+    return manifest
+
+
+def _mock_urlopen_resp(data, status=200):
+    mock_resp = MagicMock()
+    if isinstance(data, bytes):
+        mock_resp.read.return_value = data
+    else:
+        mock_resp.read.return_value = json.dumps(data).encode()
+    mock_resp.__enter__ = lambda s: s
+    mock_resp.__exit__ = MagicMock(return_value=False)
+    mock_resp.status = status
+    return mock_resp
+
+
+def test_restore_snapshot_not_found(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.run_queries.SNAPSHOT_DIR", tmp_path)
+    with pytest.raises(SystemExit):
+        restore_snapshot("nonexistent", "http://localhost:6333")
+
+
+def test_restore_snapshot_integrity_failure(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.run_queries.SNAPSHOT_DIR", tmp_path)
+    snap_dir = tmp_path / "bad-snap"
+    snap_dir.mkdir()
+    (snap_dir / "collection.snapshot").write_bytes(b"data")
+    manifest = {"snapshot_sha256": "wrong_hash", "snapshot_size_bytes": 4,
+                "point_count": 100, "qdrant_version": "1.12.6",
+                "scoring_sha": "abc", "name": "bad-snap"}
+    (snap_dir / "manifest.json").write_text(json.dumps(manifest))
+    with pytest.raises(SystemExit):
+        restore_snapshot("bad-snap", "http://localhost:6333")
+
+
+@patch("benchmark.run_queries.urllib.request.urlopen")
+def test_restore_snapshot_success(mock_urlopen, tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.run_queries.SNAPSHOT_DIR", tmp_path)
+    monkeypatch.setattr("benchmark.run_queries.BASELINE_PATH", tmp_path / "b.json")
+    (tmp_path / "b.json").write_text("{}")
+    manifest = _make_snapshot(tmp_path, "good-snap")
+
+    qdrant_version_resp = _mock_urlopen_resp({"version": "1.12.6"})
+    delete_resp = _mock_urlopen_resp({"result": True})
+    upload_resp = _mock_urlopen_resp({"result": True})
+    collection_resp = _mock_urlopen_resp(
+        {"result": {"status": "green", "points_count": 2400}}
+    )
+    mock_urlopen.side_effect = [
+        qdrant_version_resp, delete_resp, upload_resp, collection_resp,
+    ]
+    result = restore_snapshot("good-snap", "http://localhost:6333")
+    assert result["name"] == "good-snap"
+    assert result["point_count"] == 2400
+
+
+@patch("benchmark.run_queries.restore_snapshot")
+def test_main_with_corpus_snapshot(mock_restore, monkeypatch, tmp_path):
+    import benchmark.run_queries as rq
+
+    mock_restore.return_value = {
+        "name": "test-snap", "point_count": 2400,
+        "engine_commit": "7abba11", "garden_sha": "973b326a",
+        "qdrant_version": "1.12.6",
+    }
+    monkeypatch.setattr(rq, "run_all_queries", lambda eu, limit=None: [])
+    monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(rq, "BASELINE_PATH", tmp_path / "b.json")
+    (tmp_path / "b.json").write_text("{}")
+    monkeypatch.setattr("sys.argv", [
+        "run_queries.py", "snap-test", "--corpus-snapshot", "test-snap",
+    ])
+
+    rq.main()
+
+    result = json.loads((tmp_path / "snap-test.json").read_text())
+    assert result["corpus_snapshot"] == "test-snap"
+    assert result["snapshot_manifest"]["point_count"] == 2400
+    assert result["snapshot_manifest"]["engine_commit"] == "7abba11"
+    mock_restore.assert_called_once()
+
+
+def test_main_without_snapshot_has_no_snapshot_field(monkeypatch, tmp_path):
+    import benchmark.run_queries as rq
+
+    monkeypatch.setattr(rq, "wait_for_readiness", lambda *a, **kw: 2000)
+    monkeypatch.setattr(rq, "run_all_queries", lambda eu, limit=None: [])
+    monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(rq, "BASELINE_PATH", tmp_path / "b.json")
+    (tmp_path / "b.json").write_text("{}")
+    monkeypatch.setattr("sys.argv", ["run_queries.py", "no-snap", "--min-points", "1"])
+
+    rq.main()
+
+    result = json.loads((tmp_path / "no-snap.json").read_text())
+    assert "corpus_snapshot" not in result
+    assert "snapshot_manifest" not in result
+    assert "unscored_pct" in result
+
+
+@patch("benchmark.run_queries.restore_snapshot")
+def test_main_snapshot_skips_wait_for_readiness(mock_restore, monkeypatch, tmp_path):
+    import benchmark.run_queries as rq
+
+    wait_called = []
+    monkeypatch.setattr(rq, "wait_for_readiness",
+                        lambda *a, **kw: wait_called.append(1) or 2000)
+
+    mock_restore.return_value = {"name": "s", "point_count": 100,
+                                 "engine_commit": "x", "garden_sha": "y",
+                                 "qdrant_version": "1.0.0"}
+    monkeypatch.setattr(rq, "run_all_queries", lambda eu, limit=None: [])
+    monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(rq, "BASELINE_PATH", tmp_path / "b.json")
+    (tmp_path / "b.json").write_text("{}")
+    monkeypatch.setattr("sys.argv", [
+        "run_queries.py", "test", "--corpus-snapshot", "s", "--min-points", "9999",
+    ])
+    rq.main()
+
+    assert len(wait_called) == 0
