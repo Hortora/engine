@@ -1,6 +1,6 @@
 # scripts/benchmark/test_run_queries.py
 import json
-from benchmark.run_queries import parse_search_response, compute_median
+from benchmark.run_queries import parse_search_response, compute_median, compute_unscored_pct
 
 SAMPLE_RESPONSE = json.dumps([
     {"id": "jvm/GE-20260428-fd7a65.md", "title": "Test entry", "domain": "jvm",
@@ -48,8 +48,81 @@ def test_main_accepts_min_points_argument(monkeypatch, tmp_path):
     monkeypatch.setattr(rq, "wait_for_readiness", fake_wait)
     monkeypatch.setattr(rq, "run_all_queries", lambda eu, limit=None: [])
     monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(rq, "BASELINE_PATH", tmp_path / "b.json")
+    (tmp_path / "b.json").write_text("{}")
     monkeypatch.setattr("sys.argv", ["run_queries.py", "test-config", "--min-points", "2500"])
 
     rq.main()
 
     assert captured_min["value"] == 2500
+
+
+SAMPLE_BASELINE = {
+    "GE-20260428-fd7a65": {
+        "issue-1-reactive-async": {"benchmark_score": 2, "methods": ["gardenSearch-KW"]}
+    },
+    "GE-20260604-ed1b02": {
+        "issue-1-reactive-async": {"benchmark_score": 1, "methods": ["gardenSearch-NL"]}
+    },
+}
+
+
+def test_compute_unscored_pct_all_scored():
+    results = [
+        {"scenario_id": "issue-1-reactive-async", "entries": [
+            {"id": "jvm/GE-20260428-fd7a65.md"},
+            {"id": "jvm/GE-20260604-ed1b02.md"},
+        ]},
+    ]
+    assert compute_unscored_pct(results, SAMPLE_BASELINE) == 0.0
+
+
+def test_compute_unscored_pct_some_unscored():
+    results = [
+        {"scenario_id": "issue-1-reactive-async", "entries": [
+            {"id": "jvm/GE-20260428-fd7a65.md"},
+            {"id": "jvm/GE-20260604-ed1b02.md"},
+            {"id": "jvm/GE-20260999-unknown.md"},
+            {"id": "jvm/GE-20260999-other00.md"},
+        ]},
+    ]
+    assert compute_unscored_pct(results, SAMPLE_BASELINE) == 0.5
+
+
+def test_compute_unscored_pct_wrong_scenario():
+    results = [
+        {"scenario_id": "issue-2-cdi-wiring", "entries": [
+            {"id": "jvm/GE-20260428-fd7a65.md"},
+        ]},
+    ]
+    assert compute_unscored_pct(results, SAMPLE_BASELINE) == 1.0
+
+
+def test_compute_unscored_pct_empty_results():
+    assert compute_unscored_pct([], SAMPLE_BASELINE) == 0.0
+
+
+def test_compute_unscored_pct_no_entries():
+    results = [{"scenario_id": "issue-1-reactive-async", "entries": []}]
+    assert compute_unscored_pct(results, SAMPLE_BASELINE) == 0.0
+
+
+def test_main_includes_unscored_pct(monkeypatch, tmp_path):
+    import benchmark.run_queries as rq
+
+    monkeypatch.setattr(rq, "wait_for_readiness", lambda *a, **kw: 2000)
+    monkeypatch.setattr(rq, "run_all_queries", lambda eu, limit=None: [
+        {"scenario_id": "issue-1-reactive-async", "query_type": "KW",
+         "query_text": "test", "entries": [{"id": "jvm/GE-unknown.md"}],
+         "latency_ms": [10.0], "latency_median_ms": 10.0},
+    ])
+    monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(rq, "BASELINE_PATH", tmp_path / "empty_baseline.json")
+    (tmp_path / "empty_baseline.json").write_text("{}")
+    monkeypatch.setattr("sys.argv", ["run_queries.py", "test-config", "--min-points", "1"])
+
+    rq.main()
+
+    result = json.loads((tmp_path / "test-config.json").read_text())
+    assert "unscored_pct" in result
+    assert result["unscored_pct"] == 1.0

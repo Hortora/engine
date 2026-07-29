@@ -16,6 +16,7 @@ from benchmark.qdrant_utils import (
 from benchmark.queries import SCENARIOS
 
 RESULTS_DIR = Path(__file__).parent / "results"
+BASELINE_PATH = Path(__file__).parent / "baseline_scores.json"
 NUM_PASSES = 3
 QUERY_PAUSE_S = 0.5
 
@@ -49,6 +50,22 @@ def compute_median(values: list[float]) -> float | None:
     if n % 2 == 1:
         return s[n // 2]
     return (s[n // 2 - 1] + s[n // 2]) / 2
+
+
+def compute_unscored_pct(results: list[dict], baseline: dict) -> float:
+    total = 0
+    unscored = 0
+    for r in results:
+        scenario_id = r["scenario_id"]
+        for entry in r.get("entries", []):
+            total += 1
+            ge_id = Path(entry["id"]).stem
+            entry_scores = baseline.get(ge_id, {})
+            if scenario_id not in entry_scores:
+                unscored += 1
+    if total == 0:
+        return 0.0
+    return unscored / total
 
 
 def run_all_queries(engine_url: str = ENGINE_URL, limit: int | None = None) -> list[dict]:
@@ -117,11 +134,24 @@ def main():
     print(f"\nRunning benchmark for config: {args.config_name}")
     results = run_all_queries(args.engine_url, limit=args.limit)
 
+    baseline = {}
+    if BASELINE_PATH.exists():
+        baseline = json.loads(BASELINE_PATH.read_text())
+
+    unscored_pct = compute_unscored_pct(results, baseline)
+    if unscored_pct > 0.05:
+        total_entries = sum(len(r.get("entries", [])) for r in results)
+        unscored_count = int(unscored_pct * total_entries)
+        print(f"\n⚠️  {unscored_pct:.1%} of returned entries are unscored "
+              f"({unscored_count}/{total_entries}). "
+              f"Score new entries before accepting results.")
+
     output = {
         "config": args.config_name,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "point_count": point_count,
         "num_passes": NUM_PASSES,
+        "unscored_pct": round(unscored_pct, 4),
         "results": results,
     }
 
