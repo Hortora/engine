@@ -46,7 +46,7 @@ def test_main_accepts_min_points_argument(monkeypatch, tmp_path):
         return min_points
 
     monkeypatch.setattr(rq, "wait_for_readiness", fake_wait)
-    monkeypatch.setattr(rq, "run_all_queries", lambda eu: [])
+    monkeypatch.setattr(rq, "run_all_queries", lambda eu, limit=None: [])
     monkeypatch.setattr(rq, "RESULTS_DIR", tmp_path)
     monkeypatch.setattr("sys.argv", ["run_queries.py", "test-config", "--min-points", "2500"])
 
