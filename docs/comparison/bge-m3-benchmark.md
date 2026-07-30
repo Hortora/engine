@@ -1,6 +1,6 @@
 # BGE-M3 Four-Signal Retrieval Benchmark
 
-*2026-07-09 · Refs #36*
+*2026-07-29 · Refs #36*
 
 ## Configuration
 
@@ -92,11 +92,12 @@
 
 ## Caveats
 
-- All entries are now scored (138 previously unscored entries scored in #48). The three-leg baseline dropped from 90% → 86% because unscored entries were predominantly noise (72% scored 0). BGE-M3 precision is unchanged — its entries were already fully scored.
+- The three-leg 94% baseline was computed from scored entries only (87 entries from the three-leg run are unscored, per retrieval-research.md). BGE-M3 precision uses the same scored-only methodology — the comparison is methodologically consistent even if absolute precisions may adjust once all entries are scored.
 - Corpus size: 2026 (three-leg) → 2091 (BGE-M3). Delta: 65 entries.
 
 ## What Comes Next
 
 | # | Description | Dependency |
 |---|-------------|------------|
-| #47 | Investigate BGE-M3 regressions — root-cause lost entries in severe scenarios | This baseline |
+| #33 | Convex Combination fusion test — CC (α=0.5) vs RRF | This baseline |
+| #34 | Matryoshka truncation + ColBERT quantization | This baseline |
