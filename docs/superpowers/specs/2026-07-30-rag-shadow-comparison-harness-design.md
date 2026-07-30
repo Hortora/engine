@@ -215,7 +215,7 @@ Once 30+ comparison entries accumulate (lower threshold than originally planned 
 2. If RAG coverage is **mixed** (50–80%), analyse which query patterns fall short. This informs whether targeted retrieval improvements (e.g., better BM25 sparse matching) could close the gap.
 3. If RAG coverage is **poor** (<50%), the harness has demonstrated that grep remains necessary for ad-hoc searches and the retirement decision should wait for retrieval quality improvements.
 
-This harness measures RAG recall with keyword input. If RAG-with-keywords achieves high coverage, RAG-with-natural-language (the actual gardenSearch experience) would do at least as well — keyword input is a strictly harder retrieval task than natural language (#27 data: NL avg 88% vs KW avg 87%).
+This harness measures RAG recall with keyword input. If RAG-with-keywords achieves high coverage, RAG-with-natural-language (the actual gardenSearch experience) would do at least as well — keyword input is at least as hard a retrieval task as natural language for recall (#27 data: per-scenario grep-only counts are equivalent for KW and NL across all failure modes, including UNAMBIGUOUS_TERM where precision diverges).
 
 ## What This Does NOT Change
 
