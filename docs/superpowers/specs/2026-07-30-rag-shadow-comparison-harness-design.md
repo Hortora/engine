@@ -51,7 +51,7 @@ Claude's grep loop (unchanged)
                         │ (debouncer)    │
                         └────────┬───────┘
                                  │
-                    Waits for grep quiescence (30s)
+                    Waits for grep quiescence (60s)
                     Combines all keywords
                     Fires ONE RAG REST call
                     Logs both result sets
@@ -109,8 +109,10 @@ CMD=$(echo "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).ge
 GARDEN_ABS="${HORTORA_GARDEN:-$HOME/.hortora/garden}"
 { echo "$CMD" | grep -qF "$GARDEN_ABS" || echo "$CMD" | grep -qF '/.hortora/garden'; } && echo "$CMD" | grep -qE 'git\b.*\bgrep\b.*-[a-zA-Z]*i[a-zA-Z]*l' || exit 0
 
-# Delegate to Python handler (backgrounded for zero latency impact)
-echo "$INPUT" | python3 ~/.hortora/tools/rag_shadow.py &
+# Delegate to Python handler (backgrounded for zero latency impact).
+# Pass $PPID (Claude Code's process) as SESSION_PID before backgrounding —
+# once backgrounded, the shell exits and os.getppid() returns 1 (launchd).
+SESSION_PID=$PPID echo "$INPUT" | python3 ~/.hortora/tools/rag_shadow.py &
 exit 0
 ```
 
@@ -118,9 +120,9 @@ exit 0
 
 Receives the full hook JSON on stdin. Responsibilities:
 
-1. **Extract session ID:** use `os.getppid()` — the parent process PID uniquely identifies the Claude session
+1. **Extract session ID:** read `SESSION_PID` from environment (set by the shell wrapper to `$PPID` — Claude Code's process PID). Falls back to `os.getpid()` if unset.
 2. **Extract keywords:** parse the grep `-E` pattern from the command string
-3. **Extract grep results:** parse file paths from `tool_output`
+3. **Extract grep results:** parse file paths from `tool_output`. Strip the `HEAD:` tree-ish prefix that `git grep -l HEAD` prepends to each path (e.g., `HEAD:reactive/GE-20260428-a67806.md` → `reactive/GE-20260428-a67806.md`).
 4. **Append to pending file:** write `{timestamp, session_id, keywords, grep_results}` to `~/.hortora/tmp/rag_pending.jsonl`
 5. **Spawn debouncer:** acquire an exclusive `flock` on `~/.hortora/tmp/rag_fire.lock`, check if `~/.hortora/tmp/rag_fire.pid` exists and the process is alive, spawn `rag_fire.py` if not, release lock. The flock prevents concurrent hook invocations from spawning duplicate debouncers.
 
@@ -135,7 +137,7 @@ Background process that waits for the grep loop to finish, then fires one RAG ca
    a. Read all records from the pending file
    b. **Group by `session_id`** — each session gets its own comparison entry
    c. Per session: combine keywords (union of all grep patterns, strip regex syntax, join with spaces)
-   d. Per session: fire REST call `GET http://localhost:8080/search?q=<combined_keywords>`
+   d. Per session: fire REST call `GET http://localhost:8080/search?q=<combined_keywords>&limit=50`
    e. Per session: write comparison record to `~/.hortora/logs/rag-comparison.jsonl`
    f. Clear the pending file
    g. Remove PID file
@@ -235,7 +237,7 @@ Delete the three scripts, remove the hook entry from settings.json, delete the l
 
 **RAG gets keywords, not natural language.** The hook extracts grep regex patterns, not the skill's NL context. This is a stricter test — if RAG with just keywords beats adaptive grep, NL input would only widen the gap. The #27 benchmark supports this: NL queries consistently match or exceed keyword queries in precision (NL avg 88% vs KW avg 87%). If the keyword-based comparison is ambiguous, a second phase could add NL context via optional JSONL logging in the gardenSearch MCP tool itself (engine-side config flag, no skill changes needed).
 
-**Basic `/search` endpoint, not adaptive.** The harness calls the basic `SearchResource.search()` endpoint, not `searchAdaptive()` which the MCP gardenSearch tool uses. This is intentional: the harness measures RAG's **recall ceiling** — can the retrieval engine find the entries? Adaptive filtering (score floor, gap detection, result extension) can only reduce the result set. If raw retrieval misses an entry, no amount of post-filtering helps. If raw retrieval finds it, the adaptive pipeline can be tuned separately. Logging both `relevance` and `crossEncoderScore` allows post-process simulation of adaptive filtering without re-running the harness.
+**Basic `/search` endpoint, not adaptive.** The harness calls the basic `SearchResource.search()` endpoint with `limit=50` (`MAX_LIMIT`), not `searchAdaptive()` which the MCP gardenSearch tool uses. This is intentional: the harness measures RAG's **recall ceiling** — can the retrieval engine find the entries? The `limit=50` ensures the recall ceiling isn't artificially capped (the default limit is 16, which would systematically undercount coverage). Adaptive filtering (score floor, gap detection, result extension) can only reduce the result set. If raw retrieval misses an entry, no amount of post-filtering helps. If raw retrieval finds it, the adaptive pipeline can be tuned separately. Logging both `relevance` and `crossEncoderScore` allows post-process simulation of adaptive filtering without re-running the harness.
 
 **60-second debounce window.** Claude's adaptive grep loop interleaves grep calls with file reads and LLM reasoning that can introduce 30–60 second gaps. The 60-second default avoids mid-loop firing for most loops. Configurable via `RAG_SHADOW_QUIESCENCE` environment variable if real-world usage reveals longer gaps.
 
