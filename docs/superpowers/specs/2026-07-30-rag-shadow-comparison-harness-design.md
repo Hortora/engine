@@ -110,9 +110,11 @@ GARDEN_ABS="${HORTORA_GARDEN:-$HOME/.hortora/garden}"
 { echo "$CMD" | grep -qF "$GARDEN_ABS" || echo "$CMD" | grep -qF '/.hortora/garden'; } && echo "$CMD" | grep -qE 'git\b.*\bgrep\b.*-[a-zA-Z]*i[a-zA-Z]*l' || exit 0
 
 # Delegate to Python handler (backgrounded for zero latency impact).
-# Pass $PPID (Claude Code's process) as SESSION_PID before backgrounding —
-# once backgrounded, the shell exits and os.getppid() returns 1 (launchd).
-SESSION_PID=$PPID echo "$INPUT" | python3 ~/.hortora/tools/rag_shadow.py &
+# Export $PPID (Claude Code's process) as SESSION_PID before the pipeline —
+# VAR=val cmd1 | cmd2 only sets VAR for cmd1 (POSIX), so export is required.
+# Once backgrounded, the shell exits and os.getppid() returns 1 (launchd).
+export SESSION_PID=$PPID
+echo "$INPUT" | python3 ~/.hortora/tools/rag_shadow.py &
 exit 0
 ```
 
