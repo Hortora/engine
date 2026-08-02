@@ -41,6 +41,16 @@ public class GardenMcpTools {
     CollectionMigration collectionMigration;
     @Inject
     RetrievalTracker retrievalTracker;
+    @Inject
+    io.hortora.garden.provenance.ProvenanceStore provenanceStore;
+
+    private volatile java.util.Map<String, String> cachedGeIdToDocId;
+    private volatile long cachedGeIdToDocIdTimestamp;
+    private static final long DOC_CACHE_TTL_MS = 300_000;
+    private static final java.nio.file.Path SHADOW_LOG = java.nio.file.Path.of(
+            System.getProperty("hortora.shadow.log",
+                               System.getProperty("user.home") + "/.hortora/logs/rag-comparison.jsonl"));
+
 
     static boolean passesMinDaysFilter(String documentId, int minDays) {
         String filename = documentId.contains("/")
@@ -64,7 +74,7 @@ public class GardenMcpTools {
                                   TreeMap::new, Collectors.toList()));
     }
 
-    static String extractDocumentId(String path) {
+    public static String extractDocumentId(String path) {
         if (path == null) {
             return "";
         }
@@ -78,28 +88,47 @@ public class GardenMcpTools {
         return withoutExt;
     }
 
-    static String stripTitlePrefix(String title, String body) {
+    public static String stripTitlePrefix(String title, String body) {
         if (title != null && body != null && body.startsWith(title + "\n\n")) {
             return body.substring(title.length() + 2);
         }
         return body;
     }
 
-    @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption. Results are adaptively extended when a dense cluster of relevant entries exists beyond the requested limit.")
+    @Tool(description = "Search the Hortora knowledge garden for relevant entries about non-obvious developer knowledge, gotchas, techniques, and undocumented behaviours. Returns full entry content for LLM consumption. Results are adaptively extended when a dense cluster of relevant entries exists beyond the requested limit. Best practice: combine a natural-language query describing the problem with pipe-separated keywords naming the specific classes, methods, or config keys involved. The NL query finds semantically similar entries; the keywords ensure exact-match entries are not missed. Omitting keywords when you know the specific terms typically misses 30-50% of relevant entries.")
     String gardenSearch(
             @ToolArg(description = "Natural language description of the problem, symptom, or topic to search for") String query,
+            @ToolArg(description = "Pipe-separated technical terms (class names, method names, config keys, error messages) that boost exact-match recall via BM25. ALWAYS provide when the query involves specific APIs, classes, or error messages — omitting keywords typically misses 30-50% of relevant entries. Example: 'QuarkusTestProfile|getConfigOverrides|selected-alternatives'.", required = false) String keywords,
             @ToolArg(description = "Optional: filter by domain (e.g. jvm, tools, python). Leave empty to search all domains.", required = false) String domain,
             @ToolArg(description = "Optional: filter by entry type (gotcha, technique, undocumented, pattern)", required = false) String type,
             @ToolArg(description = "Optional: comma-separated tags to filter by (entries matching ANY tag are returned)", required = false) String tags,
             @ToolArg(description = "Maximum number of entries to return (default 16, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit) {
+        String expandedKeywords = keywords != null && !keywords.isBlank()
+                                  ? keywords.replace("|", " ")
+                                  : null;
 
-        AdaptiveResult adaptive = searchResource.searchAdaptive(query,
-                                                                domain != null && !domain.isBlank() ? List.of(domain) : null,
-                                                                type, tags, limit);
+        AdaptiveResult adaptive;
+        long           latencyMs;
+        try {
+            long start = System.nanoTime();
+            adaptive  = searchResource.searchAdaptive(query, expandedKeywords,
+                                                      domain != null && !domain.isBlank() ? List.of(domain) : null,
+                                                      type, tags, limit);
+            latencyMs = (System.nanoTime() - start) / 1_000_000;
+        } catch (Exception e) {
+            Log.warn("gardenSearch failed — Qdrant may be unavailable", e);
+            return "Garden search unavailable — Qdrant is not responding. "
+                   + "Start Qdrant and restart the engine (scripts/update-engine.sh update). "
+                   + "Query was: " + query;
+        }
+
+        logSearch(query, keywords, domain, type, tags, limit, adaptive, latencyMs);
 
         if (adaptive.results().isEmpty()) {
             return "No relevant garden entries found for: " + query;
         }
+
+        List<SearchResult> expandedResults = expandWithSeeAlso(adaptive.results(), query, domain);
 
         StringBuilder sb = new StringBuilder();
 
@@ -127,7 +156,7 @@ public class GardenMcpTools {
 
         sb.append("\n");
 
-        sb.append(adaptive.results().stream()
+        sb.append(expandedResults.stream()
                           .map(r -> "## " + provenanceLabel(r) + " " + r.title()
                                     + "\n**ID:** " + extractDocumentId(r.id())
                                     + " · **Domain:** " + r.domain()
@@ -149,7 +178,9 @@ public class GardenMcpTools {
             count = embeddingIngestor.listDocuments(corpusRef).size();
         } catch (Exception e) {
             Log.warn("Failed to count indexed entries", e);
-            count = -1;
+            return "Garden path: " + config.path()
+                   + "\nQdrant status: UNAVAILABLE — not responding. "
+                   + "Start Qdrant and restart the engine (scripts/update-engine.sh update).";
         }
         return "Garden path: " + config.path() + "\nIndexed entries: " + count;
     }
@@ -238,6 +269,134 @@ public class GardenMcpTools {
         }
 
         return sb.toString();
+    }
+
+    @Tool(description = "Record which garden entries informed a design artifact. "
+                        + "Call after the user selects relevant entries during brainstorming or work-start. "
+                        + "Idempotent — re-recording the same provenance is a no-op.")
+    String gardenRecordProvenance(
+            @ToolArg(description = "GitHub repo (e.g. 'Hortora/trellis')") String issueRepo,
+            @ToolArg(description = "Issue number") int issueNumber,
+            @ToolArg(description = "Spec filename, if known (e.g. '2026-08-02-design.md'). "
+                                   + "Pass empty string or omit when no spec exists yet.",
+                     required = false) String specName,
+            @ToolArg(description = "Pipe-separated GE-IDs (e.g. 'GE-0031|GE-20260618-c552c3')")
+            String geIds,
+            @ToolArg(description = "Source skill (e.g. 'brainstorming', 'work-start')",
+                     required = false) String recordedBy) {
+
+        List<String> ids = java.util.Arrays.stream(geIds.split("\\|"))
+                                           .map(String::trim)
+                                           .filter(s -> !s.isEmpty())
+                                           .toList();
+
+        if (ids.isEmpty()) {
+            return "Error: no valid GE-IDs provided after filtering empty segments.";
+        }
+
+        String effectiveSpecName = (specName == null || specName.isBlank()) ? "" : specName;
+
+        try {
+            int count = provenanceStore.record(issueRepo, issueNumber, effectiveSpecName, ids, recordedBy);
+            return "Recorded " + count + " provenance link(s) for " + issueRepo + "#" + issueNumber
+                   + (effectiveSpecName.isEmpty() ? "" : " (spec: " + effectiveSpecName + ")")
+                   + ": " + String.join(", ", ids);
+        } catch (Exception e) {
+            Log.warn("gardenRecordProvenance failed", e);
+            return "Error recording provenance: " + e.getMessage();
+        }
+    }
+
+
+    private java.util.Map<String, String> getGeIdToDocIdMap() {
+        long now = System.currentTimeMillis();
+        if (cachedGeIdToDocId != null && (now - cachedGeIdToDocIdTimestamp) < DOC_CACHE_TTL_MS) {
+            return cachedGeIdToDocId;
+        }
+        CorpusRef                     corpusRef = new CorpusRef("hortora", config.id());
+        List<String>                  allDocs   = embeddingIngestor.listDocuments(corpusRef);
+        java.util.Map<String, String> map       = new java.util.HashMap<>();
+        for (String docId : allDocs) {
+            map.put(extractDocumentId(docId), docId);
+        }
+        cachedGeIdToDocId          = map;
+        cachedGeIdToDocIdTimestamp = now;
+        return map;
+    }
+
+    private List<SearchResult> expandWithSeeAlso(List<SearchResult> results, String query, String domain) {
+        return SearchResource.expandWithAdjacent(results, missingIds -> {
+            try {
+                java.util.Map<String, String> geIdToDocId = getGeIdToDocIdMap();
+
+                List<String> resolvedDocIds = new java.util.ArrayList<>();
+                for (String geId : missingIds) {
+                    String docId = geIdToDocId.get(geId);
+                    if (docId != null) {resolvedDocIds.add(docId);}
+                }
+
+                if (resolvedDocIds.isEmpty()) {return List.of();}
+
+                return searchResource.fetchByDocumentIds(query, resolvedDocIds);
+            } catch (Exception e) {
+                Log.debug("See-also expansion failed", e);
+                return List.of();
+            }
+        });
+    }
+
+    private static final Object SHADOW_LOG_LOCK = new Object();
+
+    private void logSearch(String query, String keywords, String domain, String type, String tags, Integer limit,
+                           AdaptiveResult adaptive, long latencyMs) {
+        try {
+            var sb = new StringBuilder("{");
+            sb.append("\"timestamp\":\"").append(Instant.now()).append("\",");
+            sb.append("\"source\":\"mcp\",");
+            sb.append("\"query\":").append(jsonString(query)).append(",");
+            sb.append("\"keywords\":").append(jsonString(keywords)).append(",");
+            if (domain != null && !domain.isBlank()) {sb.append("\"domain\":").append(jsonString(domain)).append(",");}
+            if (type != null && !type.isBlank()) {sb.append("\"type\":").append(jsonString(type)).append(",");}
+            if (tags != null && !tags.isBlank()) {sb.append("\"tags\":").append(jsonString(tags)).append(",");}
+            sb.append("\"limit\":").append(limit != null ? limit : "null").append(",");
+            sb.append("\"result_count\":").append(adaptive.results().size()).append(",");
+            sb.append("\"extended\":").append(adaptive.extended()).append(",");
+            sb.append("\"trimmed\":").append(adaptive.trimmed()).append(",");
+            sb.append("\"available_above_floor\":").append(adaptive.availableAboveFloor()).append(",");
+            sb.append("\"latency_ms\":").append(latencyMs).append(",");
+            sb.append("\"results\":[");
+            for (int i = 0; i < adaptive.results().size(); i++) {
+                var r = adaptive.results().get(i);
+                if (i > 0) {sb.append(",");}
+                sb.append("{\"id\":").append(jsonString(extractDocumentId(r.id())));
+                sb.append(",\"title\":").append(jsonString(r.title()));
+                sb.append(",\"relevance\":").append(String.format("%.4f", r.relevance()));
+                if (r.crossEncoderScore() != null) {
+                    sb.append(",\"crossEncoderScore\":").append(String.format("%.4f", r.crossEncoderScore()));
+                }
+                sb.append("}");
+            }
+            sb.append("]}");
+
+            String line = sb.toString() + System.lineSeparator();
+            java.nio.file.Files.createDirectories(SHADOW_LOG.getParent());
+            synchronized (SHADOW_LOG_LOCK) {
+                java.nio.file.Files.writeString(SHADOW_LOG, line,
+                                                java.nio.file.StandardOpenOption.CREATE,
+                                                java.nio.file.StandardOpenOption.APPEND);
+            }
+        } catch (Exception e) {
+            Log.debug("Shadow log write failed", e);
+        }
+    }
+
+    private static String jsonString(String value) {
+        if (value == null) {return "null";}
+        return "\"" + value.replace("\\", "\\\\")
+                           .replace("\"", "\\\"")
+                           .replace("\n", "\\n")
+                           .replace("\r", "\\r")
+                           .replace("\t", "\\t") + "\"";
     }
 
     private String provenanceLabel(SearchResult result) {

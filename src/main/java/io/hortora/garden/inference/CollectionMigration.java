@@ -11,14 +11,13 @@ import io.qdrant.client.grpc.Collections.CollectionInfo;
 import io.qdrant.client.grpc.Collections.CollectionParams;
 import io.qdrant.client.grpc.Collections.VectorParams;
 import io.qdrant.client.grpc.Collections.VectorsConfig;
+import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-
-import io.quarkus.logging.Log;
 
 import java.util.concurrent.ExecutionException;
 
@@ -54,49 +53,55 @@ public class CollectionMigration {
     }
 
     void onStartup(@Observes @Priority(10) StartupEvent event) {
+        onStartup(event, 5, 2000);
+    }
+
+    void onStartup(StartupEvent event, int maxRetries, long retryDelayMs) {
         if (!multiModalEmbedderInstance.isResolvable()) {
             return;
         }
 
         MultiModalEmbedder embedder = multiModalEmbedderInstance.get();
         validateColbertLimit(embedder);
-        CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
-        String collectionName = ragConfig.tenancyStrategy().collectionName(corpusRef);
+
+        if (!waitForQdrant(maxRetries, retryDelayMs)) {
+            return;
+        }
+
+        CorpusRef corpusRef      = new CorpusRef("hortora", gardenConfig.id());
+        String    collectionName = ragConfig.tenancyStrategy().collectionName(corpusRef);
 
         try {
             if (!qdrantClient.collectionExistsAsync(collectionName).get()) {
                 if (cursorStore.load(gardenConfig.id()).isPresent()) {
                     Log.infof("Collection '%s' does not exist but cursor found — clearing cursor to force re-indexing",
-                            collectionName);
+                              collectionName);
                     cursorStore.save(gardenConfig.id(), "");
                 }
                 return;
             }
 
-            CollectionInfo info = qdrantClient.getCollectionInfoAsync(collectionName).get();
+            CollectionInfo   info   = qdrantClient.getCollectionInfoAsync(collectionName).get();
             CollectionParams params = info.getConfig().getParams();
 
-            // Check dense dimension mismatch
             int existingDim = extractDenseDimension(params);
             int expectedDim = embedder.denseDimension();
             if (existingDim > 0 && existingDim != expectedDim) {
                 Log.infof("Collection '%s' dense dimension %d != expected %d — re-indexing",
-                        collectionName, existingDim, expectedDim);
+                          collectionName, existingDim, expectedDim);
                 resetCorpus(corpusRef, gardenConfig.id());
                 return;
             }
 
-            // Check missing sparse vectors
             if (!params.hasSparseVectorsConfig()) {
                 Log.infof("Collection '%s' lacks sparse vectors — re-indexing", collectionName);
                 resetCorpus(corpusRef, gardenConfig.id());
                 return;
             }
 
-            // Check missing ColBERT config (multi-vector)
             if (!hasColbertConfig(params)) {
                 Log.infof("Collection '%s' lacks ColBERT multi-vector config — re-indexing",
-                        collectionName);
+                          collectionName);
                 resetCorpus(corpusRef, gardenConfig.id());
                 return;
             }
@@ -109,6 +114,31 @@ public class CollectionMigration {
         } catch (ExecutionException e) {
             Log.warn("Failed to check collection for migration", e.getCause());
         }
+    }
+
+
+    private boolean waitForQdrant(int maxRetries, long delayMs) {
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                qdrantClient.listCollectionsAsync().get();
+                Log.infof("Qdrant ready (attempt %d/%d)", attempt, maxRetries);
+                return true;
+            } catch (ExecutionException e) {
+                Log.warnf("Qdrant not ready (attempt %d/%d): %s",
+                          attempt, maxRetries, e.getCause().getMessage());
+                if (attempt < maxRetries && delayMs > 0) {
+                    try {Thread.sleep(delayMs);} catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        return false;
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
+        Log.warn("Qdrant readiness check exhausted — proceeding without migration");
+        return false;
     }
 
     private void validateColbertLimit(MultiModalEmbedder embedder) {

@@ -5,7 +5,6 @@ import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.RetrievalQuery;
 import io.casehub.neocortex.rag.RetrievedChunk;
 import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
-import io.casehub.neocortex.rag.testing.InMemoryRetrievalTracker;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,8 @@ class GardenMcpToolsTest {
     @Inject InMemoryEmbeddingIngestor ingestor;
     @Inject
             io.casehub.neocortex.rag.testing.InMemoryRetrievalTracker retrievalTracker;
+    @Inject
+    io.hortora.garden.provenance.ProvenanceStore provenanceStore;
 
 
     private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");
@@ -52,10 +53,15 @@ class GardenMcpToolsTest {
         retrievalTracker.clear();
     }
 
+    @BeforeEach
+    void clearProvenance() {
+        provenanceStore.deleteAll();
+    }
+
 
     @Test
     void gardenSearchReturnsFormattedResults() {
-        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null);
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
 
         assertThat(result).contains("## [own] Hibernate lazy loading gotcha");
         assertThat(result).contains("**ID:** GE-20260620-a1b2c3");
@@ -71,7 +77,7 @@ class GardenMcpToolsTest {
     void gardenSearchEmptyResultsReturnsMessage() {
         ingestor.deleteCorpus(CORPUS);
 
-        String result = mcpTools.gardenSearch("nonexistent topic xyz", null, null, null, null);
+        String result = mcpTools.gardenSearch("nonexistent topic xyz", null, null, null, null, null);
 
         assertThat(result).startsWith("No relevant garden entries found for:");
     }
@@ -95,7 +101,7 @@ class GardenMcpToolsTest {
                                 "domain", "jvm", "type", "gotcha", "score", "8"))
         ));
 
-        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null);
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
 
         long titleCount = result.lines()
                 .filter(l -> l.contains("Hibernate lazy loading gotcha"))
@@ -115,7 +121,7 @@ class GardenMcpToolsTest {
                                 "domain", "approaches", "type", "reference", "score", "10"))
         ));
 
-        String result = mcpTools.gardenSearch("testing TDD", null, null, null, null);
+        String result = mcpTools.gardenSearch("testing TDD", null, null, null, null, null);
 
         assertThat(result).contains("**ID:** approaches/testing");
         assertThat(result).doesNotContain("**ID:** testing");
@@ -136,7 +142,7 @@ class GardenMcpToolsTest {
     void gardenSearchFiltersByType() {
         // Note: In-memory retriever may not support type filtering
         // This test verifies the parameter is accepted and passed through
-        String result = mcpTools.gardenSearch("CDI producer", null, "technique", null, null);
+        String result = mcpTools.gardenSearch("CDI producer", null, null, "technique", null, null);
 
         assertThat(result).satisfiesAnyOf(
                 r -> assertThat(r).contains("CDI producer pattern"),
@@ -148,7 +154,7 @@ class GardenMcpToolsTest {
     void gardenSearchFiltersByTags() {
         // Note: In-memory retriever may not support list-valued payload filters
         // This test verifies the parameter is accepted and passed through
-        String result = mcpTools.gardenSearch("CDI producer", null, null, "cdi", null);
+        String result = mcpTools.gardenSearch("CDI producer", null, null, null, "cdi", null);
 
         assertThat(result).satisfiesAnyOf(
                 r -> assertThat(r).contains("CDI producer pattern"),
@@ -160,7 +166,7 @@ class GardenMcpToolsTest {
     void gardenSearchCombinesAllFilters() {
         // Note: In-memory retriever may not support all filter types
         // This test verifies all parameters are accepted and passed through
-        String result = mcpTools.gardenSearch("Hibernate lazy", "jvm", "gotcha", "hibernate", null);
+        String result = mcpTools.gardenSearch("Hibernate lazy", null, "jvm", "gotcha", "hibernate", null);
 
         assertThat(result).satisfiesAnyOf(
                 r -> assertThat(r).contains("Hibernate lazy loading gotcha"),
@@ -170,7 +176,7 @@ class GardenMcpToolsTest {
 
     @Test
     void gardenSearchIncludesMetadataComment() {
-        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null);
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
 
         assertThat(result).contains("<!-- search_meta:");
         assertThat(result).contains("returned=");
@@ -273,7 +279,7 @@ class GardenMcpToolsTest {
     @Test
     void gardenSearchRecordsRetrievalsViaDecorator() {
         retrievalTracker.clear();
-        mcpTools.gardenSearch("hibernate lazy", null, null, null, null);
+        mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
 
         CorpusRef corpus = new CorpusRef("hortora", "garden");
         Set<String> retrievedIds = retrievalTracker.findRetrievedDocumentIds(
@@ -302,4 +308,37 @@ class GardenMcpToolsTest {
     void passesMinDaysFilterIncludesGeWithoutPath() {
         assertThat(GardenMcpTools.passesMinDaysFilter("GE-20250101-aabbcc.md", 30)).isTrue();
     }
+
+    @Test
+    void gardenRecordProvenanceRecordsEntries() {
+        String result = mcpTools.gardenRecordProvenance(
+                "Hortora/trellis", 14, null, "GE-0031|GE-0045", "brainstorming");
+        assertThat(result).contains("2");
+
+        var lineage = provenanceStore.forwardLineage("Hortora/trellis", 14);
+        assertThat(lineage).hasSize(2);
+    }
+
+    @Test
+    void gardenRecordProvenanceFiltersEmptySegments() {
+        String result = mcpTools.gardenRecordProvenance(
+                "Hortora/trellis", 14, null, "|GE-0031||GE-0045|", "brainstorming");
+        assertThat(result).contains("2");
+    }
+
+    @Test
+    void gardenRecordProvenanceRejectsAllEmptyIds() {
+        String result = mcpTools.gardenRecordProvenance(
+                "Hortora/trellis", 14, null, "|||", "brainstorming");
+        assertThat(result.toLowerCase()).contains("error");
+    }
+
+    @Test
+    void gardenRecordProvenanceCoercesNullSpecNameToEmpty() {
+        mcpTools.gardenRecordProvenance("Hortora/trellis", 14, null, "GE-0031", "brainstorming");
+
+        var lineage = provenanceStore.forwardLineage("Hortora/trellis", 14);
+        assertThat(lineage.getFirst().specName()).isEmpty();
+    }
+
 }

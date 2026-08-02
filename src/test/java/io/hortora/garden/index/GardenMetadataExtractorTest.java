@@ -144,4 +144,123 @@ class GardenMetadataExtractorTest {
         assertThat(result.listMetadata().get("tags")).containsExactly("cdi", "quarkus", "bean-discovery");
         assertThat(result.metadata().get("tags")).isNull();
     }
+
+    @Test
+    void extractsSeeAlsoPlainIds() {
+        String content = """
+                         ---
+                         title: "CDI observer gotcha"
+                         domain: jvm
+                         type: gotcha
+                         ---
+                         Body text.
+                         
+                         **See also:** GE-20260415-884e48 — @Alternative @Priority
+                         """;
+        ExtractionResult result = extractor.extract("jvm/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("see_also")).containsExactly("GE-20260415-884e48");
+        assertThat(result.metadata().get("see_also_ids")).isEqualTo("GE-20260415-884e48");
+    }
+
+    @Test
+    void extractsSeeAlsoMarkdownLinks() {
+        String content = """
+                         ---
+                         title: "Test entry"
+                         domain: jvm
+                         ---
+                         Body text.
+                         
+                         **See also:** [GE-20260428-0482d3](GE-20260428-0482d3.md) — description
+                         """;
+        ExtractionResult result = extractor.extract("jvm/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("see_also")).containsExactly("GE-20260428-0482d3");
+    }
+
+    @Test
+    void extractsSeeAlsoMultipleLines() {
+        String content = """
+                         ---
+                         title: "Multiple see-also"
+                         domain: jvm
+                         ---
+                         Body text.
+                         
+                         **See also:** GE-20260415-884e48 — first ref
+                         
+                         **See also:** [GE-20260520-e15ff0](GE-20260520-e15ff0.md) — second ref
+                         """;
+        ExtractionResult result = extractor.extract("jvm/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("see_also"))
+                .containsExactly("GE-20260415-884e48", "GE-20260520-e15ff0");
+    }
+
+    @Test
+    void extractsSeeAlsoOldFormatIds() {
+        String content = """
+                         ---
+                         title: "Old format"
+                         domain: tools
+                         ---
+                         Body text.
+                         
+                         **See also:** GE-0074 (resize-pane silent no-op)
+                         """;
+        ExtractionResult result = extractor.extract("tools/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("see_also")).containsExactly("GE-0074");
+    }
+
+    @Test
+    void noSeeAlsoReturnsAbsentKey() {
+        String content = """
+                         ---
+                         title: "No see-also"
+                         domain: jvm
+                         ---
+                         Body text without any see also links.
+                         """;
+        ExtractionResult result = extractor.extract("jvm/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata()).doesNotContainKey("see_also");
+        assertThat(result.metadata()).doesNotContainKey("see_also_ids");
+    }
+
+    @Test
+    void extractsSeeAlsoMultipleIdsOnOneLine() {
+        String content = """
+                         ---
+                         title: "Pipe separated"
+                         domain: jvm
+                         ---
+                         Body text.
+                         
+                         **See also:** [GE-20260520-e15ff0](GE-20260520-e15ff0.md) — first | [GE-20260521-4de4f1](GE-20260521-4de4f1.md) — second
+                         """;
+        ExtractionResult result = extractor.extract("jvm/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("see_also"))
+                .containsExactly("GE-20260520-e15ff0", "GE-20260521-4de4f1");
+    }
+
+    @Test
+    void extractsSeeAlsoDeduplicates() {
+        String content = """
+                         ---
+                         title: "Duplicate refs"
+                         domain: jvm
+                         ---
+                         Body text.
+                         
+                         **See also:** GE-20260415-884e48 — first mention
+                         
+                         **See also:** GE-20260415-884e48 — same entry again
+                         """;
+        ExtractionResult result = extractor.extract("jvm/ge-test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("see_also")).containsExactly("GE-20260415-884e48");
+    }
 }

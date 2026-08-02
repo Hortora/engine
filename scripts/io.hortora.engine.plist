@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>io.hortora.engine</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Library/Java/JavaVirtualMachines/jdk-26.jdk/Contents/Home/bin/java</string>
+        <string>--enable-native-access=ALL-UNNAMED</string>
+        <string>-jar</string>
+        <string>target/quarkus-app/quarkus-run.jar</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/mdproctor/claude/hortora/engine</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>QUARKUS_PROFILE</key>
+        <string>dev</string>
+        <key>JAVA_HOME</key>
+        <string>/Library/Java/JavaVirtualMachines/jdk-26.jdk/Contents/Home</string>
+        <key>PATH</key>
+        <string>/Users/mdproctor/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/mdproctor/.hortora/logs/engine-stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/mdproctor/.hortora/logs/engine-stderr.log</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

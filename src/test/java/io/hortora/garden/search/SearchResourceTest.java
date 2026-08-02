@@ -4,6 +4,7 @@ import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.PayloadFilter;
 import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-import io.quarkus.test.junit.QuarkusTest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 
 @QuarkusTest
 class SearchResourceTest {
@@ -382,4 +386,67 @@ class SearchResourceTest {
         assertThat(r.results()).hasSize(6);
         assertThat(r.extended()).isTrue();
     }
+
+    @Test
+    void expandWithAdjacent_addsReferencedNotAlreadyPresent() {
+        SearchResult entryA = new SearchResult("jvm/GE-A.md", "Entry A", "jvm",
+                                               "gotcha", 8, "body", 0.9, 5.0, "garden", "GE",
+                                               List.of("GE-B", "GE-C"));
+        SearchResult entryB = new SearchResult("jvm/GE-B.md", "Entry B", "jvm",
+                                               "gotcha", 7, "body", 0.85, 4.5, "garden", "GE",
+                                               List.of());
+
+        SearchResult entryC = new SearchResult("jvm/GE-C.md", "Entry C", "jvm",
+                                               "technique", 6, "body", 0.5, null, "garden", "GE",
+                                               List.of());
+
+        List<SearchResult> expanded = SearchResource.expandWithAdjacent(
+                List.of(entryA, entryB), ids -> List.of(entryC));
+
+        assertThat(expanded).hasSize(3);
+        assertThat(expanded.get(2).id()).isEqualTo("jvm/GE-C.md");
+    }
+
+    @Test
+    void expandWithAdjacent_skipsAlreadyPresent() {
+        SearchResult entryA = new SearchResult("jvm/GE-A.md", "Entry A", "jvm",
+                                               "gotcha", 8, "body", 0.9, 5.0, "garden", "GE",
+                                               List.of("GE-B"));
+        SearchResult entryB = new SearchResult("jvm/GE-B.md", "Entry B", "jvm",
+                                               "gotcha", 7, "body", 0.85, 4.5, "garden", "GE",
+                                               List.of());
+
+        List<SearchResult> expanded = SearchResource.expandWithAdjacent(
+                List.of(entryA, entryB), ids -> List.of());
+
+        assertThat(expanded).hasSize(2);
+    }
+
+    @Test
+    void expandWithAdjacent_noSeeAlsoIsNoOp() {
+        SearchResult entryA = new SearchResult("jvm/GE-A.md", "Entry A", "jvm",
+                                               "gotcha", 8, "body", 0.9, 5.0, "garden", "GE",
+                                               List.of());
+
+        List<SearchResult> expanded = SearchResource.expandWithAdjacent(
+                List.of(entryA), ids -> List.of());
+
+        assertThat(expanded).hasSize(1);
+    }
+
+    @Test
+    void adaptiveSearchEndpoint() {
+        given().queryParam("q", "hibernate lazy")
+               .when().get("/search/adaptive")
+               .then().statusCode(200)
+               .body("results.size()", greaterThan(0))
+               .body("collectionReady", equalTo(true));
+    }
+
+    @Test
+    void adaptiveSearchMissingQueryReturns400() {
+        given().when().get("/search/adaptive")
+               .then().statusCode(400);
+    }
+
 }

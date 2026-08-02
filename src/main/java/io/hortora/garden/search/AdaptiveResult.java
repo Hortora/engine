@@ -8,5 +8,12 @@ public record AdaptiveResult(
         int availableAboveFloor,
         boolean extended,
         boolean trimmed,
-        int floorFiltered) {
+        int floorFiltered,
+        boolean collectionReady) {
+
+    public AdaptiveResult(List<SearchResult> results, int requestedLimit,
+                          int availableAboveFloor, boolean extended,
+                          boolean trimmed, int floorFiltered) {
+        this(results, requestedLimit, availableAboveFloor, extended, trimmed, floorFiltered, true);
+    }
 }

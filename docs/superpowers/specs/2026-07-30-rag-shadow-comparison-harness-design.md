@@ -3,13 +3,13 @@
 **Date:** 2026-07-30
 **Status:** Draft
 **Issue:** #58
-**Scope:** Temporary comparison harness — remove when evaluation is complete
+**Scope:** Ongoing passive comparison harness
 
 ## Purpose
 
 Determine whether the Hortora RAG engine can replace Claude's adaptive grep-based garden search. Run the RAG engine as a shadow alongside Claude's existing grep behaviour, log both result sets, and compare effectiveness post-process.
 
-If RAG consistently matches or exceeds Claude's multi-step grep results, retire the grep-based approach from all soredium skills.
+The comparison log accumulates over time for periodic review — tracking whether RAG performance improves, where it falls short, and what query patterns it handles well or poorly.
 
 ## Current State
 

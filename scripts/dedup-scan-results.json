@@ -1,0 +1,43 @@
+{
+  "total_entries": 2417,
+  "threshold": 0.92,
+  "pairs_found": 4,
+  "duplicates": [
+    {
+      "score": 0.9991,
+      "entry_a": "GE-20260517-e78ae8",
+      "title_a": "JPA entity returned from @Transactional method is detached \u2014 field mutations silently lost",
+      "entry_b": "GE-20260517-e78ae8",
+      "title_b": "JPA entity returned from @Transactional method is detached \u2014 field mutations silently lost",
+      "path_a": "jvm/jvm/GE-20260517-e78ae8.md",
+      "path_b": "jvm/GE-20260517-e78ae8.md"
+    },
+    {
+      "score": 0.9717,
+      "entry_a": "GE-20260713-69afbe",
+      "title_a": "IntelliJ MCP structural editing (ide_edit_member, ide_replace_member, ide_insert_member) does not support TypeScript",
+      "entry_b": "GE-20260719-152534",
+      "title_b": "IntelliJ MCP structural edit tools (ide_edit_member, ide_replace_member, ide_insert_member) only support Java and Kotlin",
+      "path_a": "intellij-platform/GE-20260713-69afbe.md",
+      "path_b": "tools/GE-20260719-152534.md"
+    },
+    {
+      "score": 0.9332,
+      "entry_a": "GE-20260707-a48ac6",
+      "title_a": "GitHub Packages version API updated_at reflects creation date, not latest SNAPSHOT upload \u2014 leads to wrong stale-artifact diagnosis",
+      "entry_b": "GE-20260707-802a18",
+      "title_b": "GitHub Packages SNAPSHOT version updated_at is creation date, not last upload \u2014 misleads artifact staleness diagnosis",
+      "path_a": "tools/GE-20260707-a48ac6.md",
+      "path_b": "tools/GE-20260707-802a18.md"
+    },
+    {
+      "score": 0.9311,
+      "entry_a": "GE-20260604-037c42",
+      "title_a": "gh repo fork fails with HTTP 403 on empty repositories \u2014 push first commit before forking",
+      "entry_b": "GE-20260629-7fdee3",
+      "title_b": "Empty GitHub repos cannot be forked \u2014 gh repo fork returns 403",
+      "path_a": "tools/GE-20260604-037c42.md",
+      "path_b": "tools/GE-20260629-7fdee3.md"
+    }
+  ]
+}

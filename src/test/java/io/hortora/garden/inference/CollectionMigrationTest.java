@@ -28,7 +28,12 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 class CollectionMigrationTest {
 
@@ -59,6 +64,10 @@ class CollectionMigrationTest {
         when(multiModalEmbedder.supportedModes()).thenReturn(
                 Set.of(EmbeddingMode.DENSE, EmbeddingMode.SPARSE, EmbeddingMode.COLBERT));
         when(multiModalEmbedderInstance.get()).thenReturn(multiModalEmbedder);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(768);
+        when(ragConfig.maxMultivectorFloats()).thenReturn(1_000_000);
+        when(qdrantClient.listCollectionsAsync())
+                .thenReturn(Futures.immediateFuture(java.util.List.of()));
 
         migration = new CollectionMigration(
                 multiModalEmbedderInstance, qdrantClient,
@@ -285,5 +294,60 @@ class CollectionMigrationTest {
 
         verify(embeddingIngestor).deleteCorpus(eq(corpusRef));
         verify(cursorStore).save("garden", "");
+    }
+
+    @Test
+    void retriesWhenQdrantUnavailableOnStartup() throws Exception {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(768);
+
+        // Fail twice, succeed on 3rd
+        when(qdrantClient.listCollectionsAsync())
+                .thenReturn(Futures.immediateFailedFuture(
+                        new io.grpc.StatusRuntimeException(io.grpc.Status.UNAVAILABLE)))
+                .thenReturn(Futures.immediateFailedFuture(
+                        new io.grpc.StatusRuntimeException(io.grpc.Status.UNAVAILABLE)))
+                .thenReturn(Futures.immediateFuture(java.util.List.of()));
+
+        when(qdrantClient.collectionExistsAsync("hortora_garden"))
+                .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.empty());
+
+        migration.onStartup(null, 5, 0);
+
+        verify(qdrantClient, times(3)).listCollectionsAsync();
+    }
+
+    @Test
+    void startsSuccessfullyWhenQdrantAvailableImmediately() throws Exception {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(768);
+
+        when(qdrantClient.listCollectionsAsync())
+                .thenReturn(Futures.immediateFuture(java.util.List.of()));
+        when(qdrantClient.collectionExistsAsync("hortora_garden"))
+                .thenReturn(Futures.immediateFuture(false));
+        when(cursorStore.load("garden")).thenReturn(java.util.Optional.empty());
+
+        migration.onStartup(null, 5, 0);
+
+        verify(qdrantClient, times(1)).listCollectionsAsync();
+    }
+
+    @Test
+    void completesAfterExhaustingRetries() throws Exception {
+        when(multiModalEmbedderInstance.isResolvable()).thenReturn(true);
+        when(multiModalEmbedder.maxSequenceLength()).thenReturn(768);
+
+        // Always fail
+        when(qdrantClient.listCollectionsAsync())
+                .thenReturn(Futures.immediateFailedFuture(
+                        new io.grpc.StatusRuntimeException(io.grpc.Status.UNAVAILABLE)));
+
+        migration.onStartup(null, 3, 0);
+
+        verify(qdrantClient, times(3)).listCollectionsAsync();
+        // Should complete without hanging — no interaction with collection checks
+        verify(qdrantClient, never()).collectionExistsAsync(any());
     }
 }

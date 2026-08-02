@@ -6,9 +6,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.yaml.snakeyaml.Yaml;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ApplicationScoped
 public class GardenMetadataExtractor implements MetadataExtractor {
@@ -60,6 +65,31 @@ public class GardenMetadataExtractor implements MetadataExtractor {
             listMetadata.put("tags", tags.stream().map(Object::toString).toList());
         }
 
+        List<String> seeAlsoIds = extractSeeAlso(body);
+        if (!seeAlsoIds.isEmpty()) {
+            listMetadata.put("see_also", seeAlsoIds);
+            metadata.put("see_also_ids", String.join("|", seeAlsoIds));
+        }
+
         return new ExtractionResult(combinedContent, metadata, listMetadata);
+    }
+
+    private static final Pattern SEE_ALSO_LINE = Pattern.compile(
+            "\\*\\*See also:?\\*\\*\\s*(.+)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern GE_ID_PATTERN = Pattern.compile(
+            "GE-(?:\\d{8}-[0-9a-f]{6}|\\d{4})");
+
+    static List<String> extractSeeAlso(String body) {
+        Set<String> seen = new LinkedHashSet<>();
+        for (String line : body.split("\n")) {
+            Matcher lineMatcher = SEE_ALSO_LINE.matcher(line);
+            if (lineMatcher.find()) {
+                Matcher idMatcher = GE_ID_PATTERN.matcher(lineMatcher.group(1));
+                while (idMatcher.find()) {
+                    seen.add(idMatcher.group());
+                }
+            }
+        }
+        return new ArrayList<>(seen);
     }
 }
