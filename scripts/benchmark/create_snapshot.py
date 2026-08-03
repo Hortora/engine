@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import sys
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from benchmark.qdrant_utils import (
@@ -175,6 +175,49 @@ def create_snapshot(name: str, engine_url: str = ENGINE_URL,
     return manifest
 
 
+def prune_snapshots(keep: int = 3, max_age_days: int = 30,
+                    dry_run: bool = False) -> list[dict]:
+    snapshots = list_snapshots()
+    if not snapshots:
+        return []
+
+    if SNAPSHOT_DIR.exists():
+        for d in SNAPSHOT_DIR.iterdir():
+            if d.is_dir() and not (d / "manifest.json").exists():
+                print(f"Warning: orphan snapshot directory (no manifest.json): {d.name}",
+                      file=sys.stderr)
+
+    snapshots.sort(key=lambda s: s.get("created", ""), reverse=True)
+
+    protected = snapshots[:keep]
+    candidates = snapshots[keep:]
+
+    cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
+    pruned = []
+    for snap in candidates:
+        created_str = snap.get("created", "")
+        try:
+            created = datetime.fromisoformat(created_str)
+            if created < cutoff:
+                pruned.append(snap)
+        except (ValueError, TypeError):
+            pass
+
+    if not pruned:
+        print("Nothing to prune.")
+        return []
+
+    for snap in pruned:
+        snap_dir = SNAPSHOT_DIR / snap["name"]
+        if dry_run:
+            print(f"  [dry-run] Would prune: {snap['name']}")
+        else:
+            shutil.rmtree(snap_dir)
+            print(f"  Pruned: {snap['name']}")
+
+    return pruned
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(
@@ -184,6 +227,14 @@ def main():
     parser.add_argument("--engine-url", default=ENGINE_URL, help="Engine base URL")
     parser.add_argument("--qdrant-url", default=QDRANT_URL, help="Qdrant REST API URL")
     parser.add_argument("--list", action="store_true", help="List available snapshots")
+    parser.add_argument("--prune", action="store_true",
+                        help="Prune old snapshots (standalone or after create)")
+    parser.add_argument("--keep", type=int, default=3,
+                        help="Minimum snapshots to retain (default: 3)")
+    parser.add_argument("--max-age", type=int, default=30,
+                        help="Delete snapshots older than N days (default: 30)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Show what would be pruned without deleting")
     args = parser.parse_args()
 
     if args.list:
@@ -199,10 +250,18 @@ def main():
                   f"{s.get('engine_commit', '?')}")
         return
 
-    if not args.name:
-        parser.error("snapshot name is required (or use --list)")
+    if args.name:
+        create_snapshot(args.name, args.engine_url, args.qdrant_url)
 
-    create_snapshot(args.name, args.engine_url, args.qdrant_url)
+    if args.prune:
+        pruned = prune_snapshots(keep=args.keep, max_age_days=args.max_age,
+                                 dry_run=args.dry_run)
+        if pruned:
+            print(f"\nPruned {len(pruned)} snapshot(s).")
+        return
+
+    if not args.name and not args.prune:
+        parser.error("snapshot name is required (or use --list / --prune)")
 
 
 if __name__ == "__main__":

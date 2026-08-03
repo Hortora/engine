@@ -1,9 +1,11 @@
 import json
 import hashlib
 import pytest
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from benchmark.create_snapshot import (
     SNAPSHOT_DIR, create_manifest, list_snapshots, _compute_sha256,
+    prune_snapshots,
 )
 
 
@@ -86,3 +88,74 @@ def test_list_snapshots_sorted_by_name(tmp_path, monkeypatch):
         (d / "manifest.json").write_text(json.dumps({"name": name, "point_count": 100}))
     result = list_snapshots()
     assert [s["name"] for s in result] == ["alpha", "beta", "gamma"]
+
+
+def _create_fake_snapshots(base_dir, names, days_ago):
+    for name, ago in zip(names, days_ago):
+        d = base_dir / name
+        d.mkdir()
+        created = datetime.now(timezone.utc) - timedelta(days=ago)
+        manifest = {"name": name, "created": created.isoformat(),
+                    "point_count": 100, "snapshot_size_bytes": 1024}
+        (d / "manifest.json").write_text(json.dumps(manifest))
+
+
+def test_prune_keeps_n_most_recent(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.create_snapshot.SNAPSHOT_DIR", tmp_path)
+    _create_fake_snapshots(tmp_path, ["old", "mid", "new"], days_ago=[60, 30, 1])
+
+    pruned = prune_snapshots(keep=2, max_age_days=45, dry_run=False)
+
+    assert len(pruned) == 1
+    assert pruned[0]["name"] == "old"
+    assert not (tmp_path / "old").exists()
+    assert (tmp_path / "mid").exists()
+    assert (tmp_path / "new").exists()
+
+
+def test_prune_respects_max_age(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.create_snapshot.SNAPSHOT_DIR", tmp_path)
+    _create_fake_snapshots(tmp_path, ["ancient", "recent"], days_ago=[90, 5])
+
+    pruned = prune_snapshots(keep=1, max_age_days=30, dry_run=False)
+
+    assert len(pruned) == 1
+    assert pruned[0]["name"] == "ancient"
+
+
+def test_prune_keep_protects_from_age_deletion(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.create_snapshot.SNAPSHOT_DIR", tmp_path)
+    _create_fake_snapshots(tmp_path, ["only_one"], days_ago=[90])
+
+    pruned = prune_snapshots(keep=1, max_age_days=30, dry_run=False)
+
+    assert len(pruned) == 0
+    assert (tmp_path / "only_one").exists()
+
+
+def test_prune_dry_run_does_not_delete(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.create_snapshot.SNAPSHOT_DIR", tmp_path)
+    _create_fake_snapshots(tmp_path, ["old", "new"], days_ago=[60, 1])
+
+    pruned = prune_snapshots(keep=1, max_age_days=30, dry_run=True)
+
+    assert len(pruned) == 1
+    assert (tmp_path / "old").exists()
+
+
+def test_prune_warns_on_orphan_directory(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr("benchmark.create_snapshot.SNAPSHOT_DIR", tmp_path)
+    _create_fake_snapshots(tmp_path, ["good"], days_ago=[1])
+    (tmp_path / "orphan").mkdir()
+
+    prune_snapshots(keep=1, max_age_days=365, dry_run=False)
+
+    assert "orphan" in capsys.readouterr().err
+
+
+def test_prune_no_snapshots(tmp_path, monkeypatch):
+    monkeypatch.setattr("benchmark.create_snapshot.SNAPSHOT_DIR", tmp_path)
+
+    pruned = prune_snapshots(keep=3, max_age_days=30, dry_run=False)
+
+    assert len(pruned) == 0

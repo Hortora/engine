@@ -289,6 +289,29 @@ class GardenMcpToolsTest {
     }
 
     @Test
+    void gardenUnretrievedSurfacesLowQualityEntries() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        for (int i = 0; i < 3; i++) {
+            retrievalTracker.record(
+                    RetrievalQuery.of("hibernate"),
+                    corpus,
+                    List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                    16);
+        }
+        var records = retrievalTracker.findRecords(corpus, java.time.Instant.EPOCH, java.time.Instant.now());
+        for (var record : records) {
+            retrievalTracker.feedback(record.retrievalId(), "jvm/GE-20260620-a1b2c3.md",
+                                      io.casehub.neocortex.rag.RetrievalOutcome.NOT_RELEVANT);
+        }
+
+        String result = mcpTools.gardenUnretrieved(1, null);
+
+        assertThat(result).contains("Low quality");
+        assertThat(result).contains("GE-20260620-a1b2c3");
+    }
+
+
+    @Test
     void passesMinDaysFilterExcludesRecentGeEntries() {
         String recentId = "jvm/GE-" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE) + "-aabbcc.md";
         assertThat(GardenMcpTools.passesMinDaysFilter(recentId, 30)).isFalse();
@@ -340,5 +363,27 @@ class GardenMcpToolsTest {
         var lineage = provenanceStore.forwardLineage("Hortora/trellis", 14);
         assertThat(lineage.getFirst().specName()).isEmpty();
     }
+
+    @Test
+    void gardenRecordOutcomeDelegatesToService() {
+        String result = mcpTools.gardenRecordOutcome(
+                "GE-20260620-a1b2c3", "Hortora/engine", 75,
+                "Testing outcome", 0.9, "Helpful");
+
+        assertThat(result).contains("recorded");
+        assertThat(result).contains("GE-20260620-a1b2c3");
+    }
+
+    @Test
+    void gardenOutcomeReportRendersOutput() {
+        mcpTools.gardenRecordOutcome(
+                "GE-20260620-a1b2c3", "Hortora/engine", 75,
+                "Testing", 0.5, null);
+
+        String result = mcpTools.gardenOutcomeReport();
+
+        assertThat(result).contains("GE-20260620-a1b2c3");
+    }
+
 
 }

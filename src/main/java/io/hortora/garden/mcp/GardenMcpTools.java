@@ -1,7 +1,11 @@
 package io.hortora.garden.mcp;
 
 import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.DocumentQualitySignal;
 import io.casehub.neocortex.rag.EmbeddingIngestor;
+import io.casehub.neocortex.rag.QualitySignal;
+import io.casehub.neocortex.rag.QualityThresholds;
+import io.casehub.neocortex.rag.RetrievalAnalyzer;
 import io.casehub.neocortex.rag.RetrievalTracker;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
@@ -20,9 +24,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -43,6 +47,9 @@ public class GardenMcpTools {
     RetrievalTracker retrievalTracker;
     @Inject
     io.hortora.garden.provenance.ProvenanceStore provenanceStore;
+    @Inject
+    io.hortora.garden.outcome.GardenOutcomeService outcomeService;
+
 
     private volatile java.util.Map<String, String> cachedGeIdToDocId;
     private volatile long cachedGeIdToDocIdTimestamp;
@@ -213,34 +220,40 @@ public class GardenMcpTools {
             Integer minDays,
             @ToolArg(description = "Stale threshold in days — entries retrieved at some point but not within this window are flagged as stale (default 90). Must be less than the retention period.", required = false)
             Integer staleDays) {
-
         int effectiveMinDays   = minDays != null && minDays > 0 ? minDays : 30;
         int effectiveStaleDays = staleDays != null && staleDays >= 0 ? staleDays : 90;
 
         CorpusRef corpusRef = new CorpusRef("hortora", config.id());
 
-        List<String> allDocuments = embeddingIngestor.listDocuments(corpusRef);
-        Set<String> everRetrieved = retrievalTracker.findRetrievedDocumentIds(
-                corpusRef, Instant.EPOCH, Instant.now());
+        QualityThresholds thresholds = new QualityThresholds(
+                3, 3, 0.7, java.time.Duration.ofDays(effectiveStaleDays));
 
-        List<String> unretrieved = allDocuments.stream()
-                                               .filter(id -> !everRetrieved.contains(id))
-                                               .filter(id -> passesMinDaysFilter(id, effectiveMinDays))
-                                               .sorted()
-                                               .toList();
+        List<DocumentQualitySignal> signals = RetrievalAnalyzer.qualitySignals(
+                retrievalTracker, embeddingIngestor, corpusRef,
+                Instant.EPOCH, Instant.now(), thresholds);
 
-        Set<String> recentlyRetrieved = retrievalTracker.findRetrievedDocumentIds(
-                corpusRef,
-                Instant.now().minus(effectiveStaleDays, ChronoUnit.DAYS),
-                Instant.now());
-        List<String> stale = allDocuments.stream()
-                                         .filter(everRetrieved::contains)
-                                         .filter(id -> !recentlyRetrieved.contains(id))
+        List<String> unretrieved = signals.stream()
+                                          .filter(s -> s.signal() == QualitySignal.NEVER_RETRIEVED)
+                                          .map(DocumentQualitySignal::sourceDocumentId)
+                                          .filter(id -> passesMinDaysFilter(id, effectiveMinDays))
+                                          .sorted()
+                                          .toList();
+
+        List<String> stale = signals.stream()
+                                    .filter(s -> s.signal() == QualitySignal.STALE)
+                                    .map(DocumentQualitySignal::sourceDocumentId)
+                                    .sorted()
+                                    .toList();
+
+        List<String> lowQuality = signals.stream()
+                                         .filter(s -> s.signal() == QualitySignal.HIGH_RETRIEVAL_LOW_QUALITY)
+                                         .map(DocumentQualitySignal::sourceDocumentId)
                                          .sorted()
                                          .toList();
 
-        if (unretrieved.isEmpty() && stale.isEmpty()) {
-            return "All " + allDocuments.size() + " entries have been retrieved within the tracking window.";
+        if (unretrieved.isEmpty() && stale.isEmpty() && lowQuality.isEmpty()) {
+            int total = embeddingIngestor.listDocuments(corpusRef).size();
+            return "All " + total + " entries have been retrieved within the tracking window.";
         }
 
         StringBuilder sb = new StringBuilder();
@@ -261,6 +274,17 @@ public class GardenMcpTools {
             sb.append("## Stale entries (").append(stale.size())
               .append(") — not retrieved in the last ").append(effectiveStaleDays).append(" days\n\n");
             Map<String, List<String>> byDomain = groupByDomain(stale);
+            for (var entry : byDomain.entrySet()) {
+                sb.append("### ").append(entry.getKey()).append("\n");
+                entry.getValue().forEach(id -> sb.append("- ").append(extractDocumentId(id)).append("\n"));
+                sb.append("\n");
+            }
+        }
+
+        if (!lowQuality.isEmpty()) {
+            sb.append("## Low quality entries (").append(lowQuality.size())
+              .append(") — frequently retrieved but rated poorly\n\n");
+            Map<String, List<String>> byDomain = groupByDomain(lowQuality);
             for (var entry : byDomain.entrySet()) {
                 sb.append("### ").append(entry.getKey()).append("\n");
                 entry.getValue().forEach(id -> sb.append("- ").append(extractDocumentId(id)).append("\n"));
@@ -305,6 +329,22 @@ public class GardenMcpTools {
             Log.warn("gardenRecordProvenance failed", e);
             return "Error recording provenance: " + e.getMessage();
         }
+    }
+
+    @Tool(description = "Record whether a garden entry was helpful for a task. Call at work-end with entries consulted during the session.")
+    String gardenRecordOutcome(
+            @ToolArg(description = "Garden entry ID (e.g. GE-20260620-a1b2c3)") String geId,
+            @ToolArg(description = "GitHub repo (e.g. Hortora/engine)") String issueRepo,
+            @ToolArg(description = "Issue number") int issueNumber,
+            @ToolArg(description = "Brief description of the work context") String workContext,
+            @ToolArg(description = "Success rate 0.0-1.0 (1.0=fully helpful, 0.0=not helpful)") double successRate,
+            @ToolArg(description = "Optional detail about why", required = false) String detail) {
+        return outcomeService.recordOutcome(geId, issueRepo, issueNumber, workContext, successRate, detail);
+    }
+
+    @Tool(description = "Report garden entries with outcome tracking data — declining confidence, high success, or low success. Use during harvest sessions to identify entries needing revision.")
+    String gardenOutcomeReport() {
+        return outcomeService.outcomeReport();
     }
 
 
