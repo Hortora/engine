@@ -15,6 +15,7 @@ public class ReconcileScheduler {
     @Inject GardenConfig gardenConfig;
 
     @Scheduled(every = "${hortora.reconcile.interval:6h}",
+               delayed = "60s",
                concurrentExecution = ConcurrentExecution.SKIP)
     void reconcile() {
         try {
