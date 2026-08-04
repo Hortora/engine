@@ -9,6 +9,7 @@ import io.casehub.neocortex.rag.RetrievalAnalyzer;
 import io.casehub.neocortex.rag.RetrievalTracker;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
+import io.hortora.garden.index.GardenReindexService;
 import io.hortora.garden.inference.CollectionMigration;
 import io.hortora.garden.search.AdaptiveResult;
 import io.hortora.garden.search.SearchResource;
@@ -43,6 +44,9 @@ public class GardenMcpTools {
     FederationConfig    federationConfig;
     @Inject
     CollectionMigration collectionMigration;
+    @Inject
+    GardenReindexService reindexService;
+
     @Inject
     RetrievalTracker retrievalTracker;
     @Inject
@@ -194,25 +198,8 @@ public class GardenMcpTools {
 
     @Tool(description = "Trigger a full re-index of the garden corpus. Deletes the current Qdrant collection and resets the cursor so the next ingestion cycle re-embeds all entries. Use after bulk metadata changes, reclassification, or schema evolution.")
     String gardenReindex() {
-        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
-        int       fileCount;
-        try {
-            fileCount = embeddingIngestor.listDocuments(corpusRef).size();
-        } catch (Exception e) {
-            fileCount = -1;
-        }
-
-        try {
-            collectionMigration.resetCorpus(corpusRef, config.id());
-        } catch (Exception e) {
-            Log.warn("Failed to trigger reindex", e);
-            return "Reindex failed for garden '" + config.id() + "': " + e.getMessage();
-        }
-
-        return "Reindex triggered for garden '" + config.id()
-               + "'. Collection deleted, cursor reset. Re-embedding will complete on next ingestion cycle"
-               + (fileCount >= 0 ? " (" + fileCount + " entries in corpus)." : ".");
-    }
+        GardenReindexService.ReindexResult result = reindexService.reindex();
+        return result.message();}
 
     @Tool(description = "List garden entries not retrieved within the tracking window, or stale-retrieved. Retrieval records are retained for a configurable period (default 180 days); 'unretrieved' means no retrieval record exists in that window. Use to identify candidates for review or erasure during harvest sessions.")
     String gardenUnretrieved(

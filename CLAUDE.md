@@ -43,6 +43,7 @@ Phase 4 (current): BGE-M3 adoption — single ONNX model producing dense (1024-d
 - **See Also expansion** — `GardenMetadataExtractor` parses "See also" cross-references from entry body text (922 entries, 3500 refs). Stored as `see_also` listMetadata and `see_also_ids` string metadata. At query time, `GardenMcpTools.expandWithSeeAlso()` collects referenced GE-IDs from returned results, resolves to document paths via `embeddingIngestor.listDocuments()`, and fetches adjacent entries. Surfaces entries in the same problem space that use different vocabulary.
 - **Startup readiness probe** — `CollectionMigration.waitForQdrant()` retries `listCollectionsAsync()` up to 5 times with 2s delay before migration checks. Fixes gRPC `TRANSIENT_FAILURE` when Qdrant starts after the engine (concurrent launchd services). Without this, the gRPC channel is poisoned on startup and all RPCs fail immediately until the backoff timer fires.
 - **Periodic reconcile** — `ReconcileScheduler` runs `CorpusIngestionService.reconcile()` every 6h (configurable via `hortora.reconcile.interval`). Compares files on disk vs Qdrant — adds missing entries, removes orphans. Safety net for filesystem watcher misses.
+- **REST reindex endpoint** — `POST /api/garden/reindex` wraps `GardenReindexService.reindex()`, shared with the `gardenReindex` MCP tool. Returns `{"status":"ok|error","message":"..."}`. Grove's "Trigger Reindex" button calls this endpoint.
 
 ## Build
 
@@ -72,7 +73,7 @@ Qdrant runs as a Docker container (`qdrant-bench`) with `restart=unless-stopped`
 
 ## Dev Services
 
-In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestInferenceModelProducer` routes `@Inference("bge-m3")` to `InMemoryInferenceModel.returningMulti()` — no ONNX Runtime or real models needed. Run `scripts/export_bge_m3.py` to produce the BGE-M3 ONNX model (one-time, ~2.2GB download + export), then `scripts/download-models.sh` to verify checksums. The `%dev` model paths are pre-configured in `application.properties`. Sequence length is capped at 768 tokens (Qdrant ColBERT multi-vector limit: 1M floats = 1024 dim × ~1023 max tokens).
+In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestInferenceModelProducer` routes `@Inference("bge-m3")` to `InMemoryInferenceModel.returningMulti()` — no ONNX Runtime or real models needed. Test `application.properties` provides stub `model-path`/`tokenizer-path`/`max-sequence-length` for both `bge-m3` and `reranker` — SmallRye Config validates the full `@ConfigMapping` group when any property is set. Run `scripts/export_bge_m3.py` to produce the BGE-M3 ONNX model (one-time, ~2.2GB download + export), then `scripts/download-models.sh` to verify checksums. The `%dev` model paths are pre-configured in `application.properties`. Sequence length is capped at 768 tokens (Qdrant ColBERT multi-vector limit: 1M floats = 1024 dim × ~1023 max tokens).
 
 ## Project Artifacts
 
