@@ -161,3 +161,115 @@ Later: Add `version_status: current | aging | legacy` payload field to Qdrant po
 ## Repo
 
 `hortora/grove` — standalone repository. Own port, own lifecycle. Reads garden data from shared filesystem paths (`~/.hortora/`), calls Qdrant on localhost:6333.
+
+## Distribution and Installer
+
+### Installer (`hortora-setup.sh`)
+
+Lives in the garden repo. Single script — `curl | bash` or clone-and-run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Hortora/garden/main/scripts/hortora-setup.sh | bash
+```
+
+Steps:
+1. Detect OS (macOS / Linux)
+2. Check prerequisites (git, Java 25, Docker/Podman)
+3. Install Qdrant (Podman on macOS, Docker on Linux)
+4. Clone the garden repo → `~/.hortora/garden`
+5. Clone and build the engine → `~/.hortora/engine`
+6. Download ONNX models from GitHub Release assets (no Python/torch needed) → `~/.hortora/models/`
+7. Install service (launchd on macOS, systemd on Linux)
+8. Configure Claude Code MCP server in `~/.claude/settings.json`
+9. Set up contributor submission branch + post-commit hook
+10. Verify: Qdrant responding, engine responding, gardenSearch available
+
+### Garden distribution
+
+The garden is distributed as a **git clone**. No pre-indexed binary — each machine indexes locally on first startup.
+
+**Why local indexing:**
+- Qdrant indexes aren't portable across architectures (ARM vs x86)
+- ONNX model output varies by platform (floating-point ordering in SIMD)
+- One-time cost (~60 min for 5K entries); after that, daily `git pull` brings a handful of new entries that index in seconds via cursor-based change detection
+
+**ONNX models** (~90MB total) are hosted as GitHub Release assets on `Hortora/engine`. The installer runs `scripts/download-models.sh` which downloads and verifies checksums. No Python, torch, or HuggingFace export step needed.
+
+### Auto-update
+
+Daily cron/launchd job:
+```bash
+cd ~/.hortora/garden && git pull --ff-only origin main
+cd ~/.hortora/engine && git pull --ff-only origin main && ./mvnw package -DskipTests -q
+```
+New garden entries land via `git pull`. The engine's periodic reconcile (every 6h) detects new files and indexes them automatically.
+
+## Contributor Pipeline
+
+### Branch model
+
+```
+main                    ← curator-approved content (what installs pull from)
+  └── staging           ← CI-validated submissions waiting for curator review
+        ├── PR from submissions/alice
+        ├── PR from submissions/bob
+        └── PR from submissions/carol
+```
+
+### Submission flow
+
+1. Contributor captures an entry (forage CAPTURE in their local garden clone)
+2. Post-commit hook pushes to `submissions/<username>` on the garden remote
+3. First push opens a PR: `submissions/<username>` → `staging`
+4. Subsequent pushes add commits to the same open PR — it accumulates
+5. CI runs on each push (GitHub Actions, free tier):
+   - `validate_pr.py` on every new/changed `GE-*.md` file
+   - Dedup check against `main` branch (title similarity + tag overlap via garden.db, not Qdrant)
+   - Auto-label: `validated` if all pass, `needs-fix` if any fail
+   - Comment on failures with fix instructions
+6. Auto-merge to staging when CI passes and PR has `validated` label
+7. Curator promotes staging → main periodically (weekly, or at 20+ new entries)
+
+### Auto-flush threshold
+
+When a PR accumulates 25+ validated entries, CI adds `ready-for-review` label and posts a summary:
+```
+📦 25 entries ready (12 gotchas, 8 techniques, 5 undocumented)
+Domains: jvm (14), tools (6), web (3), python (2)
+All validated.
+```
+
+### CI workflow (`.github/workflows/validate-submissions.yml`)
+
+Runs on PRs targeting `staging` when `*/GE-*.md` files change:
+- `validate_pr.py` for score, format, required fields
+- `dedup_check.py` comparing against `main` branch garden.db (Jaccard similarity on titles + tags, threshold 0.8)
+- Auto-label and auto-merge on pass
+
+### Contributor hook (installed by `hortora-setup.sh`)
+
+Post-commit hook in `~/.hortora/garden/.git/hooks/post-commit`:
+```bash
+#!/bin/bash
+BRANCH="submissions/$(git config user.name | tr ' ' '-' | tr '[:upper:]' '[:lower:]')"
+git push origin HEAD:$BRANCH 2>/dev/null
+gh pr list --head "$BRANCH" --base staging --json number --jq length | \
+  grep -q 0 && \
+  gh pr create --head "$BRANCH" --base staging \
+    --title "[$(git config user.name)] garden submissions" \
+    --body "Auto-created by hortora-setup"
+```
+
+### What lives where
+
+| Component | Repo |
+|-----------|------|
+| `hortora-setup.sh` | `Hortora/garden` |
+| `validate-submissions.yml` | `Hortora/garden` |
+| `dedup_check.py` | `Hortora/garden` |
+| `staging` branch | `Hortora/garden` |
+| ONNX model release assets | `Hortora/engine` |
+
+### Scaling notes
+
+Git handles thousands of small markdown files well. At 5K files, operations are sub-second. At 50K, use `--filter=blob:none` for shallow clones. At 100K+, consider a different storage model — but that's years away at current growth rates.
