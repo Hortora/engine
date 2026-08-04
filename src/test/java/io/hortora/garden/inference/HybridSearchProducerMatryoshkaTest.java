@@ -54,12 +54,15 @@ class HybridSearchProducerMatryoshkaTest {
     public static class MatryoshkaProfile implements QuarkusTestProfile {
         @Override
         public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                "casehub.inference.models.bge-m3.model-path", "stub",
-                "casehub.inference.models.bge-m3.tokenizer-path", "stub",
-                "casehub.rag.matryoshka.dimension", "512",
-                "quarkus.arc.exclude-types", "io.hortora.garden.inference.CollectionMigration,io.hortora.garden.mcp.GardenMcpTools"
-            );
-        }
+            return Map.ofEntries(
+                    Map.entry("casehub.inference.models.bge-m3.model-path", "stub"),
+                    Map.entry("casehub.inference.models.bge-m3.tokenizer-path", "stub"),
+                    Map.entry("casehub.inference.models.bge-m3.max-sequence-length", "768"),
+                    Map.entry("casehub.inference.models.reranker.model-path", "stub"),
+                    Map.entry("casehub.inference.models.reranker.tokenizer-path", "stub"),
+                    Map.entry("casehub.inference.models.reranker.max-sequence-length", "512"),
+                    Map.entry("casehub.rag.matryoshka.dimension", "512"),
+                    Map.entry("quarkus.arc.exclude-types", "io.hortora.garden.inference.CollectionMigration,io.hortora.garden.mcp.GardenMcpTools,io.hortora.garden.index.GardenReindexService,io.hortora.garden.index.ReindexResource")
+                                );}
     }
 }

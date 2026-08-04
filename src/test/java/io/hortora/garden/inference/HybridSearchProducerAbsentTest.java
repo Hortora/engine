@@ -1,21 +1,26 @@
 package io.hortora.garden.inference;
 
-import io.casehub.neocortex.inference.MultiModalEmbedder;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
+import io.quarkus.arc.lookup.LookupIfProperty;
+import io.quarkus.arc.properties.StringValueMatch;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@QuarkusTest
 class HybridSearchProducerAbsentTest {
 
-    @Inject
-    Instance<MultiModalEmbedder> multiModalEmbedderInstance;
-
     @Test
-    void multiModalEmbedderNotResolvableWithoutConfig() {
-        assertThat(multiModalEmbedderInstance.isResolvable()).isFalse();
+    void producerMethodHasLookupIfPropertyGuard() throws Exception {
+        Method method = Arrays.stream(HybridSearchProducer.class.getDeclaredMethods())
+                .filter(m -> m.getName().equals("multiModalEmbedder"))
+                .findFirst()
+                .orElseThrow();
+        LookupIfProperty annotation = method.getAnnotation(LookupIfProperty.class);
+        assertThat(annotation).isNotNull();
+        assertThat(annotation.name()).isEqualTo("casehub.inference.models.bge-m3.model-path");
+        assertThat(annotation.stringValue()).isEqualTo(".+");
+        assertThat(annotation.match()).isEqualTo(StringValueMatch.REGEX);
     }
 }
