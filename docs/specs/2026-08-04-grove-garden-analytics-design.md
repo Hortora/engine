@@ -162,29 +162,123 @@ Later: Add `version_status: current | aging | legacy` payload field to Qdrant po
 
 `hortora/grove` — standalone repository. Own port, own lifecycle. Reads garden data from shared filesystem paths (`~/.hortora/`), calls Qdrant on localhost:6333.
 
-## Distribution and Installer
+---
 
-### Installer (`hortora-setup.sh`)
+## Hortora Distribution and Installer
 
-Lives in the garden repo. Single script — `curl | bash` or clone-and-run:
+### Overview
+
+A single installer script sets up the complete Hortora stack for a developer. One command after cloning the garden repo — everything else is automated.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Hortora/garden/main/scripts/hortora-setup.sh | bash
+git clone https://github.com/Hortora/garden.git ~/.hortora/garden
+~/.hortora/garden/scripts/hortora-setup.sh
 ```
 
-Steps:
-1. Detect OS (macOS / Linux)
-2. Check prerequisites (git, Java 25, Docker/Podman)
-3. Install Qdrant (Podman on macOS, Docker on Linux)
-4. Clone the garden repo → `~/.hortora/garden`
-5. Clone and build the engine → `~/.hortora/engine`
-6. Download ONNX models from GitHub Release assets (no Python/torch needed) → `~/.hortora/models/`
-7. Install service (launchd on macOS, systemd on Linux)
-8. Configure Claude Code MCP server in `~/.claude/settings.json`
-9. Set up contributor submission branch + post-commit hook
-10. Verify: Qdrant responding, engine responding, gardenSearch available
+### Prerequisites
 
-### Garden distribution
+- git
+- Java 25+
+
+No Docker, Podman, or Python required.
+
+### What gets installed
+
+Everything lives under `~/.hortora/`:
+
+| Path | Repo | What it is |
+|------|------|------------|
+| `~/.hortora/garden` | `Hortora/garden` | Knowledge corpus (git clone, source of truth) |
+| `~/.hortora/engine` | `Hortora/engine` | RAG retrieval service (Quarkus app, port 8080) |
+| `~/.hortora/grove` | `Hortora/grove` | Analytics + curation dashboard (Quarkus app, port 8090) |
+| `~/.hortora/soredium` | `Hortora/soredium` | Skills (synced to `~/.claude/skills/`) |
+| `~/.hortora/qdrant/` | — | Qdrant native binary + storage (port 6333) |
+| `~/.hortora/models/` | — | ONNX model files (BGE-M3 + reranker, ~90MB) |
+| `~/.hortora/stats/` | — | SQLite databases (created by engine at runtime) |
+| `~/.hortora/cursors/` | — | Ingestion cursor state (created by engine at runtime) |
+| `~/.hortora/logs/` | — | Service log files |
+
+### Installer steps (`hortora-setup.sh`)
+
+```
+1.  Detect OS and architecture
+    ├── macOS: aarch64-apple-darwin
+    └── Linux: x86_64-unknown-linux-musl / aarch64-unknown-linux-musl
+
+2.  Check prerequisites
+    └── git, java (25+)
+
+3.  Install Qdrant (native binary)
+    ├── Download pre-built binary from qdrant/qdrant GitHub releases
+    ├── Extract to ~/.hortora/qdrant/
+    ├── Write config (storage path: ~/.hortora/qdrant/storage/, port 6333)
+    └── Install service: io.hortora.qdrant (launchd / systemd)
+
+4.  Clone repos (garden already cloned by the user)
+    ├── git clone Hortora/engine    → ~/.hortora/engine
+    ├── git clone Hortora/grove     → ~/.hortora/grove
+    └── git clone Hortora/soredium  → ~/.hortora/soredium
+
+5.  Download ONNX models
+    ├── Download BGE-M3 + reranker from Hortora/engine GitHub Release assets
+    ├── Extract to ~/.hortora/models/bge-m3/ and ~/.hortora/models/reranker/
+    └── Verify checksums (scripts/download-models.sh)
+
+6.  Build apps
+    ├── ~/.hortora/engine: ./mvnw package -DskipTests -q
+    └── ~/.hortora/grove:  ./mvnw package -DskipTests -q
+
+7.  Install services
+    ├── io.hortora.qdrant  — port 6333, KeepAlive/Restart=always
+    ├── io.hortora.engine  — port 8080, KeepAlive/Restart=always
+    ├── io.hortora.grove   — port 8090, KeepAlive/Restart=always
+    └── io.hortora.update  — daily timer (see Auto-update below)
+
+8.  Install skills
+    └── python3 ~/.hortora/soredium/scripts/claude-skill sync-local --all -y
+
+9.  Configure Claude Code
+    └── Add hortora MCP server to ~/.claude/settings.json mcpServers
+
+10. Set up contributor submission
+    ├── Create submissions/<username> branch
+    └── Install post-commit hook for auto-push (see Contributor Pipeline)
+
+11. Verify
+    ├── Qdrant responding on :6333
+    ├── Engine responding on :8080
+    ├── Grove responding on :8090
+    ├── gardenSearch MCP available
+    └── First reconcile triggering (entries being indexed — ~60 min for full corpus)
+```
+
+### Services
+
+| Service | Port | Lifecycle | Restart |
+|---------|------|-----------|---------|
+| `io.hortora.qdrant` | 6333 | Persistent | KeepAlive / Restart=always |
+| `io.hortora.engine` | 8080 | Persistent | KeepAlive / Restart=always |
+| `io.hortora.grove` | 8090 | Persistent | KeepAlive / Restart=always |
+| `io.hortora.update` | — | Daily timer (3am) | Calendar interval |
+
+All survive reboots. No manual intervention after install.
+
+### Auto-update (`io.hortora.update`)
+
+Daily job that keeps all repos current and rebuilds when source changes:
+
+```
+1. git pull --ff-only in all 4 repos (garden, engine, grove, soredium)
+2. If engine source changed → ./mvnw package -DskipTests -q → restart engine service
+3. If grove source changed  → ./mvnw package -DskipTests -q → restart grove service
+4. If soredium changed      → python3 scripts/claude-skill sync-local --all -y
+5. Engine's ReconcileScheduler (every 6h) detects new garden entries
+   and indexes them automatically via cursor-based change detection
+```
+
+New garden entries merged to main by the curator are pulled overnight, indexed at next reconcile, and available in search — no manual action.
+
+### Garden distribution model
 
 The garden is distributed as a **git clone**. No pre-indexed binary — each machine indexes locally on first startup.
 
@@ -193,16 +287,9 @@ The garden is distributed as a **git clone**. No pre-indexed binary — each mac
 - ONNX model output varies by platform (floating-point ordering in SIMD)
 - One-time cost (~60 min for 5K entries); after that, daily `git pull` brings a handful of new entries that index in seconds via cursor-based change detection
 
-**ONNX models** (~90MB total) are hosted as GitHub Release assets on `Hortora/engine`. The installer runs `scripts/download-models.sh` which downloads and verifies checksums. No Python, torch, or HuggingFace export step needed.
+**ONNX models** (~90MB total for BGE-M3 + reranker) are hosted as GitHub Release assets on `Hortora/engine`. The installer downloads and verifies checksums. No Python, torch, or HuggingFace export step needed by the developer.
 
-### Auto-update
-
-Daily cron/launchd job:
-```bash
-cd ~/.hortora/garden && git pull --ff-only origin main
-cd ~/.hortora/engine && git pull --ff-only origin main && ./mvnw package -DskipTests -q
-```
-New garden entries land via `git pull`. The engine's periodic reconcile (every 6h) detects new files and indexes them automatically.
+---
 
 ## Contributor Pipeline
 
