@@ -12,7 +12,7 @@ Single-module Maven project (`io.hortora:engine`).
 |---------|---------|
 | `io.hortora.garden.config` | `GardenConfig` — garden path, ID, and federation schema config |
 | `io.hortora.garden.index` | `GardenBindingProducer` (CDI integration with neural-text), `GardenMetadataExtractor` (implements `MetadataExtractor` SPI) |
-| `io.hortora.garden.search` | `SearchResource` (REST, delegates to `CaseRetriever`) + `SearchResult` |
+| `io.hortora.garden.search` | `SearchResource` (REST, delegates to `CaseRetriever`) + `SearchResult`, `TemporalDecayScorer`, `VersionScorer`, `SearchProfileStore`, `ProfileResource`, `SearchScoringConfig` |
 | `io.hortora.garden.mcp` | `GardenMcpTools` — `garden_search` + `garden_status` MCP tools |
 | `io.hortora.garden.inference` | `HybridSearchProducer` (bridges `@Inference` models to `SparseEmbedder`/`CrossEncoderReranker`), `CollectionMigration` (dense→hybrid re-index) |
 | `io.hortora.garden.federation` | `FederationConfig`, `FederationConfigParser`, `ChainWalker`, `RemoteGardenClient` |
@@ -21,7 +21,7 @@ Single-module Maven project (`io.hortora:engine`).
 
 **`GardenBindingProducer`** — CDI producer that creates a `CorpusIngestionBinding` for the garden. This is the single integration point with neural-text's `CorpusIngestionService`. Creates `FlatCorpusStore` + `FlatChangeSource` from `GardenConfig.path()`, wraps them with a fixed `CorpusRef("hortora", gardenConfig.id())`. Neural-text handles startup scanning, filesystem watching, cursor persistence, collection schema creation, and embedding — the engine provides only the binding.
 
-**`GardenMetadataExtractor`** — implements neural-text's `MetadataExtractor` SPI. Parses `.md` files with YAML frontmatter. Returns `ExtractionResult(body, metadata)` where body = `title + "\n\n" + body` for embedding quality. Non-`.md` files and files without frontmatter return empty content (skipped by ingestion). Extracts: title, domain, type, score, tags, submitted.
+**`GardenMetadataExtractor`** — implements neural-text's `MetadataExtractor` SPI. Parses `.md` files with YAML frontmatter. Returns `ExtractionResult(body, metadata)` where body = `title + "\n\n" + body` for embedding quality. Non-`.md` files and files without frontmatter return empty content (skipped by ingestion). Extracts: title, domain, type, score, tags, submitted, staleness_threshold (+ computed staleness_days, decay_tier), verified_on, author, last_reviewed, tags_joined (pipe-separated string for query-time access).
 
 **`SearchResource`** — `GET /search?q=&domain=&type=&tags=&limit=`. Delegates local search to `CaseRetriever.retrieve()` with `PayloadFilter` for domain/type/tags filtering (single domain → `Eq`, multiple → `In`). Maps `RetrievedChunk` to `SearchResult` with metadata extraction and provenance tagging. Handles federation: cycle detection via `X-Federation-Visited` header, depth check, delegation to `ChainWalker` for upstream/peer queries. All filter parameters (domain, type, tags) are propagated to federated nodes. `searchAdaptive()` re-sorts candidates by CE score and applies `adaptiveFilter()` — two-layer filtering with score floor (CE < 0 excluded) and gap detection (first significant CE score drop trims noise tail). `SearchConfig` (`hortora.search.*`) controls floor, gap threshold, and minResults. REST endpoint is intentionally unfiltered — serves federation.
 

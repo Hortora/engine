@@ -6,10 +6,10 @@ import io.casehub.neocortex.rag.PayloadFilter;
 import io.casehub.neocortex.rag.RetrievalQuery;
 import io.casehub.neocortex.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
-import io.quarkus.logging.Log;
 import io.hortora.garden.federation.ChainWalker;
 import io.hortora.garden.federation.FederationConfig;
 import io.hortora.garden.index.QueryAugmentingExtractor;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Path("/search")
@@ -44,6 +45,8 @@ public class SearchResource {
     @Inject FederationConfig federationConfig;
     @Inject ChainWalker chainWalker;
     @Inject SearchConfig searchConfig;
+    @Inject SearchScoringConfig scoringConfig;
+    @Inject SearchProfileStore profileStore;
 
     @GET
     public List<SearchResult> search(
@@ -91,19 +94,28 @@ public class SearchResource {
                     parseDouble(chunk.metadata().get("_crossEncoderScore")),
                     federationConfig.gardenId(),
                     federationConfig.idPrefix(),
-                    seeAlsoIds));
+                    seeAlsoIds,
+                    chunk.metadata()));
         }
         return results;
     }
 
 
     public AdaptiveResult searchAdaptive(String query, String keywords, List<String> domains, String type, String tags, Integer limit) {
+        return searchAdaptive(query, keywords, domains, type, tags, limit, null, null);
+    }
+
+    public AdaptiveResult searchAdaptive(String query, String keywords, List<String> domains, String type, String tags, Integer limit, String profile, String stack) {
         int                requestedLimit = resolveLimit(limit);
         boolean            hasKeywords    = keywords != null && !keywords.isBlank();
         int                multiplier     = hasKeywords ? OVERFETCH_MULTIPLIER_KEYWORDS : OVERFETCH_MULTIPLIER;
         int                fetchLimit     = Math.min(requestedLimit * multiplier, MAX_LIMIT);
         List<SearchResult> candidates     = doSearch(query, keywords, domains, type, tags, fetchLimit, null);
         double             boostWeight    = searchConfig.scoreBoostWeight();
+
+        Map<String, String> bom = resolveBom(profile, stack);
+        String queryText = keywords != null ? query + " " + keywords : query;
+        candidates = applyScoring(candidates, queryText, bom);
 
         List<SearchResult> sorted = candidates.stream()
                                               .sorted(Comparator.comparing(
@@ -140,6 +152,51 @@ public class SearchResource {
         }
     }
 
+
+    private Map<String, String> resolveBom(String profile, String stack) {
+        if (stack != null && !stack.isBlank()) {
+            return SearchProfileStore.parseStack(stack);
+        }
+        if (profile != null && !profile.isBlank()) {
+            return profileStore.get(profile).orElse(Map.of());
+        }
+        return Map.of();
+    }
+
+    List<SearchResult> applyScoring(List<SearchResult> results, String queryText, Map<String, String> bom) {
+        TemporalDecayScorer temporalScorer = new TemporalDecayScorer();
+        VersionScorer       versionScorer  = new VersionScorer();
+        VersionScorer.Config vConfig = new VersionScorer.Config(
+                scoringConfig.versionDecayFactor(), scoringConfig.versionDecayFloor(),
+                scoringConfig.versionTopicWeightDefault());
+
+        boolean applyTemporal = scoringConfig.temporalDecayEnabled();
+        boolean applyVersion  = scoringConfig.versionScoringEnabled() && !bom.isEmpty();
+
+        if (!applyTemporal && !applyVersion) {return results;}
+
+        return results.stream().map(r -> {
+            if (r.metadata() == null) {return r;}
+            double multiplier = 1.0;
+
+            if (applyTemporal) {
+                multiplier *= temporalScorer.score(
+                        r.metadata().get("submitted"),
+                        r.metadata().get("decay_tier"));
+            }
+
+            if (applyVersion) {
+                multiplier *= versionScorer.score(
+                        r.metadata().get("verified_on"),
+                        bom, queryText, vConfig);
+            }
+
+            if (multiplier >= 0.999) {return r;}
+
+            Double adjustedCe = r.crossEncoderScore() != null ? r.crossEncoderScore() * multiplier : null;
+            return r.withAdjustedScores(r.relevance() * multiplier, adjustedCe);
+        }).toList();
+    }
 
     private static int resolveLimit(Integer limit) {
         if (limit == null || limit <= 0) return DEFAULT_LIMIT;
@@ -198,7 +255,8 @@ public class SearchResource {
                     parseDouble(chunk.metadata().get("_crossEncoderScore")),
                     federationConfig.gardenId(),
                     federationConfig.idPrefix(),
-                    seeAlsoIds));
+                    seeAlsoIds,
+                    chunk.metadata()));
         }
         return results;
     }

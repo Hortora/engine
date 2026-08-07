@@ -61,7 +61,7 @@ class GardenMcpToolsTest {
 
     @Test
     void gardenSearchReturnsFormattedResults() {
-        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null, null, null);
 
         assertThat(result).contains("## [own] Hibernate lazy loading gotcha");
         assertThat(result).contains("**ID:** GE-20260620-a1b2c3");
@@ -77,7 +77,7 @@ class GardenMcpToolsTest {
     void gardenSearchEmptyResultsReturnsMessage() {
         ingestor.deleteCorpus(CORPUS);
 
-        String result = mcpTools.gardenSearch("nonexistent topic xyz", null, null, null, null, null);
+        String result = mcpTools.gardenSearch("nonexistent topic xyz", null, null, null, null, null, null, null);
 
         assertThat(result).startsWith("No relevant garden entries found for:");
     }
@@ -101,7 +101,7 @@ class GardenMcpToolsTest {
                                 "domain", "jvm", "type", "gotcha", "score", "8"))
         ));
 
-        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null, null, null);
 
         long titleCount = result.lines()
                 .filter(l -> l.contains("Hibernate lazy loading gotcha"))
@@ -121,7 +121,7 @@ class GardenMcpToolsTest {
                                 "domain", "approaches", "type", "reference", "score", "10"))
         ));
 
-        String result = mcpTools.gardenSearch("testing TDD", null, null, null, null, null);
+        String result = mcpTools.gardenSearch("testing TDD", null, null, null, null, null, null, null);
 
         assertThat(result).contains("**ID:** approaches/testing");
         assertThat(result).doesNotContain("**ID:** testing");
@@ -142,7 +142,7 @@ class GardenMcpToolsTest {
     void gardenSearchFiltersByType() {
         // Note: In-memory retriever may not support type filtering
         // This test verifies the parameter is accepted and passed through
-        String result = mcpTools.gardenSearch("CDI producer", null, null, "technique", null, null);
+        String result = mcpTools.gardenSearch("CDI producer", null, null, "technique", null, null, null, null);
 
         assertThat(result).satisfiesAnyOf(
                 r -> assertThat(r).contains("CDI producer pattern"),
@@ -154,7 +154,7 @@ class GardenMcpToolsTest {
     void gardenSearchFiltersByTags() {
         // Note: In-memory retriever may not support list-valued payload filters
         // This test verifies the parameter is accepted and passed through
-        String result = mcpTools.gardenSearch("CDI producer", null, null, null, "cdi", null);
+        String result = mcpTools.gardenSearch("CDI producer", null, null, null, "cdi", null, null, null);
 
         assertThat(result).satisfiesAnyOf(
                 r -> assertThat(r).contains("CDI producer pattern"),
@@ -166,7 +166,7 @@ class GardenMcpToolsTest {
     void gardenSearchCombinesAllFilters() {
         // Note: In-memory retriever may not support all filter types
         // This test verifies all parameters are accepted and passed through
-        String result = mcpTools.gardenSearch("Hibernate lazy", null, "jvm", "gotcha", "hibernate", null);
+        String result = mcpTools.gardenSearch("Hibernate lazy", null, "jvm", "gotcha", "hibernate", null, null, null);
 
         assertThat(result).satisfiesAnyOf(
                 r -> assertThat(r).contains("Hibernate lazy loading gotcha"),
@@ -176,7 +176,7 @@ class GardenMcpToolsTest {
 
     @Test
     void gardenSearchIncludesMetadataComment() {
-        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
+        String result = mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null, null, null);
 
         assertThat(result).contains("<!-- search_meta:");
         assertThat(result).contains("returned=");
@@ -279,7 +279,7 @@ class GardenMcpToolsTest {
     @Test
     void gardenSearchRecordsRetrievalsViaDecorator() {
         retrievalTracker.clear();
-        mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null);
+        mcpTools.gardenSearch("hibernate lazy", null, null, null, null, null, null, null);
 
         CorpusRef corpus = new CorpusRef("hortora", "garden");
         Set<String> retrievedIds = retrievalTracker.findRetrievedDocumentIds(

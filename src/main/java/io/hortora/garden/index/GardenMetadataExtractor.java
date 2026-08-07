@@ -60,9 +60,24 @@ public class GardenMetadataExtractor implements MetadataExtractor {
             metadata.put("submitted", String.valueOf(fm.get("submitted")));
         }
 
+        String stalenessThreshold = fm.get("staleness_threshold") instanceof String s2 ? s2 : null;
+        int staleDays = parseStaleness(stalenessThreshold);
+        int tier = stalenessToTier(staleDays);
+        metadata.put("staleness_days", String.valueOf(staleDays));
+        metadata.put("decay_tier", String.valueOf(tier));
+        if (stalenessThreshold != null) metadata.put("staleness_threshold", stalenessThreshold);
+
+        if (fm.get("verified_on") instanceof String s3) metadata.put("verified_on", s3);
+        if (fm.get("author") instanceof String s4) metadata.put("author", s4);
+        if (fm.get("last_reviewed") != null) {
+            metadata.put("last_reviewed", toDateString(fm.get("last_reviewed")));
+        }
+
         Map<String, List<String>> listMetadata = new LinkedHashMap<>();
-        if (fm.get("tags") instanceof List<?> tags) {
-            listMetadata.put("tags", tags.stream().map(Object::toString).toList());
+        if (fm.get("tags") instanceof List<?> rawTags) {
+            List<String> tagStrings = rawTags.stream().map(Object::toString).toList();
+            listMetadata.put("tags", tagStrings);
+            metadata.put("tags_joined", String.join("|", tagStrings));
         }
 
         List<String> seeAlsoIds = extractSeeAlso(body);
@@ -92,4 +107,37 @@ public class GardenMetadataExtractor implements MetadataExtractor {
         }
         return new ArrayList<>(seen);
     }
+
+    static int parseStaleness(String threshold) {
+        if (threshold == null) {return 90;}
+        if ("never".equalsIgnoreCase(threshold)) {return 0;}
+        if (threshold.endsWith("d")) {
+            try {
+                return Integer.parseInt(threshold.substring(0, threshold.length() - 1));
+            } catch (NumberFormatException e) {return 90;}
+        }
+        return 90;
+    }
+
+    static int stalenessToTier(int days) {
+        if (days == 0) {
+            return 3;      // evergreen
+        }
+        if (days <= 30) {
+            return 0;     // fast
+        }
+        if (days <= 90) {
+            return 1;     // standard
+        }
+        return 2;                      // slow
+    }
+
+    private static String toDateString(Object value) {
+        if (value instanceof java.util.Date d) {
+            return d.toInstant().atZone(java.time.ZoneOffset.UTC).toLocalDate().toString();
+        }
+        return String.valueOf(value);
+    }
+
+
 }

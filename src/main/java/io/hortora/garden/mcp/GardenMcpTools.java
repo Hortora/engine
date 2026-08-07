@@ -113,7 +113,9 @@ public class GardenMcpTools {
             @ToolArg(description = "Optional: filter by domain (e.g. jvm, tools, python). Leave empty to search all domains.", required = false) String domain,
             @ToolArg(description = "Optional: filter by entry type (gotcha, technique, undocumented, pattern)", required = false) String type,
             @ToolArg(description = "Optional: comma-separated tags to filter by (entries matching ANY tag are returned)", required = false) String tags,
-            @ToolArg(description = "Maximum number of entries to return (default 16, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit) {
+            @ToolArg(description = "Maximum number of entries to return (default 16, max 50). May return more if a dense cluster of relevant results exists beyond this limit.", required = false) Integer limit,
+            @ToolArg(description = "Search profile name for BOM-based version scoring. Created via PUT /api/garden/profiles/{name}.", required = false) String profile,
+            @ToolArg(description = "Inline BOM override — pipe-separated name:version pairs (e.g. 'quarkus:3.36.1|jdk:26.0.2'). Takes precedence over profile.", required = false) String stack) {
         String expandedKeywords = keywords != null && !keywords.isBlank()
                                   ? keywords.replace("|", " ")
                                   : null;
@@ -124,7 +126,7 @@ public class GardenMcpTools {
             long start = System.nanoTime();
             adaptive  = searchResource.searchAdaptive(query, expandedKeywords,
                                                       domain != null && !domain.isBlank() ? List.of(domain) : null,
-                                                      type, tags, limit);
+                                                      type, tags, limit, profile, stack);
             latencyMs = (System.nanoTime() - start) / 1_000_000;
         } catch (Exception e) {
             Log.warn("gardenSearch failed — Qdrant may be unavailable", e);

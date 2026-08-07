@@ -60,6 +60,7 @@ class GardenMetadataExtractorTest {
 
         assertThat(result.listMetadata().get("tags")).containsExactly("hibernate", "lazy-loading", "transactions");
         assertThat(result.metadata().get("tags")).isNull();
+        assertThat(result.metadata()).containsEntry("tags_joined", "hibernate|lazy-loading|transactions");
     }
 
     @Test
@@ -143,6 +144,7 @@ class GardenMetadataExtractorTest {
 
         assertThat(result.listMetadata().get("tags")).containsExactly("cdi", "quarkus", "bean-discovery");
         assertThat(result.metadata().get("tags")).isNull();
+        assertThat(result.metadata()).containsEntry("tags_joined", "cdi|quarkus|bean-discovery");
     }
 
     @Test
@@ -263,4 +265,80 @@ class GardenMetadataExtractorTest {
 
         assertThat(result.listMetadata().get("see_also")).containsExactly("GE-20260415-884e48");
     }
+
+    @Test
+    void extractsStalenessAndVersionFields() {
+        String content = """
+                         ---
+                         title: "Test entry"
+                         domain: jvm
+                         type: gotcha
+                         score: 12
+                         submitted: 2026-01-15
+                         staleness_threshold: 30d
+                         verified_on: "quarkus:3.20"
+                         author: mdp
+                         last_reviewed: 2026-07-01
+                         ---
+                         Body text here.
+                         """;
+        ExtractionResult result = extractor.extract("test.md", content.getBytes(StandardCharsets.UTF_8));
+        assertThat(result.metadata()).containsEntry("staleness_threshold", "30d");
+        assertThat(result.metadata()).containsEntry("staleness_days", "30");
+        assertThat(result.metadata()).containsEntry("decay_tier", "0");
+        assertThat(result.metadata()).containsEntry("verified_on", "quarkus:3.20");
+        assertThat(result.metadata()).containsEntry("author", "mdp");
+        assertThat(result.metadata()).containsEntry("last_reviewed", "2026-07-01");
+    }
+
+    @Test
+    void decayTierDefaultsToStandardWhenAbsent() {
+        String content = """
+                         ---
+                         title: No threshold
+                         domain: jvm
+                         type: gotcha
+                         score: 10
+                         ---
+                         Body.
+                         """;
+        ExtractionResult result = extractor.extract("test.md", content.getBytes(StandardCharsets.UTF_8));
+        assertThat(result.metadata()).containsEntry("staleness_days", "90");
+        assertThat(result.metadata()).containsEntry("decay_tier", "1");
+    }
+
+    @Test
+    void decayTierEvergreenWhenNever() {
+        String content = """
+                         ---
+                         title: Evergreen
+                         domain: jvm
+                         type: convention
+                         score: 10
+                         staleness_threshold: never
+                         ---
+                         Body.
+                         """;
+        ExtractionResult result = extractor.extract("test.md", content.getBytes(StandardCharsets.UTF_8));
+        assertThat(result.metadata()).containsEntry("staleness_threshold", "never");
+        assertThat(result.metadata()).containsEntry("staleness_days", "0");
+        assertThat(result.metadata()).containsEntry("decay_tier", "3");
+    }
+
+    @Test
+    void decayTierSlowFor365d() {
+        String content = """
+                         ---
+                         title: Slow decay
+                         domain: jvm
+                         staleness_threshold: 365d
+                         ---
+                         Body.
+                         """;
+        ExtractionResult result = extractor.extract("test.md", content.getBytes(StandardCharsets.UTF_8));
+        assertThat(result.metadata()).containsEntry("staleness_days", "365");
+        assertThat(result.metadata()).containsEntry("decay_tier", "2");
+    }
+
+
 }
