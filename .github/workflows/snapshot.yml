@@ -121,6 +121,7 @@ jobs:
         run: |
           GARDEN_ABS=$(cd "${{ steps.garden.outputs.path }}" && pwd)
           java --enable-native-access=ALL-UNNAMED \
+            -Dquarkus.profile=dev \
             -Dhortora.garden.path="$GARDEN_ABS" \
             -jar target/quarkus-app/quarkus-run.jar &
           ENGINE_PID=$!

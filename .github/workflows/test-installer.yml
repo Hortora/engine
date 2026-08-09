@@ -71,6 +71,7 @@ jobs:
         run: |
           GARDEN_ABS=$(cd src/test/resources/test-garden/initial && pwd)
           java --enable-native-access=ALL-UNNAMED \
+            -Dquarkus.profile=dev \
             -Dhortora.garden.path="$GARDEN_ABS" \
             -jar target/quarkus-app/quarkus-run.jar &
           ENGINE_PID=$!
@@ -167,6 +168,7 @@ jobs:
 
           GARDEN_ABS=$(cd src/test/resources/test-garden/initial && pwd)
           java --enable-native-access=ALL-UNNAMED \
+            -Dquarkus.profile=dev \
             -Dhortora.garden.path="$GARDEN_ABS" \
             -jar target/quarkus-app/quarkus-run.jar &
           ENGINE_PID=$!
