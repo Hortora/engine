@@ -66,17 +66,22 @@ The engine is a long-running service — native image's fast startup provides no
 The engine runs as a persistent launchd service so `gardenSearch` MCP is always available:
 
 ```bash
-scripts/update-engine.sh install    # first time: build, install plist, start
+scripts/hortora-setup.sh install    # first time: download Qdrant + models + snapshot, build, start
+scripts/hortora-setup.sh status     # check what's installed and running
 scripts/update-engine.sh update     # after code changes: rebuild + restart
-scripts/update-engine.sh status     # check health
 scripts/update-engine.sh logs       # tail log files
+scripts/hortora-setup.sh uninstall  # stop services, remove plists (keeps data)
 ```
 
-Qdrant runs as a Docker container (`qdrant-bench`) with `restart=unless-stopped`. Both survive reboots. The engine is registered as an MCP server in `~/.claude/mcp_servers.json` — all Claude sessions have `gardenSearch` available via `mcp__hortora__gardenSearch`. Ingestion cursor persists at `~/.hortora/cursors/garden.cursor` (not tmpdir — survives reboots). Podman VM resized to 4GB (`podman machine set --memory 4096`).
+Prerequisites: JDK 25+, `curl`, `zstd` (`brew install zstd`), `gh` (GitHub CLI), garden corpus cloned to `~/.hortora/garden` (or set `HORTORA_GARDEN_PATH`).
+
+The installer downloads pre-built ONNX models and a Qdrant snapshot from GitHub Releases, restoring them in seconds. Only delta entries (added since the snapshot) need embedding — typically seconds to minutes vs. the ~90 min full corpus embedding.
+
+Qdrant runs as a native binary at `~/.hortora/qdrant/qdrant` (v1.19) with a launchd plist. Both engine and Qdrant survive reboots. The engine is registered as an MCP server in `~/.claude/mcp_servers.json` — all Claude sessions have `gardenSearch` available via `mcp__hortora__gardenSearch`. Ingestion cursor persists at `~/.hortora/cursors/garden.cursor` (not tmpdir — survives reboots).
 
 ## Dev Services
 
-In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestInferenceModelProducer` routes `@Inference("bge-m3")` to `InMemoryInferenceModel.returningMulti()` — no ONNX Runtime or real models needed. Test `application.properties` provides stub `model-path`/`tokenizer-path`/`max-sequence-length` for both `bge-m3` and `reranker` — SmallRye Config validates the full `@ConfigMapping` group when any property is set. Run `scripts/export_bge_m3.py` to produce the BGE-M3 ONNX model (one-time, ~2.2GB download + export), then `scripts/download-models.sh` to verify checksums. The `%dev` model paths are pre-configured in `application.properties`. Sequence length is capped at 768 tokens (Qdrant ColBERT multi-vector limit: 1M floats = 1024 dim × ~1023 max tokens).
+In tests, `casehub-rag-testing` provides `InMemoryCaseRetriever` and `InMemoryEmbeddingIngestor` (`@Alternative @Priority(1)`, requires `quarkus.index-dependency` in test properties). `TestInferenceModelProducer` routes `@Inference("bge-m3")` to `InMemoryInferenceModel.returningMulti()` — no ONNX Runtime or real models needed. Test `application.properties` provides stub `model-path`/`tokenizer-path`/`max-sequence-length` for both `bge-m3` and `reranker` — SmallRye Config validates the full `@ConfigMapping` group when any property is set. Run `scripts/export_bge_m3.py` to produce the BGE-M3 ONNX model (one-time, ~2.2GB download + export). For production use, `scripts/hortora-setup.sh install-models` downloads pre-exported models from GitHub Releases. The `%dev` model paths are pre-configured in `application.properties`. Sequence length is capped at 768 tokens (Qdrant ColBERT multi-vector limit: 1M floats = 1024 dim × ~1023 max tokens).
 
 ## Project Artifacts
 

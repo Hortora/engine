@@ -1,0 +1,192 @@
+name: Test Installer E2E
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/snapshot.yml'
+      - '.github/workflows/test-installer.yml'
+
+jobs:
+  test-installer:
+    name: E2E installer test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install zstd
+        run: sudo apt-get install -y zstd
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # --- Phase 1: Build snapshot from test corpus ---
+
+      - name: "Phase 1: Install Qdrant"
+        run: |
+          QDRANT_VERSION="1.19.0"
+          curl -fSL "https://github.com/qdrant/qdrant/releases/download/v${QDRANT_VERSION}/qdrant-x86_64-unknown-linux-gnu.tar.gz" \
+            | tar xz
+          mkdir -p ~/.hortora/qdrant/storage
+          cat > /tmp/qdrant-config.yaml <<EOF
+          storage:
+            storage_path: $HOME/.hortora/qdrant/storage
+          service:
+            grpc_port: 6334
+            http_port: 6333
+          EOF
+          sed -i 's/^          //' /tmp/qdrant-config.yaml
+          ./qdrant --config-path /tmp/qdrant-config.yaml &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:6333/ >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -sf http://localhost:6333/
+
+      - name: "Phase 1: Export models and build engine"
+        run: |
+          pip install -r scripts/requirements-export.txt
+          python scripts/export_bge_m3.py
+          ./mvnw package -DskipTests -B -q
+
+      - name: "Phase 1: Index test corpus"
+        run: |
+          GARDEN_ABS=$(cd src/test/resources/test-garden/initial && pwd)
+          java --enable-native-access=ALL-UNNAMED \
+            -Dhortora.garden.path="$GARDEN_ABS" \
+            -jar target/quarkus-app/quarkus-run.jar &
+          ENGINE_PID=$!
+          echo "ENGINE_PID=$ENGINE_PID" >> "$GITHUB_ENV"
+
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8080/ >/dev/null 2>&1 && break
+            sleep 1
+          done
+
+          for i in $(seq 1 120); do
+            POINTS=$(curl -sf http://localhost:6333/collections/hortora_garden \
+              | python3 -c "import json,sys; print(json.load(sys.stdin)['result']['points_count'])" 2>/dev/null || echo "0")
+            [ "$POINTS" -ge 6 ] && break
+            sleep 2
+          done
+          echo "Indexed $POINTS points"
+          [ "$POINTS" -ge 6 ] || (echo "FAIL: expected 6 points, got $POINTS"; exit 1)
+
+          kill $ENGINE_PID || true
+          sleep 2
+
+      - name: "Phase 1: Create and package snapshot"
+        run: |
+          curl -sf -X POST "http://localhost:6333/collections/hortora_garden/snapshots" > /tmp/snap.json
+          SNAP=$(python3 -c "import json; print(json.load(open('/tmp/snap.json'))['result']['name'])")
+          SNAP_DIR="$HOME/.hortora/qdrant/storage/collections/hortora_garden/snapshots"
+
+          mkdir -p /tmp/artifacts
+          tar cf - -C "$SNAP_DIR" "$SNAP" | zstd -T0 -o /tmp/artifacts/snapshot.tar.zst
+          split -b 1900m /tmp/artifacts/snapshot.tar.zst /tmp/artifacts/snapshot.tar.zst.part-
+          rm /tmp/artifacts/snapshot.tar.zst
+
+          tar cf - -C ~/.hortora/models/bge-m3 . | zstd -T0 -o /tmp/artifacts/bge-m3-models.tar.zst
+          tar cf - -C ~/.hortora/models/reranker . | zstd -T0 -o /tmp/artifacts/reranker-models.tar.zst
+
+          GARDEN_ABS=$(cd src/test/resources/test-garden/initial && pwd)
+          sed "s|$GARDEN_ABS|__GARDEN_PATH__|g" ~/.hortora/cursors/garden.cursor \
+            > /tmp/artifacts/garden.cursor
+
+          cd /tmp/artifacts && shasum -a 256 * > checksums.sha256
+          echo "Artifacts:"
+          ls -lh /tmp/artifacts/
+
+      # --- Phase 2: Fresh install from artifacts ---
+
+      - name: "Phase 2: Wipe and restore snapshot"
+        run: |
+          pkill qdrant || true
+          sleep 2
+          rm -rf ~/.hortora/qdrant/storage ~/.hortora/models ~/.hortora/cursors
+
+          mkdir -p ~/.hortora/qdrant/storage ~/.hortora/models/bge-m3 ~/.hortora/models/reranker ~/.hortora/cursors
+          ./qdrant --config-path /tmp/qdrant-config.yaml &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:6333/ >/dev/null 2>&1 && break
+            sleep 1
+          done
+
+          cd /tmp/artifacts
+          for part in snapshot.tar.zst.part-*; do
+            EXPECTED=$(grep "$part" checksums.sha256 | awk '{print $1}')
+            ACTUAL=$(shasum -a 256 "$part" | awk '{print $1}')
+            [ "$EXPECTED" = "$ACTUAL" ] || (echo "FAIL: checksum mismatch $part"; exit 1)
+            echo "Verified $part"
+          done
+
+          cat snapshot.tar.zst.part-* | zstd -d | tar x -C /tmp/
+          SNAP_FILE=$(find /tmp -name "*.snapshot" -type f -not -path "/tmp/artifacts/*" | head -1)
+          echo "Restoring snapshot: $SNAP_FILE"
+          curl -sf -X POST "http://localhost:6333/collections/hortora_garden/snapshots/upload" \
+            -H "Content-Type: multipart/form-data" \
+            -F "snapshot=@${SNAP_FILE}"
+
+          GARDEN_ABS=$(cd src/test/resources/test-garden/initial && pwd)
+          sed "s|__GARDEN_PATH__|$GARDEN_ABS|g" garden.cursor \
+            > ~/.hortora/cursors/garden.cursor
+
+          zstd -d bge-m3-models.tar.zst --stdout | tar x -C ~/.hortora/models/bge-m3/
+          zstd -d reranker-models.tar.zst --stdout | tar x -C ~/.hortora/models/reranker/
+
+      - name: "Phase 2: Verify 6 entries queryable"
+        run: |
+          POINTS=$(curl -sf http://localhost:6333/collections/hortora_garden \
+            | python3 -c "import json,sys; print(json.load(sys.stdin)['result']['points_count'])")
+          echo "Points after restore: $POINTS"
+          [ "$POINTS" -ge 6 ] || (echo "FAIL: expected 6 points, got $POINTS"; exit 1)
+
+      # --- Phase 3: Delta re-indexing ---
+
+      - name: "Phase 3: Add delta entries and reindex"
+        run: |
+          cp src/test/resources/test-garden/delta/*.md src/test/resources/test-garden/initial/
+
+          GARDEN_ABS=$(cd src/test/resources/test-garden/initial && pwd)
+          java --enable-native-access=ALL-UNNAMED \
+            -Dhortora.garden.path="$GARDEN_ABS" \
+            -jar target/quarkus-app/quarkus-run.jar &
+          ENGINE_PID=$!
+
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8080/ >/dev/null 2>&1 && break
+            sleep 1
+          done
+
+          curl -sf -X POST http://localhost:8080/api/garden/reindex
+
+          for i in $(seq 1 120); do
+            POINTS=$(curl -sf http://localhost:6333/collections/hortora_garden \
+              | python3 -c "import json,sys; print(json.load(sys.stdin)['result']['points_count'])" 2>/dev/null || echo "0")
+            [ "$POINTS" -ge 8 ] && break
+            sleep 2
+          done
+          echo "Points after delta reindex: $POINTS"
+          [ "$POINTS" -ge 8 ] || (echo "FAIL: expected 8 points, got $POINTS"; exit 1)
+
+          kill $ENGINE_PID || true
+
+      # --- Phase 4: Idempotency ---
+
+      - name: "Phase 4: Verify idempotency"
+        run: |
+          POINTS=$(curl -sf http://localhost:6333/collections/hortora_garden \
+            | python3 -c "import json,sys; print(json.load(sys.stdin)['result']['points_count'])")
+          echo "Points: $POINTS"
+          [ "$POINTS" -ge 8 ] && echo "PASS: idempotency check — $POINTS points still present"
