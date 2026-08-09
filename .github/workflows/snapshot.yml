@@ -170,23 +170,47 @@ jobs:
       - name: Package artifacts
         run: |
           mkdir -p artifacts
-          SNAPSHOT_DIR="$HOME/.hortora/qdrant/storage/collections/hortora_garden/snapshots"
+
+          # Find the snapshot file dynamically
+          SNAPSHOT_FILE=$(find $HOME/.hortora -name "$SNAPSHOT_NAME" -type f 2>/dev/null | head -1)
+          if [ -z "$SNAPSHOT_FILE" ]; then
+            echo "Snapshot not in ~/.hortora, searching working directory..."
+            SNAPSHOT_FILE=$(find . -name "$SNAPSHOT_NAME" -type f 2>/dev/null | head -1)
+          fi
+          if [ -z "$SNAPSHOT_FILE" ]; then
+            echo "ERROR: Could not find snapshot file $SNAPSHOT_NAME"
+            find $HOME/.hortora -name "*.snapshot" -type f 2>/dev/null
+            find . -name "*.snapshot" -type f 2>/dev/null
+            exit 1
+          fi
+          echo "Found snapshot at: $SNAPSHOT_FILE"
+          SNAPSHOT_DIR=$(dirname "$SNAPSHOT_FILE")
 
           tar cf - -C "$SNAPSHOT_DIR" "$SNAPSHOT_NAME" \
             | zstd -T0 -o artifacts/snapshot.tar.zst
           split -b 1900m artifacts/snapshot.tar.zst artifacts/snapshot.tar.zst.part-
           rm artifacts/snapshot.tar.zst
 
+          # BGE-M3 model
           tar cf - -C "$HOME/.hortora/models/bge-m3" . \
             | zstd -T0 -o artifacts/bge-m3-models.tar.zst
 
-          tar cf - -C "$HOME/.hortora/models/reranker" . \
-            | zstd -T0 -o artifacts/reranker-models.tar.zst
+          # Reranker model (skip if not present — test corpus doesn't need it)
+          if [ -d "$HOME/.hortora/models/reranker" ] && [ -f "$HOME/.hortora/models/reranker/model.onnx" ]; then
+            tar cf - -C "$HOME/.hortora/models/reranker" . \
+              | zstd -T0 -o artifacts/reranker-models.tar.zst
+          else
+            echo "WARNING: Reranker model not found — skipping"
+          fi
 
+          # Cursor — find it dynamically
           GARDEN_ABS=$(cd "${{ steps.garden.outputs.path }}" && pwd)
-          sed "s|$GARDEN_ABS|__GARDEN_PATH__|g" \
-            "$HOME/.hortora/cursors/garden.cursor" \
-            > artifacts/garden.cursor
+          CURSOR_FILE=$(find $HOME/.hortora -name "garden.cursor" -type f 2>/dev/null | head -1)
+          if [ -n "$CURSOR_FILE" ]; then
+            sed "s|$GARDEN_ABS|__GARDEN_PATH__|g" "$CURSOR_FILE" > artifacts/garden.cursor
+          else
+            echo "WARNING: garden.cursor not found — skipping"
+          fi
 
           cd artifacts
           shasum -a 256 * > checksums.sha256
