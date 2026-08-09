@@ -253,4 +253,11 @@
             </properties>
         </profile>
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>github-casehubio</id>
+            <url>https://maven.pkg.github.com/casehubio/*</url>
+        </repository>
+    </repositories>
 </project>

@@ -48,6 +48,9 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
+          server-id: github-casehubio
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.CASEHUB_PACKAGES_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
