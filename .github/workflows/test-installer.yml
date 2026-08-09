@@ -22,9 +22,13 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
-          server-id: github-casehubio
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.CASEHUB_PACKAGES_TOKEN }}
+
+      - name: Configure Maven for casehub packages
+        env:
+          PACKAGES_TOKEN: ${{ secrets.CASEHUB_PACKAGES_TOKEN }}
+        run: |
+          mkdir -p ~/.m2
+          printf '<settings>\n  <servers>\n    <server>\n      <id>github-casehubio</id>\n      <username>%s</username>\n      <password>%s</password>\n    </server>\n  </servers>\n</settings>\n' "${{ github.actor }}" "$PACKAGES_TOKEN" > ~/.m2/settings.xml
 
       - name: Install zstd
         run: sudo apt-get install -y zstd
