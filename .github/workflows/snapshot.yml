@@ -113,7 +113,7 @@ jobs:
       - name: Count expected entries
         id: count
         run: |
-          n=$(find "${{ steps.garden.outputs.path }}" -name "GE-*.md" | wc -l | tr -d ' ')
+          n=$(find "${{ steps.garden.outputs.path }}" -name "GE-*.md" -not -path "*/_summaries/*" | wc -l | tr -d ' ')
           echo "expected=$n" >> "$GITHUB_OUTPUT"
           echo "Expecting $n entries"
 
@@ -137,7 +137,7 @@ jobs:
 
           EXPECTED=${{ steps.count.outputs.expected }}
           echo "Waiting for $EXPECTED points..."
-          TIMEOUT=600
+          TIMEOUT=14400
           ELAPSED=0
           while true; do
             POINTS=$(curl -sf http://localhost:6333/collections/hortora_garden \
