@@ -71,11 +71,12 @@ jobs:
           path: ~/.hortora/models
           key: onnx-models-${{ hashFiles('scripts/bge-m3-checksums.sha256') }}
 
-      - name: Export BGE-M3 model
+      - name: Export ONNX models
         if: steps.cache-models.outputs.cache-hit != 'true'
         run: |
           pip install -r scripts/requirements-export.txt
           python scripts/export_bge_m3.py
+          python scripts/export_reranker.py
 
       - name: Download and start Qdrant
         run: |
@@ -120,6 +121,7 @@ jobs:
       - name: Start engine and wait for indexing
         run: |
           GARDEN_ABS=$(cd "${{ steps.garden.outputs.path }}" && pwd)
+          mkdir -p "$GARDEN_ABS/../cursors"
           java --enable-native-access=ALL-UNNAMED \
             -Dquarkus.profile=dev \
             -Dhortora.garden.path="$GARDEN_ABS" \
@@ -164,8 +166,10 @@ jobs:
           echo "SNAPSHOT_NAME=$SNAPSHOT_NAME" >> "$GITHUB_ENV"
           echo "Snapshot created: $SNAPSHOT_NAME"
 
-      - name: Stop engine
-        run: kill $ENGINE_PID || true
+      - name: Stop engine gracefully
+        run: |
+          kill -TERM $ENGINE_PID || true
+          sleep 10
 
       - name: Package artifacts
         run: |
@@ -203,9 +207,9 @@ jobs:
             echo "WARNING: Reranker model not found — skipping"
           fi
 
-          # Cursor — find it dynamically
+          # Cursor is at ${garden.path}/../cursors/garden.cursor (see application.properties)
           GARDEN_ABS=$(cd "${{ steps.garden.outputs.path }}" && pwd)
-          CURSOR_FILE=$(find $HOME/.hortora -name "garden.cursor" -type f 2>/dev/null | head -1)
+          CURSOR_FILE=$(find "$GARDEN_ABS/../cursors" "$HOME/.hortora" -name "garden.cursor" -type f 2>/dev/null | head -1)
           if [ -n "$CURSOR_FILE" ]; then
             sed "s|$GARDEN_ABS|__GARDEN_PATH__|g" "$CURSOR_FILE" > artifacts/garden.cursor
           else
