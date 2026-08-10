@@ -137,7 +137,7 @@ jobs:
 
           EXPECTED=${{ steps.count.outputs.expected }}
           echo "Waiting for $EXPECTED points..."
-          TIMEOUT=14400
+          TIMEOUT=18000
           ELAPSED=0
           while true; do
             POINTS=$(curl -sf http://localhost:6333/collections/hortora_garden \
