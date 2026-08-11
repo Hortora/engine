@@ -92,8 +92,8 @@ Paths that are project content (not workspace noise).
 | `CLAUDE.md` | Project conventions (build, test, naming) |
 | `docs/adr/` | Architecture decision records |
 | `docs/DESIGN.md` | Design document |
-| `docs/superpowers/specs/` | Design specs |
-| `docs/superpowers/plans/` | Implementation plans |
+| `docs/specs/` | Design specs |
+| `docs/plans/` | Implementation plans |
 | `scripts/` | Development scripts (ONNX model download, benchmark harness) |
 | `docs/comparison/` | Retrieval benchmark reports (#27 dense-only, #28 hybrid, #36 BGE-M3) |
 
@@ -105,7 +105,7 @@ A PostToolUse hook silently observes every garden grep Claude makes, fires a par
 PYTHONPATH=scripts python3 scripts/shadow/analyze_comparison.py
 ```
 
-Reports coverage (did RAG find what grep found?), discovery (did RAG find extras?), and efficiency (1 RAG call vs n grep calls). Spec: `docs/superpowers/specs/2026-07-30-rag-shadow-comparison-harness-design.md`.
+Reports coverage (did RAG find what grep found?), discovery (did RAG find extras?), and efficiency (1 RAG call vs n grep calls). Spec: `docs/specs/2026-07-30-rag-shadow-comparison-harness-design.md`.
 
 ## Work Tracking
 
