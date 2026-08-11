@@ -78,6 +78,8 @@ public class GardenMetadataExtractor implements MetadataExtractor {
             List<String> tagStrings = rawTags.stream().map(Object::toString).toList();
             listMetadata.put("tags", tagStrings);
             metadata.put("tags_joined", String.join("|", tagStrings));
+        } else {
+            listMetadata.put("tags", List.of());
         }
 
         List<String> seeAlsoIds = extractSeeAlso(body);

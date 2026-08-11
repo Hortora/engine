@@ -148,6 +148,23 @@ class GardenMetadataExtractorTest {
     }
 
     @Test
+    void entryWithoutTagsGetsEmptyTagsList() {
+        String content = """
+                         ---
+                         title: "No tags entry"
+                         domain: jvm
+                         type: gotcha
+                         ---
+                         Body text here.
+                         """;
+        ExtractionResult result = extractor.extract("test.md", content.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(result.listMetadata().get("tags")).isEmpty();
+        assertThat(result.metadata()).doesNotContainKey("tags_joined");
+    }
+
+
+    @Test
     void extractsSeeAlsoPlainIds() {
         String content = """
                          ---
