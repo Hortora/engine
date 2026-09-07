@@ -1,6 +1,8 @@
 package io.hortora.garden.mcp;
 
+import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
+import io.casehub.neocortex.rag.ExtractionResult;
 import io.casehub.neocortex.rag.DocumentQualitySignal;
 import io.casehub.neocortex.rag.EmbeddingIngestor;
 import io.casehub.neocortex.rag.QualitySignal;
@@ -9,6 +11,7 @@ import io.casehub.neocortex.rag.RetrievalAnalyzer;
 import io.casehub.neocortex.rag.RetrievalTracker;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.FederationConfig;
+import io.hortora.garden.index.GardenMetadataExtractor;
 import io.hortora.garden.index.GardenReindexService;
 import io.hortora.garden.inference.CollectionMigration;
 import io.hortora.garden.search.AdaptiveResult;
@@ -20,12 +23,16 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import io.casehub.neocortex.rag.RetrievalOutcome;
+import io.casehub.neocortex.rag.RetrievalRecord;
+import io.casehub.neocortex.rag.RetrievedDocumentRef;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -46,6 +53,8 @@ public class GardenMcpTools {
     CollectionMigration collectionMigration;
     @Inject
     GardenReindexService reindexService;
+    @Inject
+    GardenMetadataExtractor metadataExtractor;
 
     @Inject
     RetrievalTracker retrievalTracker;
@@ -201,7 +210,89 @@ public class GardenMcpTools {
     @Tool(description = "Trigger a full re-index of the garden corpus. Deletes the current Qdrant collection and resets the cursor so the next ingestion cycle re-embeds all entries. Use after bulk metadata changes, reclassification, or schema evolution.")
     String gardenReindex() {
         GardenReindexService.ReindexResult result = reindexService.reindex();
-        return result.message();}
+        return result.message();
+    }
+
+    @Tool(description = "Delete a single garden entry's vectors from the Qdrant index. "
+                        + "Use after removing an entry file from the garden. "
+                        + "Does not affect the entry file itself — only removes its vectors from the search index.")
+    String gardenDeleteEntry(
+            @ToolArg(description = "Garden entry ID (e.g. GE-20260818-8e9230)") String geId) {
+        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+        Map<String, String> geIdToDocId = getGeIdToDocIdMap();
+        String docId = geIdToDocId.get(geId);
+        if (docId == null) {
+            return "Entry " + geId + " not found in Qdrant index — nothing to delete.";
+        }
+        try {
+            embeddingIngestor.deleteDocument(corpusRef, docId);
+            cachedGeIdToDocId = null;
+            return "Deleted vectors for " + geId + " (document: " + docId + ") from Qdrant index.";
+        } catch (Exception e) {
+            Log.warn("Failed to delete entry vectors from Qdrant", e);
+            return "Failed to delete " + geId + " from Qdrant: " + e.getMessage();
+        }
+    }
+
+    @Tool(description = "Re-index a single garden entry in Qdrant. "
+                        + "Deletes existing vectors and re-embeds from the current file on disk. "
+                        + "Use after modifying an entry's content or metadata, or to index a new entry immediately.")
+    String gardenReindexEntry(
+            @ToolArg(description = "Garden entry ID (e.g. GE-20260818-8e9230)") String geId) {
+        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+        Map<String, String> geIdToDocId = getGeIdToDocIdMap();
+        String docId = geIdToDocId.get(geId);
+
+        if (docId == null) {
+            docId = resolveEntryPath(geId);
+            if (docId == null) {
+                return "Entry " + geId + " not found in Qdrant index or garden filesystem.";
+            }
+        }
+
+        try {
+            embeddingIngestor.deleteDocument(corpusRef, docId);
+        } catch (Exception e) {
+            Log.debugf("No existing vectors to delete for %s: %s", geId, e.getMessage());
+        }
+
+        java.nio.file.Path filePath = config.path().resolve(docId);
+        if (!java.nio.file.Files.isRegularFile(filePath)) {
+            cachedGeIdToDocId = null;
+            return "File not found on disk: " + docId + ". Old vectors deleted if they existed.";
+        }
+
+        try {
+            byte[] content = java.nio.file.Files.readAllBytes(filePath);
+            ExtractionResult extraction = metadataExtractor.extract(docId, content);
+            if (extraction.body().isBlank()) {
+                return "Entry " + geId + " has no extractable content — skipped.";
+            }
+            ChunkInput chunk = new ChunkInput(extraction.body(), docId,
+                    extraction.metadata(), extraction.listMetadata());
+            embeddingIngestor.ingest(corpusRef, List.of(chunk));
+            cachedGeIdToDocId = null;
+            return "Re-indexed " + geId + " (document: " + docId + ") in Qdrant.";
+        } catch (Exception e) {
+            Log.warn("Failed to re-index entry", e);
+            return "Failed to re-index " + geId + ": " + e.getMessage();
+        }
+    }
+
+    private String resolveEntryPath(String geId) {
+        String filename = geId + ".md";
+        try (var stream = java.nio.file.Files.walk(config.path())) {
+            return stream
+                    .filter(java.nio.file.Files::isRegularFile)
+                    .filter(p -> p.getFileName().toString().equals(filename))
+                    .map(p -> config.path().relativize(p).toString())
+                    .findFirst()
+                    .orElse(null);
+        } catch (java.io.IOException e) {
+            Log.warn("Failed to search garden filesystem for " + geId, e);
+            return null;
+        }
+    }
 
     @Tool(description = "List garden entries not retrieved within the tracking window, or stale-retrieved. Retrieval records are retained for a configurable period (default 180 days); 'unretrieved' means no retrieval record exists in that window. Use to identify candidates for review or erasure during harvest sessions.")
     String gardenUnretrieved(
@@ -311,9 +402,17 @@ public class GardenMcpTools {
 
         try {
             int count = provenanceStore.record(issueRepo, issueNumber, effectiveSpecName, ids, recordedBy);
-            return "Recorded " + count + " provenance link(s) for " + issueRepo + "#" + issueNumber
+            int feedbackCount = autoRecordFeedback(ids);
+            for (String id : ids) {
+                provenanceStore.recordFeedbackContext(id, issueRepo, issueNumber, "RELEVANT");
+            }
+            String result = "Recorded " + count + " provenance link(s) for " + issueRepo + "#" + issueNumber
                    + (effectiveSpecName.isEmpty() ? "" : " (spec: " + effectiveSpecName + ")")
                    + ": " + String.join(", ", ids);
+            if (feedbackCount > 0) {
+                result += " (" + feedbackCount + " retrieval feedback auto-recorded)";
+            }
+            return result;
         } catch (Exception e) {
             Log.warn("gardenRecordProvenance failed", e);
             return "Error recording provenance: " + e.getMessage();
@@ -331,11 +430,127 @@ public class GardenMcpTools {
         return outcomeService.recordOutcome(geId, issueRepo, issueNumber, workContext, successRate, detail);
     }
 
+    @Tool(description = "Record retrieval relevance feedback for garden entries returned by gardenSearch. "
+                        + "Feeds the quality signal that gardenUnretrieved uses to flag frequently-retrieved but unhelpful entries. "
+                        + "Use OUTDATED with a stack to report entries whose advice no longer applies for your version.")
+    String gardenFeedback(
+            @ToolArg(description = "Pipe-separated GE-IDs (e.g. 'GE-20260620-a1b2c3|GE-20260621-d4e5f6')") String geIds,
+            @ToolArg(description = "HIGHLY_RELEVANT, RELEVANT, PARTIALLY_RELEVANT, NOT_RELEVANT, or OUTDATED (requires stack)") String outcome,
+            @ToolArg(description = "Pipe-separated name:version pairs for the caller's stack (e.g. 'quarkus:3.36.1|jdk:26'). Required when outcome is OUTDATED — identifies which version the entry is stale for.", required = false) String stack,
+            @ToolArg(description = "GitHub repo the feedback relates to (e.g. 'Hortora/engine'). Helps correlate which entries are useful for which projects.", required = false) String issueRepo,
+            @ToolArg(description = "Issue number the feedback relates to.", required = false) Integer issueNumber) {
+
+        boolean isOutdated = "OUTDATED".equals(outcome);
+
+        if (isOutdated && (stack == null || stack.isBlank())) {
+            return "Error: OUTDATED outcome requires a stack parameter to identify which version the entry is stale for.";
+        }
+
+        RetrievalOutcome parsedOutcome;
+        try {
+            parsedOutcome = isOutdated ? RetrievalOutcome.NOT_RELEVANT : RetrievalOutcome.valueOf(outcome);
+        } catch (IllegalArgumentException e) {
+            return "Error: invalid outcome '" + outcome + "'. "
+                   + "Must be one of: HIGHLY_RELEVANT, RELEVANT, PARTIALLY_RELEVANT, NOT_RELEVANT, OUTDATED";
+        }
+
+        List<String> ids = java.util.Arrays.stream(geIds.split("\\|"))
+                                           .map(String::trim)
+                                           .filter(s -> !s.isEmpty())
+                                           .toList();
+        if (ids.isEmpty()) {
+            return "Error: no valid GE-IDs provided.";
+        }
+
+        Map<String, String> geIdToDocId = getGeIdToDocIdMap();
+        CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+        Instant since = Instant.now().minus(30, ChronoUnit.DAYS);
+        List<RetrievalRecord> recentRecords = retrievalTracker.findRecords(
+                corpusRef, since, Instant.now());
+
+        int recorded = 0;
+        int skipped = 0;
+
+        for (String geId : ids) {
+            String docId = geIdToDocId.get(geId);
+            if (docId == null) {
+                skipped++;
+                continue;
+            }
+
+            String retrievalId = recentRecords.stream()
+                    .filter(r -> r.documents().stream()
+                            .anyMatch(d -> d.sourceDocumentId().equals(docId)))
+                    .max(Comparator.comparing(RetrievalRecord::timestamp))
+                    .map(RetrievalRecord::retrievalId)
+                    .orElse(null);
+
+            if (retrievalId == null) {
+                skipped++;
+                continue;
+            }
+
+            retrievalTracker.feedback(retrievalId, docId, parsedOutcome);
+            recorded++;
+        }
+
+        if (issueRepo != null && !issueRepo.isBlank() && issueNumber != null) {
+            for (String geId : ids) {
+                provenanceStore.recordFeedbackContext(geId, issueRepo, issueNumber, outcome);
+            }
+        }
+
+        if (isOutdated) {
+            for (String geId : ids) {
+                provenanceStore.recordStaleness(geId, stack, "gardenFeedback");
+            }
+        }
+
+        String result = "Recorded " + recorded + " feedback entries as " + outcome
+               + (skipped > 0 ? " (" + skipped + " skipped — not found in recent retrievals)" : "");
+        if (isOutdated) {
+            result += " + " + ids.size() + " staleness report(s) for stack " + stack;
+        }
+        return result + ".";
+    }
+
     @Tool(description = "Report garden entries with outcome tracking data — declining confidence, high success, or low success. Use during harvest sessions to identify entries needing revision.")
     String gardenOutcomeReport() {
         return outcomeService.outcomeReport();
     }
 
+
+    private int autoRecordFeedback(List<String> geIds) {
+        try {
+            Map<String, String> geIdToDocId = getGeIdToDocIdMap();
+            CorpusRef corpusRef = new CorpusRef("hortora", config.id());
+            Instant since = Instant.now().minus(30, ChronoUnit.DAYS);
+            List<RetrievalRecord> recentRecords = retrievalTracker.findRecords(
+                    corpusRef, since, Instant.now());
+
+            int recorded = 0;
+            for (String geId : geIds) {
+                String docId = geIdToDocId.get(geId);
+                if (docId == null) continue;
+
+                String retrievalId = recentRecords.stream()
+                        .filter(r -> r.documents().stream()
+                                .anyMatch(d -> d.sourceDocumentId().equals(docId)))
+                        .max(Comparator.comparing(RetrievalRecord::timestamp))
+                        .map(RetrievalRecord::retrievalId)
+                        .orElse(null);
+
+                if (retrievalId == null) continue;
+
+                retrievalTracker.feedback(retrievalId, docId, RetrievalOutcome.RELEVANT);
+                recorded++;
+            }
+            return recorded;
+        } catch (Exception e) {
+            Log.debug("Auto-feedback from provenance failed", e);
+            return 0;
+        }
+    }
 
     private java.util.Map<String, String> getGeIdToDocIdMap() {
         long now = System.currentTimeMillis();

@@ -365,6 +365,90 @@ class GardenMcpToolsTest {
     }
 
     @Test
+    void gardenFeedbackRecordsIssueContext() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                16);
+
+        mcpTools.gardenFeedback(
+                "GE-20260620-a1b2c3", "RELEVANT", null,
+                "Hortora/engine", 88);
+
+        var ctx = provenanceStore.findFeedbackContext("GE-20260620-a1b2c3");
+        assertThat(ctx).hasSize(1);
+        assertThat(ctx.getFirst().issueRepo()).isEqualTo("Hortora/engine");
+        assertThat(ctx.getFirst().issueNumber()).isEqualTo(88);
+        assertThat(ctx.getFirst().outcome()).isEqualTo("RELEVANT");
+    }
+
+    @Test
+    void gardenFeedbackOutdatedRecordsStaleness() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                16);
+
+        String result = mcpTools.gardenFeedback(
+                "GE-20260620-a1b2c3", "OUTDATED", "quarkus:3.36.1|jdk:26", null, null);
+
+        assertThat(result).contains("staleness");
+        assertThat(result).contains("quarkus:3.36.1|jdk:26");
+        var feedback = retrievalTracker.findFeedback(corpus,
+                java.time.Instant.EPOCH, java.time.Instant.now());
+        assertThat(feedback).hasSize(1);
+        assertThat(feedback.getFirst().outcome())
+                .isEqualTo(io.casehub.neocortex.rag.RetrievalOutcome.NOT_RELEVANT);
+        var reports = provenanceStore.findStalenessReports("GE-20260620-a1b2c3");
+        assertThat(reports).hasSize(1);
+        assertThat(reports.getFirst().stack()).isEqualTo("quarkus:3.36.1|jdk:26");
+    }
+
+    @Test
+    void gardenFeedbackOutdatedRequiresStack() {
+        String result = mcpTools.gardenFeedback("GE-20260620-a1b2c3", "OUTDATED", null, null, null);
+
+        assertThat(result.toLowerCase()).contains("error");
+        assertThat(result).contains("stack");
+    }
+
+    @Test
+    void gardenRecordProvenanceAutoRecordsFeedback() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate CDI"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of()),
+                        new RetrievedChunk("content", "jvm/GE-20260621-d4e5f6.md", 0.8, Map.of())),
+                16);
+
+        mcpTools.gardenRecordProvenance(
+                "Hortora/trellis", 14, null,
+                "GE-20260620-a1b2c3|GE-20260621-d4e5f6", "brainstorming");
+
+        var feedback = retrievalTracker.findFeedback(corpus,
+                java.time.Instant.EPOCH, java.time.Instant.now());
+        assertThat(feedback).hasSize(2);
+        assertThat(feedback).allMatch(f ->
+                f.outcome() == io.casehub.neocortex.rag.RetrievalOutcome.RELEVANT);
+    }
+
+    @Test
+    void gardenRecordProvenanceSkipsFeedbackForUnretrievedEntries() {
+        mcpTools.gardenRecordProvenance(
+                "Hortora/trellis", 14, null, "GE-0031", "brainstorming");
+
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        var feedback = retrievalTracker.findFeedback(corpus,
+                java.time.Instant.EPOCH, java.time.Instant.now());
+        assertThat(feedback).isEmpty();
+    }
+
+    @Test
     void gardenRecordOutcomeDelegatesToService() {
         String result = mcpTools.gardenRecordOutcome(
                 "GE-20260620-a1b2c3", "Hortora/engine", 75,
@@ -372,6 +456,104 @@ class GardenMcpToolsTest {
 
         assertThat(result).contains("recorded");
         assertThat(result).contains("GE-20260620-a1b2c3");
+    }
+
+    @Test
+    void gardenFeedbackRecordsAgainstMostRecentRetrieval() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of())),
+                16);
+
+        String result = mcpTools.gardenFeedback("GE-20260620-a1b2c3", "RELEVANT", null, null, null);
+
+        assertThat(result).contains("1 feedback");
+        var feedback = retrievalTracker.findFeedback(corpus,
+                java.time.Instant.EPOCH, java.time.Instant.now());
+        assertThat(feedback).hasSize(1);
+        assertThat(feedback.getFirst().outcome())
+                .isEqualTo(io.casehub.neocortex.rag.RetrievalOutcome.RELEVANT);
+        assertThat(feedback.getFirst().sourceDocumentId())
+                .isEqualTo("jvm/GE-20260620-a1b2c3.md");
+    }
+
+    @Test
+    void gardenFeedbackHandlesMultipleGeIds() {
+        CorpusRef corpus = new CorpusRef("hortora", "garden");
+        retrievalTracker.record(
+                RetrievalQuery.of("hibernate CDI"),
+                corpus,
+                List.of(new RetrievedChunk("content", "jvm/GE-20260620-a1b2c3.md", 0.9, Map.of()),
+                        new RetrievedChunk("content", "jvm/GE-20260621-d4e5f6.md", 0.8, Map.of())),
+                16);
+
+        String result = mcpTools.gardenFeedback(
+                "GE-20260620-a1b2c3|GE-20260621-d4e5f6", "HIGHLY_RELEVANT", null, null, null);
+
+        assertThat(result).contains("2 feedback");
+        var feedback = retrievalTracker.findFeedback(corpus,
+                java.time.Instant.EPOCH, java.time.Instant.now());
+        assertThat(feedback).hasSize(2);
+    }
+
+    @Test
+    void gardenFeedbackSkipsUnretrievedEntries() {
+        String result = mcpTools.gardenFeedback("GE-20260620-a1b2c3", "RELEVANT", null, null, null);
+
+        assertThat(result).contains("0 feedback");
+        assertThat(result).contains("1 skipped");
+    }
+
+    @Test
+    void gardenFeedbackRejectsInvalidOutcome() {
+        String result = mcpTools.gardenFeedback("GE-20260620-a1b2c3", "BOGUS", null, null, null);
+
+        assertThat(result.toLowerCase()).contains("invalid outcome");
+    }
+
+    @Test
+    void gardenFeedbackRejectsEmptyIds() {
+        String result = mcpTools.gardenFeedback("|||", "RELEVANT", null, null, null);
+
+        assertThat(result.toLowerCase()).contains("error");
+    }
+
+    @Test
+    void gardenDeleteEntryRemovesFromIndex() {
+        assertThat(ingestor.listDocuments(CORPUS)).contains("jvm/GE-20260620-a1b2c3.md");
+
+        String result = mcpTools.gardenDeleteEntry("GE-20260620-a1b2c3");
+
+        assertThat(result).contains("Deleted vectors for GE-20260620-a1b2c3");
+        assertThat(ingestor.listDocuments(CORPUS)).doesNotContain("jvm/GE-20260620-a1b2c3.md");
+    }
+
+    @Test
+    void gardenDeleteEntryReturnsMessageForMissingEntry() {
+        String result = mcpTools.gardenDeleteEntry("GE-99999999-ffffff");
+
+        assertThat(result).contains("not found in Qdrant index");
+    }
+
+    @Test
+    void gardenReindexEntryReEmbedsExistingEntry() {
+        assertThat(ingestor.listDocuments(CORPUS)).contains("jvm/GE-20260620-a1b2c3.md");
+
+        String result = mcpTools.gardenReindexEntry("GE-20260620-a1b2c3");
+
+        assertThat(result).satisfiesAnyOf(
+                r -> assertThat(r).contains("Re-indexed GE-20260620-a1b2c3"),
+                r -> assertThat(r).contains("File not found on disk")
+        );
+    }
+
+    @Test
+    void gardenReindexEntryReturnsMessageForUnknownEntry() {
+        String result = mcpTools.gardenReindexEntry("GE-99999999-ffffff");
+
+        assertThat(result).contains("not found");
     }
 
     @Test
