@@ -164,10 +164,99 @@ public class ProvenanceStore {
         }
     }
 
+    public void recordFeedbackContext(String geId, String issueRepo, int issueNumber, String outcome) {
+        String timestamp = Instant.now().toString();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "INSERT INTO feedback_context (ge_id, issue_repo, issue_number, outcome, recorded_at) VALUES (?, ?, ?, ?, ?)")) {
+            ps.setString(1, geId);
+            ps.setString(2, issueRepo);
+            ps.setInt(3, issueNumber);
+            ps.setString(4, outcome);
+            ps.setString(5, timestamp);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            Log.error("Failed to record feedback context", e);
+        }
+    }
+
+    public List<FeedbackContext> findFeedbackContext(String geId) {
+        List<FeedbackContext> results = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT ge_id, issue_repo, issue_number, outcome, recorded_at FROM feedback_context WHERE ge_id = ? ORDER BY recorded_at DESC")) {
+            ps.setString(1, geId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    results.add(new FeedbackContext(
+                            rs.getString("ge_id"), rs.getString("issue_repo"),
+                            rs.getInt("issue_number"), rs.getString("outcome"),
+                            rs.getString("recorded_at")));
+                }
+            }
+        } catch (SQLException e) {
+            Log.error("Failed to query feedback context", e);
+        }
+        return results;
+    }
+
+    public void recordStaleness(String geId, String stack, String reportedBy) {
+        String timestamp = Instant.now().toString();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "INSERT INTO staleness_reports (ge_id, stack, reported_at, reported_by) VALUES (?, ?, ?, ?)")) {
+            ps.setString(1, geId);
+            ps.setString(2, stack);
+            ps.setString(3, timestamp);
+            ps.setString(4, reportedBy);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            Log.error("Failed to record staleness report", e);
+        }
+    }
+
+    public List<StalenessReport> findStalenessReports(String geId) {
+        List<StalenessReport> results = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT ge_id, stack, reported_at, reported_by FROM staleness_reports WHERE ge_id = ? ORDER BY reported_at DESC")) {
+            ps.setString(1, geId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    results.add(new StalenessReport(
+                            rs.getString("ge_id"), rs.getString("stack"),
+                            rs.getString("reported_at"), rs.getString("reported_by")));
+                }
+            }
+        } catch (SQLException e) {
+            Log.error("Failed to query staleness reports", e);
+        }
+        return results;
+    }
+
+    public List<StalenessReport> findAllStalenessReports() {
+        List<StalenessReport> results = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(
+                     "SELECT ge_id, stack, reported_at, reported_by FROM staleness_reports ORDER BY reported_at DESC")) {
+            while (rs.next()) {
+                results.add(new StalenessReport(
+                        rs.getString("ge_id"), rs.getString("stack"),
+                        rs.getString("reported_at"), rs.getString("reported_by")));
+            }
+        } catch (SQLException e) {
+            Log.error("Failed to query all staleness reports", e);
+        }
+        return results;
+    }
+
     public void deleteAll() {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("DELETE FROM provenance");
+            stmt.executeUpdate("DELETE FROM staleness_reports");
+            stmt.executeUpdate("DELETE FROM feedback_context");
         } catch (SQLException e) {
             Log.error("Failed to delete all provenance records", e);
         }
