@@ -23,10 +23,10 @@ class ProvenanceStoreTest {
     void recordAndForwardLineage() {
         store.record("Hortora/trellis", 14, "", List.of("GE-0031", "GE-0045"), "brainstorming");
 
-        List<ProvenanceRecord> lineage = store.forwardLineage("Hortora/trellis", 14);
+        var lineage = store.forwardLineage("Hortora/trellis", 14);
         assertEquals(2, lineage.size());
-        assertTrue(lineage.stream().anyMatch(r -> r.geId().equals("GE-0031")));
-        assertTrue(lineage.stream().anyMatch(r -> r.geId().equals("GE-0045")));
+        assertTrue(lineage.stream().anyMatch(r -> r.documentId().equals("GE-0031")));
+        assertTrue(lineage.stream().anyMatch(r -> r.documentId().equals("GE-0045")));
     }
 
     @Test
@@ -34,27 +34,8 @@ class ProvenanceStoreTest {
         store.record("Hortora/trellis", 14, "", List.of("GE-0031"), "brainstorming");
         store.record("Hortora/trellis", 14, "", List.of("GE-0031"), "brainstorming");
 
-        List<ProvenanceRecord> lineage = store.forwardLineage("Hortora/trellis", 14);
-        assertEquals(1, lineage.size());
-    }
-
-    @Test
-    void upsertUpdatesSpecName() {
-        store.record("Hortora/trellis", 14, "", List.of("GE-0031"), "work-start");
-        store.record("Hortora/trellis", 14, "2026-08-02-design.md", List.of("GE-0031"), "brainstorming");
-
-        List<ProvenanceRecord> lineage = store.forwardLineage("Hortora/trellis", 14);
-        assertEquals(1, lineage.size());
-        assertEquals("2026-08-02-design.md", lineage.getFirst().specName());
-    }
-
-    @Test
-    void upsertDoesNotClearSpecName() {
-        store.record("Hortora/trellis", 14, "spec.md", List.of("GE-0031"), "brainstorming");
-        store.record("Hortora/trellis", 14, "", List.of("GE-0031"), "work-start");
-
-        List<ProvenanceRecord> lineage = store.forwardLineage("Hortora/trellis", 14);
-        assertEquals("spec.md", lineage.getFirst().specName());
+        var lineage2 = store.forwardLineage("Hortora/trellis", 14);
+        assertEquals(1, lineage2.size());
     }
 
     @Test
@@ -62,7 +43,7 @@ class ProvenanceStoreTest {
         store.record("Hortora/trellis", 14, "", List.of("GE-0031"), "brainstorming");
         store.record("Hortora/engine", 42, "", List.of("GE-0031"), "work-start");
 
-        List<ProvenanceRecord> reverse = store.reverseLineage("GE-0031");
+        var reverse = store.reverseLineage("GE-0031");
         assertEquals(2, reverse.size());
     }
 
@@ -71,24 +52,24 @@ class ProvenanceStoreTest {
         store.record("Hortora/trellis", 14, "", List.of("GE-0031", "GE-0045"), "brainstorming");
         store.record("Hortora/engine", 42, "", List.of("GE-0031"), "work-start");
 
-        ProvenanceStats stats = store.stats();
+        var stats = store.stats();
         assertEquals(3, stats.totalRecords());
-        assertEquals(2, stats.uniqueEntries());
-        assertEquals(2, stats.uniqueIssues());
+        assertEquals(2, stats.uniqueDocuments());
+        assertEquals(2, stats.uniqueActions());
         assertFalse(stats.topReferenced().isEmpty());
-        assertEquals("GE-0031", stats.topReferenced().getFirst().geId());
-        assertEquals(2, stats.topReferenced().getFirst().referenceCount());
+        assertEquals("GE-0031", stats.topReferenced().getFirst().documentId());
+        assertEquals(2, stats.topReferenced().getFirst().count());
     }
 
     @Test
     void forwardLineageEmptyForUnknownIssue() {
-        List<ProvenanceRecord> lineage = store.forwardLineage("Hortora/unknown", 999);
+        var lineage = store.forwardLineage("Hortora/unknown", 999);
         assertTrue(lineage.isEmpty());
     }
 
     @Test
     void reverseLineageEmptyForUnknownEntry() {
-        List<ProvenanceRecord> reverse = store.reverseLineage("GE-NONEXISTENT");
+        var reverse = store.reverseLineage("GE-NONEXISTENT");
         assertTrue(reverse.isEmpty());
     }
 

@@ -1,5 +1,8 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.rag.AdaptiveFilter;
+import io.casehub.neocortex.rag.AdaptiveFilterOptions;
+import io.casehub.neocortex.rag.AdaptiveSearchConfig;
 import io.casehub.neocortex.rag.CaseRetriever;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.PayloadFilter;
@@ -8,7 +11,6 @@ import io.casehub.neocortex.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.ChainWalker;
 import io.hortora.garden.federation.FederationConfig;
-import io.hortora.garden.index.QueryAugmentingExtractor;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -89,7 +91,7 @@ public class SearchResource {
                     chunk.metadata().getOrDefault("domain", ""),
                     chunk.metadata().getOrDefault("type", ""),
                     parseScore(chunk.metadata().get("score")),
-                    QueryAugmentingExtractor.stripQueries(chunk.content()),
+                    chunk.content(),
                     chunk.relevanceScore(),
                     parseDouble(chunk.metadata().get("_crossEncoderScore")),
                     federationConfig.gardenId(),
@@ -250,7 +252,7 @@ public class SearchResource {
                     chunk.metadata().getOrDefault("domain", ""),
                     chunk.metadata().getOrDefault("type", ""),
                     parseScore(chunk.metadata().get("score")),
-                    QueryAugmentingExtractor.stripQueries(chunk.content()),
+                    chunk.content(),
                     chunk.relevanceScore(),
                     parseDouble(chunk.metadata().get("_crossEncoderScore")),
                     federationConfig.gardenId(),
@@ -306,85 +308,23 @@ public class SearchResource {
             return new AdaptiveResult(List.of(), requestedLimit, 0, false, false, 0);
         }
 
-        boolean ceMode = candidates.stream().anyMatch(r -> r.crossEncoderScore() != null);
+        int floorFiltered = (int) candidates.stream()
+                .filter(r -> boostedScore(r, boostWeight) < scoreFloor)
+                .count();
 
-        List<SearchResult> survivors = new ArrayList<>();
-        int floorFiltered = 0;
-        for (SearchResult r : candidates) {
-            double score = boostedScore(r, boostWeight);
-            if (score >= scoreFloor) {
-                survivors.add(r);
-            } else {
-                floorFiltered++;
-            }
-        }
+        var options = AdaptiveFilterOptions.<SearchResult>of(
+                        new AdaptiveSearchConfig(scoreFloor, Math.min(gapThreshold, 1.0), minResults, 1.0),
+                        r -> boostedScore(r, boostWeight))
+                .withCeBoundary(r -> r.crossEncoderScore() != null)
+                .withClusterExtension(0.05);
 
-        int availableAboveFloor = survivors.size();
+        List<SearchResult> filtered = AdaptiveFilter.filter(candidates, requestedLimit, options);
 
-        if (survivors.isEmpty()) {
-            return new AdaptiveResult(List.of(), requestedLimit, 0, false,
-                    requestedLimit > 0, floorFiltered);
-        }
+        int availableAboveFloor = candidates.size() - floorFiltered;
+        boolean extended = filtered.size() > requestedLimit;
+        boolean trimmed = filtered.size() < requestedLimit && (floorFiltered > 0 || filtered.size() < availableAboveFloor);
 
-        int cutoff;
-        boolean gapFound = false;
-        if (ceMode) {
-            int gapCutoff = findCeGapCutoff(survivors, gapThreshold, minResults);
-            if (gapCutoff >= 0) {
-                cutoff = gapCutoff;
-                gapFound = true;
-            } else {
-                cutoff = Math.min(survivors.size(), requestedLimit);
-            }
-        } else {
-            cutoff = findDenseOnlyCutoff(survivors, requestedLimit);
-        }
-
-        boolean extended = cutoff > requestedLimit;
-        int effectiveCount = Math.min(cutoff, survivors.size());
-        boolean trimmed = effectiveCount < requestedLimit && (floorFiltered > 0 || gapFound);
-
-        return new AdaptiveResult(
-                survivors.subList(0, effectiveCount),
-                requestedLimit,
-                availableAboveFloor,
-                extended,
-                trimmed,
-                floorFiltered);
-    }
-
-    private static int findCeGapCutoff(List<SearchResult> survivors,
-                                        double gapThreshold, int minResults) {
-        for (int i = 0; i < survivors.size() - 1; i++) {
-            Double currentCe = survivors.get(i).crossEncoderScore();
-            Double nextCe = survivors.get(i + 1).crossEncoderScore();
-            if (currentCe != null && nextCe != null) {
-                double gap = currentCe - nextCe;
-                if (gap >= gapThreshold) {
-                    return Math.max(i + 1, minResults);
-                }
-            } else if (currentCe != null && nextCe == null) {
-                return Math.max(i + 1, minResults);
-            }
-        }
-        return -1;
-    }
-
-    private static int findDenseOnlyCutoff(List<SearchResult> survivors,
-                                            int requestedLimit) {
-        if (survivors.size() <= requestedLimit) {
-            return survivors.size();
-        }
-        int cutoff = requestedLimit;
-        for (int i = requestedLimit - 1; i < survivors.size() - 1; i++) {
-            double gap = survivors.get(i).relevance() - survivors.get(i + 1).relevance();
-            if (gap < 0.05) {
-                cutoff = i + 2;
-            } else {
-                break;
-            }
-        }
-        return cutoff;
+        return new AdaptiveResult(filtered, requestedLimit, availableAboveFloor, extended, trimmed, floorFiltered);
     }
 
     private static double primaryScore(SearchResult r) {

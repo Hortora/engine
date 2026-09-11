@@ -1,10 +1,30 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.rag.PostRetrievalScorer;
+import io.casehub.neocortex.rag.RetrievalQuery;
+import io.casehub.neocortex.rag.RetrievedChunk;
+import io.casehub.neocortex.rag.ScoringContext;
+
 import java.util.Map;
 
-public class VersionScorer {
+public class VersionScorer implements PostRetrievalScorer {
 
     public record Config(double decayFactor, double floor, double defaultTopicWeight) {}
+
+    private final Config config;
+
+    public VersionScorer() {
+        this(new Config(0.03, 0.5, 0.3));
+    }
+
+    public VersionScorer(Config config) {
+        this.config = config;
+    }
+
+    @Override
+    public double adjust(RetrievedChunk chunk, RetrievalQuery query, ScoringContext context) {
+        return score(chunk.metadata().get("verified_on"), context.versionProfile(), query.searchText(), config);
+    }
 
     public double score(String verifiedOn, Map<String, String> bom, String queryText, Config config) {
         if (verifiedOn == null || verifiedOn.isBlank()) return 1.0;

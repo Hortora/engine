@@ -2,6 +2,7 @@ package io.hortora.garden.provenance;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.casehub.neocortex.rag.ProvenanceTracker;
 import io.quarkus.logging.Log;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -17,9 +18,10 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
-public class ProvenanceStore {
+public class ProvenanceStore implements ProvenanceTracker {
 
     @Inject ProvenanceConfig config;
 
@@ -106,16 +108,27 @@ public class ProvenanceStore {
         return count;
     }
 
-    public List<ProvenanceRecord> forwardLineage(String issueRepo, int issueNumber) {
+    // --- ProvenanceTracker SPI implementation ---
+
+    @Override
+    public String record(String retrievalContext, String actionId, String actionType,
+                         List<String> documentIds, String recordedBy) {
+        int issueNumber;
+        try { issueNumber = Integer.parseInt(actionId); } catch (NumberFormatException e) { issueNumber = 0; }
+        record(retrievalContext, issueNumber, "", documentIds, recordedBy);
+        return UUID.randomUUID().toString();
+    }
+
+    public List<io.casehub.neocortex.rag.ProvenanceRecord> forwardLineage(String issueRepo, int issueNumber) {
         String sql = "SELECT issue_repo, issue_number, spec_name, ge_id, recorded_at, recorded_by FROM provenance WHERE issue_repo = ? AND issue_number = ? ORDER BY recorded_at";
-        List<ProvenanceRecord> results = new ArrayList<>();
+        List<io.casehub.neocortex.rag.ProvenanceRecord> results = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, issueRepo);
             ps.setInt(2, issueNumber);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    results.add(mapRow(rs));
+                    results.add(mapToSpiRecord(rs));
                 }
             }
         } catch (SQLException e) {
@@ -124,15 +137,36 @@ public class ProvenanceStore {
         return results;
     }
 
-    public List<ProvenanceRecord> reverseLineage(String geId) {
-        String sql = "SELECT issue_repo, issue_number, spec_name, ge_id, recorded_at, recorded_by FROM provenance WHERE ge_id = ? ORDER BY recorded_at";
-        List<ProvenanceRecord> results = new ArrayList<>();
+    @Override
+    public List<io.casehub.neocortex.rag.ProvenanceRecord> forwardLineage(String actionId, String actionType) {
+        int issueNumber;
+        try { issueNumber = Integer.parseInt(actionId); } catch (NumberFormatException e) { issueNumber = 0; }
+        String sql = "SELECT issue_repo, issue_number, spec_name, ge_id, recorded_at, recorded_by FROM provenance WHERE issue_number = ? ORDER BY recorded_at";
+        List<io.casehub.neocortex.rag.ProvenanceRecord> results = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, geId);
+            ps.setInt(1, issueNumber);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    results.add(mapRow(rs));
+                    results.add(mapToSpiRecord(rs));
+                }
+            }
+        } catch (SQLException e) {
+            Log.error("Failed to query forward lineage via SPI", e);
+        }
+        return results;
+    }
+
+    @Override
+    public List<io.casehub.neocortex.rag.ProvenanceRecord> reverseLineage(String documentId) {
+        String sql = "SELECT issue_repo, issue_number, spec_name, ge_id, recorded_at, recorded_by FROM provenance WHERE ge_id = ? ORDER BY recorded_at";
+        List<io.casehub.neocortex.rag.ProvenanceRecord> results = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, documentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    results.add(mapToSpiRecord(rs));
                 }
             }
         } catch (SQLException e) {
@@ -141,27 +175,48 @@ public class ProvenanceStore {
         return results;
     }
 
-    public ProvenanceStats stats() {
+    @Override
+    public io.casehub.neocortex.rag.ProvenanceStats stats(String retrievalContext) {
         try (Connection conn = dataSource.getConnection()) {
-            int totalRecords = queryInt(conn, "SELECT COUNT(*) FROM provenance");
-            int uniqueEntries = queryInt(conn, "SELECT COUNT(DISTINCT ge_id) FROM provenance");
-            int uniqueIssues = queryInt(conn, "SELECT COUNT(DISTINCT issue_repo || '#' || issue_number) FROM provenance");
+            long totalRecords = queryInt(conn, "SELECT COUNT(*) FROM provenance");
+            long uniqueDocuments = queryInt(conn, "SELECT COUNT(DISTINCT ge_id) FROM provenance");
+            long uniqueActions = queryInt(conn, "SELECT COUNT(DISTINCT issue_repo || '#' || issue_number) FROM provenance");
 
-            List<EntryRefCount> topReferenced = new ArrayList<>();
+            List<io.casehub.neocortex.rag.ProvenanceStats.DocumentRefCount> topReferenced = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement(
                     "SELECT ge_id, COUNT(*) as cnt FROM provenance GROUP BY ge_id ORDER BY cnt DESC LIMIT 10")) {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        topReferenced.add(new EntryRefCount(rs.getString("ge_id"), rs.getInt("cnt")));
+                        topReferenced.add(new io.casehub.neocortex.rag.ProvenanceStats.DocumentRefCount(
+                                rs.getString("ge_id"), rs.getLong("cnt")));
                     }
                 }
             }
 
-            return new ProvenanceStats(totalRecords, uniqueEntries, uniqueIssues, topReferenced, 0);
+            return new io.casehub.neocortex.rag.ProvenanceStats(totalRecords, uniqueDocuments, uniqueActions, topReferenced, 0);
         } catch (SQLException e) {
             Log.error("Failed to compute provenance stats", e);
-            return new ProvenanceStats(0, 0, 0, List.of(), 0);
+            return io.casehub.neocortex.rag.ProvenanceStats.EMPTY;
         }
+    }
+
+    @Override
+    public int purgeOlderThan(Instant cutoff) {
+        String sql = "DELETE FROM provenance WHERE recorded_at < ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, cutoff.toString());
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            Log.error("Failed to purge provenance records", e);
+            return 0;
+        }
+    }
+
+    // --- Domain-specific stats (for ProvenanceResource) ---
+
+    public io.casehub.neocortex.rag.ProvenanceStats stats() {
+        return stats(null);
     }
 
     public void recordFeedbackContext(String geId, String issueRepo, int issueNumber, String outcome) {
@@ -262,14 +317,18 @@ public class ProvenanceStore {
         }
     }
 
-    private static ProvenanceRecord mapRow(ResultSet rs) throws SQLException {
-        return new ProvenanceRecord(
+    private static io.casehub.neocortex.rag.ProvenanceRecord mapToSpiRecord(ResultSet rs) throws SQLException {
+        String recordedAt = rs.getString("recorded_at");
+        Instant timestamp;
+        try { timestamp = Instant.parse(recordedAt); } catch (Exception e) { timestamp = Instant.now(); }
+        return new io.casehub.neocortex.rag.ProvenanceRecord(
+                UUID.randomUUID().toString(),
                 rs.getString("issue_repo"),
-                rs.getInt("issue_number"),
-                rs.getString("spec_name"),
+                String.valueOf(rs.getInt("issue_number")),
+                "github-issue",
                 rs.getString("ge_id"),
-                rs.getString("recorded_at"),
-                rs.getString("recorded_by"));
+                rs.getString("recorded_by"),
+                timestamp);
     }
 
     private static int queryInt(Connection conn, String sql) throws SQLException {

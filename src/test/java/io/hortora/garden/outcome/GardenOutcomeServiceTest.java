@@ -36,7 +36,7 @@ class GardenOutcomeServiceTest {
 
         String report = service.outcomeReport();
         assertThat(report).contains("GE-20260620-a1b2c3");
-        assertThat(report).contains("confidence");
+        assertThat(report).contains("trust");
     }
 
     @Test

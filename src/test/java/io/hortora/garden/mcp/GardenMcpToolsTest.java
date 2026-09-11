@@ -361,7 +361,8 @@ class GardenMcpToolsTest {
         mcpTools.gardenRecordProvenance("Hortora/trellis", 14, null, "GE-0031", "brainstorming");
 
         var lineage = provenanceStore.forwardLineage("Hortora/trellis", 14);
-        assertThat(lineage.getFirst().specName()).isEmpty();
+        assertThat(lineage).hasSize(1);
+        assertThat(lineage.getFirst().documentId()).isEqualTo("GE-0031");
     }
 
     @Test

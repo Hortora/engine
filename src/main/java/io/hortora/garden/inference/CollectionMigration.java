@@ -4,13 +4,12 @@ import io.casehub.neocortex.inference.MultiModalEmbedder;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.CursorStore;
 import io.casehub.neocortex.rag.EmbeddingIngestor;
+import io.casehub.neocortex.rag.runtime.CollectionCompatibility;
+import io.casehub.neocortex.rag.runtime.CollectionExpectedConfig;
+import io.casehub.neocortex.rag.runtime.MigrationAction;
 import io.casehub.neocortex.rag.runtime.RagConfig;
 import io.hortora.garden.config.GardenConfig;
 import io.qdrant.client.QdrantClient;
-import io.qdrant.client.grpc.Collections.CollectionInfo;
-import io.qdrant.client.grpc.Collections.CollectionParams;
-import io.qdrant.client.grpc.Collections.VectorParams;
-import io.qdrant.client.grpc.Collections.VectorsConfig;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.annotation.Priority;
@@ -81,32 +80,29 @@ public class CollectionMigration {
                 return;
             }
 
-            CollectionInfo   info   = qdrantClient.getCollectionInfoAsync(collectionName).get();
-            CollectionParams params = info.getConfig().getParams();
+            var expected = new CollectionExpectedConfig(
+                    embedder.denseDimension(),
+                    true,
+                    embedder.colbertDimension().isPresent());
+            MigrationAction action = CollectionCompatibility.check(qdrantClient, collectionName, expected);
 
-            int existingDim = extractDenseDimension(params);
-            int expectedDim = embedder.denseDimension();
-            if (existingDim > 0 && existingDim != expectedDim) {
-                Log.infof("Collection '%s' dense dimension %d != expected %d — re-indexing",
-                          collectionName, existingDim, expectedDim);
-                resetCorpus(corpusRef, gardenConfig.id());
-                return;
+            switch (action) {
+                case MigrationAction.Compatible _ ->
+                    Log.infof("Collection '%s' is up-to-date — no migration needed", collectionName);
+                case MigrationAction.DimensionMismatch m -> {
+                    Log.infof("Collection '%s' dense dimension %d != expected %d — re-indexing",
+                              collectionName, m.actual(), m.expected());
+                    resetCorpus(corpusRef, gardenConfig.id());
+                }
+                case MigrationAction.MissingSparseVectors _ -> {
+                    Log.infof("Collection '%s' lacks sparse vectors — re-indexing", collectionName);
+                    resetCorpus(corpusRef, gardenConfig.id());
+                }
+                case MigrationAction.MissingColBert _ -> {
+                    Log.infof("Collection '%s' lacks ColBERT multi-vector config — re-indexing", collectionName);
+                    resetCorpus(corpusRef, gardenConfig.id());
+                }
             }
-
-            if (!params.hasSparseVectorsConfig()) {
-                Log.infof("Collection '%s' lacks sparse vectors — re-indexing", collectionName);
-                resetCorpus(corpusRef, gardenConfig.id());
-                return;
-            }
-
-            if (!hasColbertConfig(params)) {
-                Log.infof("Collection '%s' lacks ColBERT multi-vector config — re-indexing",
-                          collectionName);
-                resetCorpus(corpusRef, gardenConfig.id());
-                return;
-            }
-
-            Log.infof("Collection '%s' is up-to-date — no migration needed", collectionName);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -155,32 +151,4 @@ public class CollectionMigration {
         }
     }
 
-    /**
-     * Extracts the dense vector dimension from collection params.
-     * Returns -1 if dimension cannot be determined.
-     */
-    static int extractDenseDimension(CollectionParams params) {
-        VectorsConfig vectorsConfig = params.getVectorsConfig();
-        if (vectorsConfig.hasParams()) {
-            return (int) vectorsConfig.getParams().getSize();
-        }
-        if (vectorsConfig.hasParamsMap() &&
-                vectorsConfig.getParamsMap().containsMap("dense")) {
-            VectorParams denseParams = vectorsConfig.getParamsMap().getMapOrDefault("dense", null);
-            if (denseParams != null) {
-                return (int) denseParams.getSize();
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Checks whether the collection has ColBERT multi-vector configuration.
-     * ColBERT vectors are stored in a named vector called "colbert".
-     */
-    static boolean hasColbertConfig(CollectionParams params) {
-        VectorsConfig vectorsConfig = params.getVectorsConfig();
-        return vectorsConfig.hasParamsMap() &&
-               vectorsConfig.getParamsMap().containsMap("colbert");
-    }
 }

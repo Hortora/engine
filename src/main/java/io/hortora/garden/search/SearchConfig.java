@@ -9,7 +9,7 @@ public interface SearchConfig {
     @WithDefault("0.0")
     double scoreFloor();
 
-    @WithDefault("2.0")
+    @WithDefault("0.5")
     double gapThreshold();
 
     @WithDefault("3")

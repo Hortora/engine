@@ -41,7 +41,7 @@ class ProvenanceResourceTest {
                 .when().get("/provenance")
                 .then().statusCode(200)
                 .body("size()", equalTo(1))
-                .body("[0].geId", equalTo("GE-0031"));
+                .body("[0].documentId", equalTo("GE-0031"));
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProvenanceResourceTest {
                 .when().get("/provenance/reverse")
                 .then().statusCode(200)
                 .body("size()", equalTo(1))
-                .body("[0].issueRepo", equalTo("Hortora/trellis"));
+                .body("[0].retrievalContext", equalTo("Hortora/trellis"));
     }
 
     @Test
@@ -62,7 +62,7 @@ class ProvenanceResourceTest {
         given().when().get("/provenance/stats")
                 .then().statusCode(200)
                 .body("totalRecords", equalTo(2))
-                .body("uniqueEntries", equalTo(2));
+                .body("uniqueDocuments", equalTo(2));
     }
 
     @Test
@@ -91,7 +91,8 @@ class ProvenanceResourceTest {
                 .when().post("/provenance")
                 .then().statusCode(201);
 
-        List<ProvenanceRecord> lineage = store.forwardLineage("Hortora/trellis", 14);
-        assertEquals("", lineage.getFirst().specName());
+        var lineage = store.forwardLineage("Hortora/trellis", 14);
+        assertEquals(1, lineage.size());
+        assertEquals("GE-0031", lineage.getFirst().documentId());
     }
 }

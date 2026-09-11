@@ -2,19 +2,21 @@ package io.hortora.garden.outcome;
 
 import io.casehub.neocortex.memory.MemoryDomain;
 import io.casehub.neocortex.memory.cbr.CbrCaseMemoryStore;
+import io.casehub.neocortex.memory.cbr.CbrCaseSummary;
 import io.casehub.neocortex.memory.cbr.CbrOutcome;
-import io.casehub.neocortex.memory.cbr.TextualCbrCase;
-import io.casehub.neocortex.memory.cbr.jpa.CbrCaseEntity;
+import io.casehub.neocortex.memory.cbr.CbrScanRequest;
+import io.casehub.neocortex.memory.cbr.CbrScanResult;
+import io.casehub.neocortex.memory.cbr.ResolvedCase;
 import io.casehub.platform.api.path.Path;
 import io.hortora.garden.config.GardenConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class GardenOutcomeService {
@@ -23,23 +25,17 @@ public class GardenOutcomeService {
 
     @Inject CbrCaseMemoryStore cbrStore;
     @Inject GardenConfig config;
-    @Inject EntityManager em;
 
     public String recordOutcome(String geId, String issueRepo, int issueNumber,
                                  String workContext, double successRate, String detail) {
         String tenantId = config.id();
 
-        boolean exists = !em.createQuery(
-                        "SELECT e.id FROM CbrCaseEntity e WHERE e.caseId = :cid AND e.tenantId = :t",
-                        String.class)
-                .setParameter("cid", geId)
-                .setParameter("t", tenantId)
-                .getResultList()
-                .isEmpty();
+        boolean exists = scanAllCases(tenantId).stream()
+                .anyMatch(c -> geId.equals(c.caseId()));
 
         if (!exists) {
             String problem = workContext + " (" + issueRepo + "#" + issueNumber + ")";
-            TextualCbrCase cbrCase = new TextualCbrCase(problem, geId, null, null, null, null);
+            ResolvedCase cbrCase = new ResolvedCase(problem, geId, null, null, Map.of(), List.of(), null, null);
             cbrStore.store(cbrCase, CASE_TYPE, geId,
                     new MemoryDomain("knowledge"), tenantId, geId,
                     Path.of("garden", tenantId));
@@ -55,32 +51,24 @@ public class GardenOutcomeService {
     public String outcomeReport() {
         String tenantId = config.id();
 
-        List<CbrCaseEntity> cases = em.createQuery(
-                                              "SELECT e FROM CbrCaseEntity e WHERE e.caseType = :ct AND e.tenantId = :t AND e.supersededAt IS NULL AND e.lastOutcomeAt IS NOT NULL",
-                                              CbrCaseEntity.class)
-                                      .setParameter("ct", CASE_TYPE)
-                                      .setParameter("t", tenantId)
-                                      .getResultList();
+        List<CbrCaseSummary> cases = scanAllCases(tenantId);
 
         if (cases.isEmpty()) {
             return "No outcome data recorded yet.";
         }
 
-        List<CbrCaseEntity> sorted = cases.stream()
-                                          .sorted(Comparator.comparingDouble(c -> c.confidence != null ? c.confidence : 1.0))
-                                          .toList();
+        List<CbrCaseSummary> sorted = cases.stream()
+                .sorted(Comparator.comparingDouble(c -> c.trustScore() != null ? c.trustScore() : 1.0))
+                .toList();
 
         StringBuilder sb = new StringBuilder();
         sb.append("## Garden Entry Outcome Report\n\n");
-        sb.append("Entries with recorded outcomes, sorted by confidence (lowest first):\n\n");
+        sb.append("Entries with recorded outcomes, sorted by trust score (lowest first):\n\n");
 
-        for (CbrCaseEntity c : sorted) {
-            sb.append("- **").append(c.caseId).append("**");
-            if (c.confidence != null) {
-                sb.append(" — confidence: ").append(String.format("%.2f", c.confidence));
-            }
-            if (c.outcome != null) {
-                sb.append(" — last: ").append(c.outcome);
+        for (CbrCaseSummary c : sorted) {
+            sb.append("- **").append(c.caseId()).append("**");
+            if (c.trustScore() != null) {
+                sb.append(" — trust: ").append(String.format("%.2f", c.trustScore()));
             }
             sb.append("\n");
         }
@@ -88,10 +76,20 @@ public class GardenOutcomeService {
         return sb.toString();
     }
 
-    @Transactional
     public void clearAll() {
-        em.createQuery("DELETE FROM CbrCaseEntity e WHERE e.caseType = :ct")
-                .setParameter("ct", CASE_TYPE)
-                .executeUpdate();
+        String tenantId = config.id();
+        cbrStore.eraseByScope(Path.of("garden", tenantId), tenantId);
+    }
+
+    private List<CbrCaseSummary> scanAllCases(String tenantId) {
+        List<CbrCaseSummary> all = new ArrayList<>();
+        String cursor = null;
+        do {
+            CbrScanResult page = cbrStore.scan(new CbrScanRequest(
+                    tenantId, new MemoryDomain("knowledge"), CASE_TYPE, 100, cursor));
+            all.addAll(page.items());
+            cursor = page.hasMore() ? page.nextCursor() : null;
+        } while (cursor != null);
+        return all;
     }
 }

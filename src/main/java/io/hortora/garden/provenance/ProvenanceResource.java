@@ -31,7 +31,7 @@ public class ProvenanceResource {
     }
 
     @GET
-    public List<ProvenanceRecord> forwardLineage(
+    public List<io.casehub.neocortex.rag.ProvenanceRecord> forwardLineage(
             @QueryParam("issueRepo") String issueRepo,
             @QueryParam("issueNumber") int issueNumber) {
         return store.forwardLineage(issueRepo, issueNumber);
@@ -39,13 +39,13 @@ public class ProvenanceResource {
 
     @GET
     @Path("/reverse")
-    public List<ProvenanceRecord> reverseLineage(@QueryParam("geId") String geId) {
+    public List<io.casehub.neocortex.rag.ProvenanceRecord> reverseLineage(@QueryParam("geId") String geId) {
         return store.reverseLineage(geId);
     }
 
     @GET
     @Path("/stats")
-    public ProvenanceStats stats() {
+    public io.casehub.neocortex.rag.ProvenanceStats stats() {
         return store.stats();
     }
 }
