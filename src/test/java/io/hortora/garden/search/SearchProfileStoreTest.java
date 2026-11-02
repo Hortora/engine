@@ -1,6 +1,7 @@
 package io.hortora.garden.search;
 
 import io.casehub.neocortex.corpus.management.impl.SearchProfileStore;
+import io.casehub.neocortex.sqlite.SqliteDataSourceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SearchProfileStoreTest {
 
-    private final SearchProfileStore store = new SearchProfileStore();
+    private final SearchProfileStore store = new SearchProfileStore(
+        SqliteDataSourceFactory.create(":memory:", 1, 5000));
 
     @BeforeEach
     void init() {
-        store.init();
         store.delete("test-project");
         store.delete("proj");
         store.delete("temp");

@@ -1,12 +1,13 @@
 package io.hortora.garden.outcome;
 
+import io.casehub.neocortex.cognitive.Confidence;
 import io.casehub.neocortex.memory.MemoryDomain;
-import io.casehub.neocortex.memory.cbr.CbrCaseMemoryStore;
-import io.casehub.neocortex.memory.cbr.CbrCaseSummary;
+import io.casehub.neocortex.memory.cbr.CbrGuidanceRecord;
 import io.casehub.neocortex.memory.cbr.CbrOutcome;
+import io.casehub.neocortex.memory.cbr.CbrRecordStore;
+import io.casehub.neocortex.memory.cbr.CbrRecordSummary;
 import io.casehub.neocortex.memory.cbr.CbrScanRequest;
 import io.casehub.neocortex.memory.cbr.CbrScanResult;
-import io.casehub.neocortex.memory.cbr.ResolvedCase;
 import io.casehub.platform.api.path.Path;
 import io.hortora.garden.config.GardenConfig;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,14 +17,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @ApplicationScoped
 public class GardenOutcomeService {
 
     static final String CASE_TYPE = "garden-outcome";
 
-    @Inject CbrCaseMemoryStore cbrStore;
+    @Inject CbrRecordStore cbrStore;
     @Inject GardenConfig config;
 
     public String recordOutcome(String geId, String issueRepo, int issueNumber,
@@ -35,7 +35,8 @@ public class GardenOutcomeService {
 
         if (!exists) {
             String problem = workContext + " (" + issueRepo + "#" + issueNumber + ")";
-            ResolvedCase cbrCase = new ResolvedCase(problem, geId, null, null, Map.of(), List.of(), null, null);
+            var cbrCase = new CbrGuidanceRecord(problem, geId, null,
+                    Confidence.unknown(1.0), null, null);
             cbrStore.store(cbrCase, CASE_TYPE, geId,
                     new MemoryDomain("knowledge"), tenantId, geId,
                     Path.of("garden", tenantId));
@@ -43,7 +44,7 @@ public class GardenOutcomeService {
 
         CbrOutcome outcome = CbrOutcome.of(successRate,
                 detail != null ? detail : "", Instant.now());
-        cbrStore.recordOutcome(geId, tenantId, outcome);
+        cbrStore.recordOutcome(geId, outcome, tenantId);
 
         return "Outcome recorded for " + geId + " (success=" + successRate + ")";
     }
@@ -51,13 +52,13 @@ public class GardenOutcomeService {
     public String outcomeReport() {
         String tenantId = config.id();
 
-        List<CbrCaseSummary> cases = scanAllCases(tenantId);
+        List<CbrRecordSummary> cases = scanAllCases(tenantId);
 
         if (cases.isEmpty()) {
             return "No outcome data recorded yet.";
         }
 
-        List<CbrCaseSummary> sorted = cases.stream()
+        List<CbrRecordSummary> sorted = cases.stream()
                 .sorted(Comparator.comparingDouble(c -> c.trustScore() != null ? c.trustScore() : 1.0))
                 .toList();
 
@@ -65,7 +66,7 @@ public class GardenOutcomeService {
         sb.append("## Garden Entry Outcome Report\n\n");
         sb.append("Entries with recorded outcomes, sorted by trust score (lowest first):\n\n");
 
-        for (CbrCaseSummary c : sorted) {
+        for (CbrRecordSummary c : sorted) {
             sb.append("- **").append(c.caseId()).append("**");
             if (c.trustScore() != null) {
                 sb.append(" — trust: ").append(String.format("%.2f", c.trustScore()));
@@ -81,8 +82,8 @@ public class GardenOutcomeService {
         cbrStore.eraseByScope(Path.of("garden", tenantId), tenantId);
     }
 
-    private List<CbrCaseSummary> scanAllCases(String tenantId) {
-        List<CbrCaseSummary> all = new ArrayList<>();
+    private List<CbrRecordSummary> scanAllCases(String tenantId) {
+        List<CbrRecordSummary> all = new ArrayList<>();
         String cursor = null;
         do {
             CbrScanResult page = cbrStore.scan(new CbrScanRequest(

@@ -26,7 +26,7 @@ class SearchResourceTest {
 
     @Inject
            SearchResource            searchResource;
-    @InjectInMemoryEmbeddingIngestor ingestor;
+    @Inject io.casehub.neocortex.rag.EmbeddingIngestor ingestor;
 
     private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");
 
