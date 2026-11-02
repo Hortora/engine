@@ -1,5 +1,6 @@
 package io.hortora.garden.federation;
 
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
 import io.hortora.garden.config.GardenConfig;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;

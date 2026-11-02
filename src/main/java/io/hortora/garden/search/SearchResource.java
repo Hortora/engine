@@ -1,5 +1,9 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.AdaptiveResult;
+import io.casehub.neocortex.corpus.management.impl.SearchProfileStore;
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
+import io.casehub.neocortex.corpus.management.impl.SearchScoringConfig;
 import io.casehub.neocortex.rag.AdaptiveFilter;
 import io.casehub.neocortex.rag.AdaptiveFilterOptions;
 import io.casehub.neocortex.rag.AdaptiveSearchConfig;
@@ -10,7 +14,7 @@ import io.casehub.neocortex.rag.RetrievalQuery;
 import io.casehub.neocortex.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.ChainWalker;
-import io.hortora.garden.federation.FederationConfig;
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -46,9 +50,11 @@ public class SearchResource {
     @Inject GardenConfig gardenConfig;
     @Inject FederationConfig federationConfig;
     @Inject ChainWalker chainWalker;
-    @Inject SearchConfig searchConfig;
-    @Inject SearchScoringConfig scoringConfig;
-    @Inject SearchProfileStore profileStore;
+    @Inject SearchConfig        searchConfig;
+    @Inject
+            SearchScoringConfig scoringConfig;
+    @Inject
+    SearchProfileStore profileStore;
 
     @GET
     public List<SearchResult> search(

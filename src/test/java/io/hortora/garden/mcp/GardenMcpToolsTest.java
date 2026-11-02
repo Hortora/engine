@@ -1,5 +1,6 @@
 package io.hortora.garden.mcp;
 
+import io.casehub.neocortex.corpus.management.impl.ProvenanceStore;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.RetrievalQuery;
@@ -24,7 +25,7 @@ class GardenMcpToolsTest {
     @Inject
             io.casehub.neocortex.rag.testing.InMemoryRetrievalTracker retrievalTracker;
     @Inject
-    io.hortora.garden.provenance.ProvenanceStore provenanceStore;
+            ProvenanceStore                                           provenanceStore;
 
 
     private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");

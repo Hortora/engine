@@ -1,5 +1,6 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.PayloadFilter;

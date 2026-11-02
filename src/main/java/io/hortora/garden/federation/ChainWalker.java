@@ -1,6 +1,7 @@
 package io.hortora.garden.federation;
 
-import io.hortora.garden.search.SearchResult;
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.quarkus.logging.Log;
 import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
 import jakarta.annotation.PostConstruct;

@@ -1,5 +1,6 @@
 package io.hortora.garden.federation;
 
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

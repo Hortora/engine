@@ -1,5 +1,6 @@
 package io.hortora.garden.mcp;
 
+import io.casehub.neocortex.corpus.management.impl.ProvenanceStore;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.ExtractionResult;
@@ -10,13 +11,13 @@ import io.casehub.neocortex.rag.QualityThresholds;
 import io.casehub.neocortex.rag.RetrievalAnalyzer;
 import io.casehub.neocortex.rag.RetrievalTracker;
 import io.hortora.garden.config.GardenConfig;
-import io.hortora.garden.federation.FederationConfig;
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
 import io.hortora.garden.index.GardenMetadataExtractor;
 import io.hortora.garden.index.GardenReindexService;
 import io.hortora.garden.inference.CollectionMigration;
-import io.hortora.garden.search.AdaptiveResult;
+import io.casehub.neocortex.corpus.management.impl.AdaptiveResult;
 import io.hortora.garden.search.SearchResource;
-import io.hortora.garden.search.SearchResult;
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkus.logging.Log;
@@ -25,7 +26,6 @@ import jakarta.inject.Inject;
 
 import io.casehub.neocortex.rag.RetrievalOutcome;
 import io.casehub.neocortex.rag.RetrievalRecord;
-import io.casehub.neocortex.rag.RetrievedDocumentRef;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -57,9 +57,9 @@ public class GardenMcpTools {
     GardenMetadataExtractor metadataExtractor;
 
     @Inject
-    RetrievalTracker retrievalTracker;
+    RetrievalTracker                               retrievalTracker;
     @Inject
-    io.hortora.garden.provenance.ProvenanceStore provenanceStore;
+    ProvenanceStore                                provenanceStore;
     @Inject
     io.hortora.garden.outcome.GardenOutcomeService outcomeService;
 

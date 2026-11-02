@@ -53,7 +53,7 @@ git commit -m "chore: remove unused testcontainers dependency  Closes #15"
 **Files:**
 - Modify: `src/main/java/io/hortora/garden/inference/CollectionMigration.java`
 - Modify: `src/main/java/io/hortora/garden/federation/RemoteGardenClient.java`
-- Modify: `src/main/java/io/hortora/garden/federation/FederationConfig.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/FederationConfig.java`
 - Modify: `src/main/resources/application.properties`
 - Modify: `src/test/java/io/hortora/garden/federation/ChainWalkerTest.java`
 - Modify: `src/test/java/io/hortora/garden/federation/FederationConfigParserTest.java`
@@ -566,6 +566,7 @@ Rewrite `SearchResource.java`:
 ```java
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.casehub.rag.CaseRetriever;
 import io.casehub.rag.CorpusRef;
 import io.casehub.rag.PayloadFilter;
@@ -573,7 +574,7 @@ import io.casehub.rag.RetrievalQuery;
 import io.casehub.rag.RetrievedChunk;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.federation.ChainWalker;
-import io.hortora.garden.federation.FederationConfig;
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -597,12 +598,16 @@ import java.util.Set;
 public class SearchResource {
 
     static final int DEFAULT_LIMIT = 8;
-    static final int MAX_LIMIT = 50;
+    static final int MAX_LIMIT     = 50;
 
-    @Inject CaseRetriever caseRetriever;
-    @Inject GardenConfig gardenConfig;
-    @Inject FederationConfig federationConfig;
-    @Inject ChainWalker chainWalker;
+    @Inject
+    CaseRetriever    caseRetriever;
+    @Inject
+    GardenConfig     gardenConfig;
+    @Inject
+    FederationConfig federationConfig;
+    @Inject
+    ChainWalker      chainWalker;
 
     @GET
     public List<SearchResult> search(
@@ -613,7 +618,7 @@ public class SearchResource {
 
         if (query == null || query.isBlank()) {
             throw new WebApplicationException("query parameter 'q' is required",
-                    Response.Status.BAD_REQUEST);
+                                              Response.Status.BAD_REQUEST);
         }
 
         int maxResults = resolveLimit(limit);
@@ -646,8 +651,8 @@ public class SearchResource {
     }
 
     private List<SearchResult> searchLocal(String query, List<String> domains, int maxResults) {
-        CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
-        PayloadFilter filter = buildDomainFilter(domains);
+        CorpusRef     corpusRef = new CorpusRef("hortora", gardenConfig.id());
+        PayloadFilter filter    = buildDomainFilter(domains);
 
         List<RetrievedChunk> chunks = caseRetriever.retrieve(
                 RetrievalQuery.of(query), corpusRef, maxResults, filter);
@@ -716,7 +721,7 @@ git commit -m "refactor: SearchResource — typed responses, @ApplicationScoped,
 ### Task 6: ChainWalker configurable federation timeout (#12)
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/federation/FederationConfig.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/FederationConfig.java`
 - Modify: `src/main/java/io/hortora/garden/federation/FederationConfigParser.java`
 - Modify: `src/main/java/io/hortora/garden/federation/ChainWalker.java`
 - Modify: `src/test/java/io/hortora/garden/federation/FederationConfigParserTest.java`

@@ -1,5 +1,6 @@
 package io.hortora.garden.provenance;
 
+import io.casehub.neocortex.corpus.management.impl.ProvenanceStore;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
@@ -15,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTest
 class ProvenanceResourceTest {
 
-    @Inject ProvenanceStore store;
+    @Inject
+    ProvenanceStore store;
 
     @BeforeEach
     void clear() {

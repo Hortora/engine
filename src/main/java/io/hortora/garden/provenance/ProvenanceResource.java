@@ -1,5 +1,6 @@
 package io.hortora.garden.provenance;
 
+import io.casehub.neocortex.corpus.management.impl.ProvenanceStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -13,7 +14,8 @@ import java.util.List;
 @ApplicationScoped
 public class ProvenanceResource {
 
-    @Inject ProvenanceStore store;
+    @Inject
+    ProvenanceStore store;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

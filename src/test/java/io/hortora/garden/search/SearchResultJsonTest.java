@@ -1,6 +1,7 @@
 package io.hortora.garden.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,8 +16,8 @@ class SearchResultJsonTest {
     @Test
     void jsonIncludesPromotedFrontmatterFields() throws Exception {
         var result = new SearchResult("doc/ge-test.md", "Test entry", "jvm", "gotcha",
-                8, "body text", 0.85, 3.2, "garden", "own",
-                List.of(), Map.of(
+                                      8, "body text", 0.85, 3.2, "garden", "own",
+                                      List.of(), Map.of(
                         "staleness_threshold", "30d",
                         "tags_joined", "cdi|quarkus|bean-discovery",
                         "last_reviewed", "2026-07-01",

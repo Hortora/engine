@@ -1,10 +1,10 @@
 package io.hortora.garden.federation;
 
-import io.hortora.garden.search.SearchResult;
+import io.casehub.neocortex.corpus.management.impl.FederationConfig;
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +19,7 @@ class ChainWalkerTest {
     private static final int LIMIT = 3;
 
     private FederationConfig config;
-    private ChainWalker walker;
+    private ChainWalker      walker;
     private RecordingClient upstreamClient;
     private RecordingClient peerClient;
 

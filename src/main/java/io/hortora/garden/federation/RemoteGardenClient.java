@@ -1,6 +1,6 @@
 package io.hortora.garden.federation;
 
-import io.hortora.garden.search.SearchResult;
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;

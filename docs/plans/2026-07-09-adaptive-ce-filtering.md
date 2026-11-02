@@ -30,7 +30,7 @@
 
 **Files:**
 - Create: `src/main/java/io/hortora/garden/search/SearchConfig.java`
-- Modify: `src/main/java/io/hortora/garden/search/AdaptiveResult.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/AdaptiveResult.java`
 - Test: `src/test/java/io/hortora/garden/search/SearchResourceTest.java` (existing — verify compilation)
 
 **Interfaces:**
@@ -67,6 +67,8 @@ Replace the existing 4-field record with:
 
 ```java
 package io.hortora.garden.search;
+
+import io.casehub.neocortex.corpus.management.impl.SearchResult;
 
 import java.util.List;
 

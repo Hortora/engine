@@ -164,7 +164,7 @@ do_install_qdrant() {
         Darwin-arm64)  archive_name="qdrant-aarch64-apple-darwin.tar.gz" ;;
         Darwin-x86_64) archive_name="qdrant-x86_64-apple-darwin.tar.gz" ;;
         Linux-x86_64)  archive_name="qdrant-x86_64-unknown-linux-gnu.tar.gz" ;;
-        Linux-aarch64) archive_name="qdrant-aarch64-unknown-linux-gnu.tar.gz" ;;
+        Linux-aarch64) archive_name="qdrant-aarch64-unknown-linux-musl.tar.gz" ;;
         *) fail "Unsupported platform: $os_name-$arch" ;;
     esac
 

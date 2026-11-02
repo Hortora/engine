@@ -1,5 +1,6 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.SearchProfileStore;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -12,7 +13,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Path("/api/garden/profiles")
 @Produces(MediaType.APPLICATION_JSON)

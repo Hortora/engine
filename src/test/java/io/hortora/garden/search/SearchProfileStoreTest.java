@@ -1,5 +1,6 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.SearchProfileStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
