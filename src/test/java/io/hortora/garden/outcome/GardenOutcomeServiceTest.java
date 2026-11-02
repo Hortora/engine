@@ -10,7 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @QuarkusTest
 class GardenOutcomeServiceTest {
 
-    @Inject GardenOutcomeService service;
+    @Inject
+    GardenOutcomeService service;
 
     @BeforeEach
     void clearOutcomes() {

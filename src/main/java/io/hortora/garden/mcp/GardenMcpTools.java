@@ -1,5 +1,6 @@
 package io.hortora.garden.mcp;
 
+import io.hortora.garden.outcome.GardenOutcomeService;
 import io.casehub.neocortex.corpus.management.impl.ProvenanceStore;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
@@ -12,11 +13,11 @@ import io.casehub.neocortex.rag.RetrievalAnalyzer;
 import io.casehub.neocortex.rag.RetrievalTracker;
 import io.hortora.garden.config.GardenConfig;
 import io.casehub.neocortex.corpus.management.impl.FederationConfig;
-import io.hortora.garden.index.GardenMetadataExtractor;
-import io.hortora.garden.index.GardenReindexService;
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
+import io.casehub.neocortex.corpus.management.impl.GardenReindexService;
 import io.hortora.garden.inference.CollectionMigration;
 import io.casehub.neocortex.corpus.management.impl.AdaptiveResult;
-import io.hortora.garden.search.SearchResource;
+import io.casehub.neocortex.corpus.management.impl.SearchResource;
 import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
@@ -59,9 +60,9 @@ public class GardenMcpTools {
     @Inject
     RetrievalTracker                               retrievalTracker;
     @Inject
-    ProvenanceStore                                provenanceStore;
+    ProvenanceStore      provenanceStore;
     @Inject
-    io.hortora.garden.outcome.GardenOutcomeService outcomeService;
+    GardenOutcomeService outcomeService;
 
 
     private volatile java.util.Map<String, String> cachedGeIdToDocId;

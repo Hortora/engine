@@ -18,7 +18,7 @@
 | File | Responsibility |
 |------|---------------|
 | `src/main/java/io/hortora/garden/index/ExtractionResult.java` | Content + metadata record from frontmatter extraction |
-| `src/main/java/io/hortora/garden/index/GardenMetadataExtractor.java` | YAML frontmatter parser — returns title+body as content |
+| `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/GardenMetadataExtractor.java` | YAML frontmatter parser — returns title+body as content |
 | `src/main/java/io/hortora/garden/index/FileCursorStore.java` | File-backed cursor persistence at `_state/garden.cursor` |
 | `src/main/java/io/hortora/garden/index/GardenIngestionService.java` | Cursor-based ingest loop with ReentrantLock concurrency |
 | `src/main/java/io/hortora/garden/config/QdrantConfig.java` | Config mapping for `hortora.qdrant.*` |
@@ -33,7 +33,7 @@
 |------|--------|
 | `pom.xml` | Add corpus-api, corpus, io.qdrant:client, testcontainers; remove quarkus-langchain4j-qdrant |
 | `src/main/java/io/hortora/garden/index/GardenIndexer.java` | Refactor to startup wiring + lifecycle (@PreDestroy) |
-| `src/main/java/io/hortora/garden/search/SearchResource.java` | Replace EmbeddingStore with QdrantClient QueryPoints |
+| `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java` | Replace EmbeddingStore with QdrantClient QueryPoints |
 | `src/main/java/io/hortora/garden/mcp/GardenMcpTools.java` | Replace GardenIndexer injection with QdrantClient |
 | `src/main/resources/application.properties` | Add hortora.qdrant.* config |
 | `src/test/resources/application.properties` | Add Qdrant test config |
@@ -170,7 +170,7 @@ git commit -m "chore: add corpus-api, corpus, qdrant client deps; remove langcha
 
 **Files:**
 - Create: `src/main/java/io/hortora/garden/index/ExtractionResult.java`
-- Create: `src/main/java/io/hortora/garden/index/GardenMetadataExtractor.java`
+- Create: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/GardenMetadataExtractor.java`
 - Create: `src/test/java/io/hortora/garden/index/GardenMetadataExtractorTest.java`
 
 - [ ] **Step 1: Create ExtractionResult record**
@@ -194,6 +194,7 @@ public record ExtractionResult(String content, Map<String, String> metadata) {
 ```java
 package io.hortora.garden.index;
 
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -547,6 +548,7 @@ import dev.langchain4j.model.output.Response;
 import io.casehub.corpus.ChangeSet;
 import io.casehub.corpus.ChangeType;
 import io.casehub.corpus.ChangedEntry;
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import io.qdrant.client.QdrantClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -565,26 +567,27 @@ import static org.mockito.Mockito.*;
 
 class GardenIngestionServiceTest {
 
-    @TempDir Path gardenDir;
-    private QdrantClient qdrantClient;
-    private EmbeddingModel embeddingModel;
+    @TempDir
+            Path                    gardenDir;
+    private QdrantClient            qdrantClient;
+    private EmbeddingModel          embeddingModel;
     private GardenMetadataExtractor extractor;
-    private FileCursorStore cursorStore;
-    private GardenIngestionService service;
+    private FileCursorStore         cursorStore;
+    private GardenIngestionService  service;
 
     @BeforeEach
     void setUp() {
-        qdrantClient = mock(QdrantClient.class);
+        qdrantClient   = mock(QdrantClient.class);
         embeddingModel = mock(EmbeddingModel.class);
-        extractor = new GardenMetadataExtractor();
-        cursorStore = new FileCursorStore(gardenDir);
+        extractor      = new GardenMetadataExtractor();
+        cursorStore    = new FileCursorStore(gardenDir);
 
         when(qdrantClient.upsertAsync(anyString(), anyList(), any()))
                 .thenReturn(CompletableFuture.completedFuture(null));
         when(qdrantClient.deleteAsync(anyString(), any(io.qdrant.client.grpc.Common.Filter.class)))
                 .thenReturn(CompletableFuture.completedFuture(null));
 
-        float[] vector = new float[768];
+        float[]   vector    = new float[768];
         Embedding embedding = Embedding.from(vector);
         when(embeddingModel.embed(any(TextSegment.class)))
                 .thenReturn(Response.from(embedding));
@@ -599,16 +602,16 @@ class GardenIngestionServiceTest {
     @Test
     void fullScanIngestsAllEntriesAndSavesCursor() throws Exception {
         writeFixture("jvm/test.md", """
-                ---
-                title: "Test entry"
-                domain: jvm
-                type: gotcha
-                score: 8
-                tags: [java]
-                submitted: "2026-06-16"
-                ---
-                Body text here.
-                """);
+                                    ---
+                                    title: "Test entry"
+                                    domain: jvm
+                                    type: gotcha
+                                    score: 8
+                                    tags: [java]
+                                    submitted: "2026-06-16"
+                                    ---
+                                    Body text here.
+                                    """);
 
         ChangeSet changes = new ChangeSet(
                 List.of(new ChangedEntry("jvm/test.md", ChangeType.ADDED)),
@@ -648,16 +651,16 @@ class GardenIngestionServiceTest {
     @Test
     void infrastructureFailureDoesNotAdvanceCursor() throws Exception {
         writeFixture("jvm/test.md", """
-                ---
-                title: "Test"
-                domain: jvm
-                type: gotcha
-                score: 5
-                tags: []
-                submitted: "2026-06-16"
-                ---
-                Body.
-                """);
+                                    ---
+                                    title: "Test"
+                                    domain: jvm
+                                    type: gotcha
+                                    score: 5
+                                    tags: []
+                                    submitted: "2026-06-16"
+                                    ---
+                                    Body.
+                                    """);
 
         when(qdrantClient.upsertAsync(anyString(), anyList(), any()))
                 .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Qdrant unreachable")));
@@ -723,6 +726,7 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import io.casehub.corpus.ChangeSet;
 import io.casehub.corpus.ChangeType;
 import io.casehub.corpus.ChangedEntry;
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import io.qdrant.client.ConditionFactory;
 import io.qdrant.client.PointIdFactory;
 import io.qdrant.client.QdrantClient;
@@ -747,16 +751,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class GardenIngestionService {
 
-    static final UUID NAMESPACE = UUID.nameUUIDFromBytes("hortora.garden".getBytes(StandardCharsets.UTF_8));
+    static final         UUID   NAMESPACE         = UUID.nameUUIDFromBytes("hortora.garden".getBytes(StandardCharsets.UTF_8));
     private static final String DENSE_VECTOR_NAME = "dense";
 
-    private final QdrantClient qdrantClient;
-    private final EmbeddingModel embeddingModel;
+    private final QdrantClient            qdrantClient;
+    private final EmbeddingModel          embeddingModel;
     private final GardenMetadataExtractor extractor;
-    private final FileCursorStore cursorStore;
-    private final Path gardenPath;
-    private final String collectionName;
-    private final ReentrantLock lock = new ReentrantLock();
+    private final FileCursorStore         cursorStore;
+    private final Path                    gardenPath;
+    private final String                  collectionName;
+    private final ReentrantLock           lock = new ReentrantLock();
 
     public GardenIngestionService(
             QdrantClient qdrantClient,
@@ -765,11 +769,11 @@ public class GardenIngestionService {
             FileCursorStore cursorStore,
             Path gardenPath,
             String collectionName) {
-        this.qdrantClient = qdrantClient;
+        this.qdrantClient   = qdrantClient;
         this.embeddingModel = embeddingModel;
-        this.extractor = extractor;
-        this.cursorStore = cursorStore;
-        this.gardenPath = gardenPath;
+        this.extractor      = extractor;
+        this.cursorStore    = cursorStore;
+        this.gardenPath     = gardenPath;
         this.collectionName = collectionName;
     }
 
@@ -823,15 +827,15 @@ public class GardenIngestionService {
         }
 
         // Phase 2: additions/modifications
-        List<PointStruct> points = new ArrayList<>();
-        List<TextSegment> segments = new ArrayList<>();
-        List<ChangedEntry> toEmbed = new ArrayList<>();
+        List<PointStruct>  points   = new ArrayList<>();
+        List<TextSegment>  segments = new ArrayList<>();
+        List<ChangedEntry> toEmbed  = new ArrayList<>();
 
         for (ChangedEntry entry : entries) {
             if (entry.type() == ChangeType.ADDED || entry.type() == ChangeType.MODIFIED) {
                 try {
-                    byte[] content = Files.readAllBytes(gardenPath.resolve(entry.path()));
-                    ExtractionResult result = extractor.extract(entry.path(), content);
+                    byte[]           content = Files.readAllBytes(gardenPath.resolve(entry.path()));
+                    ExtractionResult result  = extractor.extract(entry.path(), content);
                     if (result.content().isEmpty()) continue;
 
                     segments.add(TextSegment.from(result.content()));
@@ -848,7 +852,7 @@ public class GardenIngestionService {
 
         for (int i = 0; i < toEmbed.size(); i++) {
             ChangedEntry entry = toEmbed.get(i);
-            byte[] content;
+            byte[]       content;
             try {
                 content = Files.readAllBytes(gardenPath.resolve(entry.path()));
             } catch (IOException e) {
@@ -865,8 +869,8 @@ public class GardenIngestionService {
 
     private void deleteDocument(String path) {
         Filter filter = Filter.newBuilder()
-                .addMust(ConditionFactory.matchKeyword("sourceDocumentId", path))
-                .build();
+                              .addMust(ConditionFactory.matchKeyword("sourceDocumentId", path))
+                              .build();
         try {
             qdrantClient.deleteAsync(collectionName, filter).get();
         } catch (InterruptedException e) {
@@ -902,10 +906,10 @@ public class GardenIngestionService {
         }
 
         return PointStruct.newBuilder()
-                .setId(PointIdFactory.id(pointId))
-                .setVectors(VectorsFactory.namedVectors(Map.of(DENSE_VECTOR_NAME, denseVector)))
-                .putAllPayload(payload)
-                .build();
+                          .setId(PointIdFactory.id(pointId))
+                          .setVectors(VectorsFactory.namedVectors(Map.of(DENSE_VECTOR_NAME, denseVector)))
+                          .putAllPayload(payload)
+                          .build();
     }
 
     private String buildMtimeCursor(List<ChangedEntry> entries) {
@@ -950,6 +954,7 @@ import io.casehub.corpus.ChangeSet;
 import io.casehub.corpus.WatchableChangeSource;
 import io.casehub.corpus.zip.FlatCorpusStore;
 import io.casehub.corpus.zip.FlatChangeSource;
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import io.hortora.garden.config.GardenConfig;
 import io.hortora.garden.config.QdrantConfig;
 import io.qdrant.client.QdrantClient;
@@ -973,25 +978,30 @@ import java.util.concurrent.ExecutionException;
 public class GardenIndexer {
 
     private static final String DENSE_VECTOR_NAME = "dense";
-    private static final int DENSE_DIMENSIONS = 768;
+    private static final int    DENSE_DIMENSIONS  = 768;
 
-    @Inject GardenConfig gardenConfig;
-    @Inject QdrantConfig qdrantConfig;
-    @Inject QdrantClient qdrantClient;
-    @Inject EmbeddingModel embeddingModel;
-    @Inject GardenMetadataExtractor extractor;
+    @Inject
+    GardenConfig            gardenConfig;
+    @Inject
+    QdrantConfig            qdrantConfig;
+    @Inject
+    QdrantClient            qdrantClient;
+    @Inject
+    EmbeddingModel          embeddingModel;
+    @Inject
+    GardenMetadataExtractor extractor;
 
-    private WatchableChangeSource changeSource;
+    private WatchableChangeSource  changeSource;
     private GardenIngestionService ingestionService;
 
     void onStart(@Observes StartupEvent event) {
-        Path gardenPath = gardenConfig.path();
+        Path   gardenPath = gardenConfig.path();
         String collection = qdrantConfig.collection();
 
         ensureCollection(collection);
 
-        FileCursorStore cursorStore = new FileCursorStore(gardenPath);
-        FlatCorpusStore corpusStore = new FlatCorpusStore(gardenPath);
+        FileCursorStore  cursorStore      = new FileCursorStore(gardenPath);
+        FlatCorpusStore  corpusStore      = new FlatCorpusStore(gardenPath);
         FlatChangeSource flatChangeSource = new FlatChangeSource(corpusStore, gardenPath);
 
         ingestionService = new GardenIngestionService(
@@ -1001,8 +1011,8 @@ public class GardenIndexer {
         // Initial sync: fullScan or changesSince
         Optional<String> cursor = cursorStore.load();
         ChangeSet changes = cursor.isEmpty()
-                ? flatChangeSource.fullScan()
-                : flatChangeSource.changesSince(cursor.get());
+                            ? flatChangeSource.fullScan()
+                            : flatChangeSource.changesSince(cursor.get());
 
         ingestionService.ingest(changes);
 
@@ -1035,18 +1045,18 @@ public class GardenIndexer {
             }
 
             VectorParams denseParams = VectorParams.newBuilder()
-                    .setSize(DENSE_DIMENSIONS)
-                    .setDistance(Distance.Cosine)
-                    .build();
+                                                   .setSize(DENSE_DIMENSIONS)
+                                                   .setDistance(Distance.Cosine)
+                                                   .build();
 
             CreateCollection createRequest = CreateCollection.newBuilder()
-                    .setCollectionName(collection)
-                    .setVectorsConfig(VectorsConfig.newBuilder()
-                            .setParamsMap(VectorParamsMap.newBuilder()
-                                    .putMap(DENSE_VECTOR_NAME, denseParams)
-                                    .build())
-                            .build())
-                    .build();
+                                                             .setCollectionName(collection)
+                                                             .setVectorsConfig(VectorsConfig.newBuilder()
+                                                                                            .setParamsMap(VectorParamsMap.newBuilder()
+                                                                                                                         .putMap(DENSE_VECTOR_NAME, denseParams)
+                                                                                                                         .build())
+                                                                                            .build())
+                                                             .build();
 
             qdrantClient.createCollectionAsync(createRequest).get();
             Log.infof("Created Qdrant collection: %s", collection);
@@ -1078,7 +1088,7 @@ git commit -m "refactor: GardenIndexer — startup wiring + lifecycle for increm
 ### Task 7: SearchResource Refactoring
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/search/SearchResource.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java`
 
 - [ ] **Step 1: Rewrite SearchResource to use QdrantClient**
 

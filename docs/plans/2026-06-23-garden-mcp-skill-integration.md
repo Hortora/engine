@@ -111,7 +111,7 @@ import io.casehub.rag.CorpusRef;
 import io.casehub.rag.EmbeddingIngestor;
 import io.hortora.garden.config.GardenConfig;
 import io.casehub.neocortex.corpus.management.impl.FederationConfig;
-import io.hortora.garden.search.SearchResource;
+import io.casehub.neocortex.corpus.management.impl.SearchResource;
 import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;

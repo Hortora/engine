@@ -157,7 +157,7 @@ Refs #30"
 ### Task 2: Wire SearchResource call site and add integration test
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/search/SearchResource.java` (line 94)
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java` (line 94)
 - Modify: `src/test/java/io/hortora/garden/federation/FederationIntegrationTest.java`
 
 **Interfaces:**

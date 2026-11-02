@@ -1,5 +1,6 @@
 package io.hortora.garden.index;
 
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import io.casehub.neocortex.corpus.zip.FlatChangeSource;
 import io.casehub.neocortex.corpus.zip.FlatCorpusStore;
 import io.casehub.neocortex.rag.CorpusRef;
@@ -13,8 +14,9 @@ import jakarta.inject.Singleton;
 @ApplicationScoped
 public class GardenBindingProducer {
 
-    @Inject GardenConfig gardenConfig;
-    @Inject GardenMetadataExtractor extractor;
+    @Inject GardenConfig            gardenConfig;
+    @Inject
+            GardenMetadataExtractor extractor;
 
     @Produces
     @Singleton

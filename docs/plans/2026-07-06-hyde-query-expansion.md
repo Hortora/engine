@@ -177,6 +177,7 @@ Create `src/test/java/io/hortora/garden/search/QueryExpansionTest.java`:
 ```java
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.SearchResource;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
@@ -201,15 +202,18 @@ class QueryExpansionTest {
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.of(
-                "casehub.rag.expansion.enabled", "true",
-                "casehub.rag.expansion.mode", "llm"
-            );
+                    "casehub.rag.expansion.enabled", "true",
+                    "casehub.rag.expansion.mode", "llm"
+                         );
         }
     }
 
-    @Inject SearchResource searchResource;
-    @Inject InMemoryEmbeddingIngestor ingestor;
-    @Inject InMemoryQueryExpander queryExpander;
+    @Inject
+    SearchResource            searchResource;
+    @Inject
+    InMemoryEmbeddingIngestor ingestor;
+    @Inject
+    InMemoryQueryExpander     queryExpander;
 
     private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");
 
@@ -218,13 +222,13 @@ class QueryExpansionTest {
         queryExpander.clear();
         ingestor.deleteCorpus(CORPUS);
         ingestor.ingest(CORPUS, List.of(
-            new ChunkInput(
-                "CDI producer methods for configuration.",
-                "jvm/ge-test-cdi-producer.md",
-                Map.of("title", "CDI producer pattern",
-                       "domain", "jvm", "type", "technique", "score", "7"),
-                Map.of("tags", List.of("cdi", "quarkus")))
-        ));
+                new ChunkInput(
+                        "CDI producer methods for configuration.",
+                        "jvm/ge-test-cdi-producer.md",
+                        Map.of("title", "CDI producer pattern",
+                               "domain", "jvm", "type", "technique", "score", "7"),
+                        Map.of("tags", List.of("cdi", "quarkus")))
+                                       ));
     }
 
     @Test
@@ -232,8 +236,8 @@ class QueryExpansionTest {
         searchResource.searchFor("CDI configuration", null, null, null, null);
 
         assertThat(queryExpander.expandedQueries())
-            .as("QueryExpandingCaseRetriever should have intercepted the retrieval")
-            .isNotEmpty();
+                .as("QueryExpandingCaseRetriever should have intercepted the retrieval")
+                .isNotEmpty();
     }
 
     @Test
@@ -241,10 +245,10 @@ class QueryExpansionTest {
         searchResource.searchFor("CDI configuration", null, null, null, null);
 
         assertThat(queryExpander.expandedQueries().getFirst().text())
-            .isEqualTo("CDI configuration");
+                .isEqualTo("CDI configuration");
         assertThat(queryExpander.expandedQueries().getFirst().expandedText())
-            .isNotNull()
-            .contains("hypothetical:");
+                .isNotNull()
+                .contains("hypothetical:");
     }
 }
 ```

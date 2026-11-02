@@ -154,7 +154,7 @@ Refs #44
 ### Task 2: `adaptiveFilter()` — core algorithm with TDD
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/search/SearchResource.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java`
 - Modify: `src/test/java/io/hortora/garden/search/SearchResourceTest.java`
 
 **Interfaces:**
@@ -451,7 +451,7 @@ Refs #44
 ### Task 3: Wire `adaptiveFilter` into `searchAdaptive()` + MCP output updates
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/search/SearchResource.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java`
 - Modify: `src/main/java/io/hortora/garden/mcp/GardenMcpTools.java`
 - Modify: `src/test/java/io/hortora/garden/search/SearchResourceTest.java`
 - Modify: `src/test/java/io/hortora/garden/mcp/GardenMcpToolsTest.java`

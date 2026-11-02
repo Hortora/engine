@@ -1,5 +1,6 @@
 package io.hortora.garden.index;
 
+import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import io.casehub.neocortex.rag.ExtractionResult;
 import org.junit.jupiter.api.Test;
 

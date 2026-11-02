@@ -1,10 +1,10 @@
 package io.hortora.garden.search;
 
+import io.casehub.neocortex.corpus.management.impl.SearchResource;
 import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
 import io.casehub.neocortex.rag.PayloadFilter;
-import io.casehub.neocortex.rag.testing.InMemoryEmbeddingIngestor;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,8 +24,9 @@ import static org.hamcrest.Matchers.instanceOf;
 @QuarkusTest
 class SearchResourceTest {
 
-    @Inject SearchResource searchResource;
-    @Inject InMemoryEmbeddingIngestor ingestor;
+    @Inject
+           SearchResource            searchResource;
+    @InjectInMemoryEmbeddingIngestor ingestor;
 
     private static final CorpusRef CORPUS = new CorpusRef("hortora", "garden");
 

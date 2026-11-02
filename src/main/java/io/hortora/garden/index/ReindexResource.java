@@ -1,5 +1,6 @@
 package io.hortora.garden.index;
 
+import io.casehub.neocortex.corpus.management.impl.GardenReindexService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -11,7 +12,8 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ReindexResource {
 
-    @Inject GardenReindexService reindexService;
+    @Inject
+    GardenReindexService reindexService;
 
     @POST
     @io.smallrye.common.annotation.Blocking

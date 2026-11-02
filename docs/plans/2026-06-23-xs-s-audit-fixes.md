@@ -228,7 +228,7 @@ git commit -m "chore: minor code quality fixes — logging, annotations, null no
 ### Task 3: Frontmatter CRLF fix + edge-case tests (#10)
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/index/GardenMetadataExtractor.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/GardenMetadataExtractor.java`
 - Modify: `src/main/java/io/hortora/garden/federation/FederationConfigParser.java`
 - Modify: `src/test/java/io/hortora/garden/index/GardenMetadataExtractorTest.java`
 - Modify: `src/test/java/io/hortora/garden/federation/FederationConfigParserTest.java`
@@ -466,7 +466,7 @@ git commit -m "docs: update DESIGN.md — Phase 2 hybrid search complete, Retrie
 ### Task 5: SearchResource rework (#11)
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/search/SearchResource.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java`
 - Modify: `src/test/java/io/hortora/garden/search/SearchResourceTest.java`
 
 Note: The RetrievalQuery compilation fix was already applied in Task 2, Step 7. This task handles the remaining SearchResource improvements.

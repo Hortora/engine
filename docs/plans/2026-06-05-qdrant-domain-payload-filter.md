@@ -106,7 +106,7 @@ Expected: Tests run: 6 (4 existing + 2 new), all pass or the domain tests reveal
 ### Task 3: Implement the Qdrant payload pre-filter
 
 **Files:**
-- Modify: `src/main/java/io/hortora/garden/search/SearchResource.java`
+- Modify: `../../../../casehub/slots/221/neocortex/corpus-management/src/main/java/io/casehub/neocortex/corpus/management/impl/SearchResource.java`
 
 Replace the post-retrieval Java domain filter with a LangChain4j `IsEqualTo` filter on the `EmbeddingSearchRequest`. The full replacement of the `search()` method body is shown below.
 
