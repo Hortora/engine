@@ -1,6 +1,7 @@
 package io.hortora.garden.config;
 
 import io.casehub.neocortex.rag.runtime.DedupIngestionConfig;
+import io.casehub.platform.agent.AgentConcurrencyGate;
 import io.casehub.platform.api.credentials.LlmCredentialStore;
 import io.quarkus.arc.DefaultBean;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,4 +37,12 @@ public class MissingBeanDefaults {
             @Override public Optional<String> logPath() { return Optional.empty(); }
         };
     }
+
+    @Produces
+    @Singleton
+    @DefaultBean
+    AgentConcurrencyGate noOpConcurrencyGate() {
+        return () -> false;
+    }
+
 }

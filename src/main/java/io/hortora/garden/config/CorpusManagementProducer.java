@@ -15,6 +15,7 @@ import io.hortora.garden.federation.ChainWalker;
 import io.hortora.garden.inference.CollectionMigration;
 import io.hortora.garden.search.SearchConfig;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -27,9 +28,8 @@ public class CorpusManagementProducer {
     @Inject FederationConfig federationConfig;
     @Inject ChainWalker chainWalker;
     @Inject SearchConfig searchConfig;
-    @Inject SearchScoringConfig scoringConfig;
     @Inject io.hortora.garden.provenance.ProvenanceConfig provenanceConfig;
-    @Inject CollectionMigration collectionMigration;
+    @Inject Instance<CollectionMigration> collectionMigration;
     @Inject EmbeddingIngestor embeddingIngestor;
 
     @Produces @Singleton
@@ -39,8 +39,15 @@ public class CorpusManagementProducer {
             searchConfig.scoreFloor(), searchConfig.gapThreshold(),
             searchConfig.minResults(), searchConfig.scoreBoostWeight()
         );
+        SearchScoringConfig scoring = new SearchScoringConfig() {
+            @Override public boolean temporalDecayEnabled() { return true; }
+            @Override public boolean versionScoringEnabled() { return true; }
+            @Override public double versionDecayFactor() { return 0.03; }
+            @Override public double versionDecayFloor() { return 0.5; }
+            @Override public double versionTopicWeightDefault() { return 0.3; }
+        };
         return new SearchResource(caseRetriever, corpusRef, federationConfig,
-            chainWalker::walk, config, scoringConfig, searchProfileStore());
+            chainWalker::walk, config, scoring, searchProfileStore());
     }
 
     @Produces @Singleton
@@ -55,7 +62,7 @@ public class CorpusManagementProducer {
     GardenReindexService reindexService() {
         CorpusRef corpusRef = new CorpusRef("hortora", gardenConfig.id());
         return new GardenReindexService(embeddingIngestor, corpusRef,
-            collectionMigration::resetCorpus);
+            collectionMigration.get()::resetCorpus);
     }
 
     @Produces @Singleton

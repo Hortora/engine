@@ -46,6 +46,13 @@ public class FederationConfigParser {
     @Produces
     @Singleton
     FederationConfig produce() {
+        if (config == null) {
+            try {
+                config = parse(gardenConfig.schemaPath(), gardenConfig.id(), gardenConfig.idPrefix());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to read SCHEMA.md at " + gardenConfig.schemaPath(), e);
+            }
+        }
         return config;
     }
 
