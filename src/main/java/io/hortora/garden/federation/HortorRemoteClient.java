@@ -1,5 +1,6 @@
 package io.hortora.garden.federation;
 
+import io.casehub.neocortex.corpus.management.impl.RemoteCorpusClient;
 import io.casehub.neocortex.corpus.management.impl.SearchResult;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -11,10 +12,11 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 @Produces(MediaType.APPLICATION_JSON)
-interface RemoteGardenClient {
+public interface HortorRemoteClient extends RemoteCorpusClient {
 
     @GET
     @Path("/search")
+    @Override
     List<SearchResult> search(
             @QueryParam("q") String query,
             @QueryParam("domain") List<String> domains,

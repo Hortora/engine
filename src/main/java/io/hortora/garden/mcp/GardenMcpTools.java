@@ -1,6 +1,6 @@
 package io.hortora.garden.mcp;
 
-import io.hortora.garden.outcome.GardenOutcomeService;
+import io.casehub.neocortex.corpus.management.impl.CorpusOutcomeService;
 import io.casehub.neocortex.corpus.management.impl.ProvenanceStore;
 import io.casehub.neocortex.rag.ChunkInput;
 import io.casehub.neocortex.rag.CorpusRef;
@@ -15,7 +15,7 @@ import io.hortora.garden.config.GardenConfig;
 import io.casehub.neocortex.corpus.management.impl.FederationConfig;
 import io.casehub.neocortex.corpus.management.impl.GardenMetadataExtractor;
 import io.casehub.neocortex.corpus.management.impl.GardenReindexService;
-import io.hortora.garden.inference.CollectionMigration;
+import io.casehub.neocortex.rag.runtime.CorpusCollectionMigration;
 import io.casehub.neocortex.corpus.management.impl.AdaptiveResult;
 import io.casehub.neocortex.corpus.management.impl.SearchResource;
 import io.casehub.neocortex.corpus.management.impl.SearchResult;
@@ -51,7 +51,7 @@ public class GardenMcpTools {
     @Inject
     FederationConfig    federationConfig;
     @Inject
-    CollectionMigration collectionMigration;
+    CorpusCollectionMigration collectionMigration;
     @Inject
     GardenReindexService reindexService;
     @Inject
@@ -62,7 +62,7 @@ public class GardenMcpTools {
     @Inject
     ProvenanceStore      provenanceStore;
     @Inject
-    GardenOutcomeService outcomeService;
+    CorpusOutcomeService outcomeService;
 
 
     private volatile java.util.Map<String, String> cachedGeIdToDocId;

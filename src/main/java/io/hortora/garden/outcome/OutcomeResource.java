@@ -14,7 +14,7 @@ import jakarta.ws.rs.core.Response;
 public class OutcomeResource {
 
     @Inject
-    GardenOutcomeService outcomeService;
+    io.casehub.neocortex.corpus.management.impl.CorpusOutcomeService outcomeService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
