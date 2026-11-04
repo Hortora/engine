@@ -53,29 +53,13 @@ public class CorpusManagementProducer {
                 searchConfig.scoreFloor(), searchConfig.gapThreshold(),
                 searchConfig.minResults(), searchConfig.scoreBoostWeight()
         );
-        SearchScoringConfig scoring = new SearchScoringConfig() {
-            @Override
-            public boolean temporalDecayEnabled()     {return true;}
-
-            @Override
-            public boolean versionScoringEnabled()    {return true;}
-
-            @Override
-            public double versionDecayFactor()        {return 0.03;}
-
-            @Override
-            public double versionDecayFloor()         {return 0.5;}
-
-            @Override
-            public double versionTopicWeightDefault() {return 0.3;}
-        };
         var walker = new HttpFederationWalker(federationConfig, managedExecutor,
                                               url -> io.quarkus.rest.client.reactive.QuarkusRestClientBuilder.newBuilder()
                                                                                                              .baseUri(java.net.URI.create(url))
                                                                                                              .readTimeout(federationConfig.federationTimeoutSeconds(), java.util.concurrent.TimeUnit.SECONDS)
                                                                                                              .build(io.hortora.garden.federation.HortorRemoteClient.class));
         return new SearchResource(caseRetriever, corpusRef, federationConfig,
-                                  walker::walk, config, scoring, searchProfileStore());
+                                  walker::walk, config, SearchScoringConfig.defaults(), searchProfileStore());
     }
 
     @Produces

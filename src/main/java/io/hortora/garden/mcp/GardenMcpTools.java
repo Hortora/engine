@@ -645,7 +645,7 @@ public class GardenMcpTools {
     }
 
     private String provenanceLabel(SearchResult result) {
-        if (federationConfig.gardenId().equals(result.source())) {
+        if (federationConfig.corpusId().equals(result.source())) {
             return "[own]";
         }
         return "[" + result.sourcePrefix() + "]";
