@@ -363,7 +363,7 @@ for k, v in d.items():
     fi
 
     echo ""
-    if curl -sf http://localhost:8080/ >/dev/null 2>&1; then
+    if curl -sf 'http://localhost:8080/search?q=ping' >/dev/null 2>&1; then
         echo "Engine: running on port 8080"
     else
         echo "Engine: not running"
