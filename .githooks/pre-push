@@ -1,53 +1,93 @@
-#!/bin/bash
-# pre-push hook: mechanical squash candidate check
-# Installed by git-squash skill. Blocks obvious policy violations before push.
-# Run /git-squash for the full AI-assisted analysis.
-# Bypass with: git push --no-verify
+#!/usr/bin/env python3
+"""pre-push hook: a base branch stays linear and is never rewritten.
 
-remote="$1"
+It checks only what can be decided from the commits being pushed:
 
-SQUASH_PATTERNS='(^chore: (remove dead|apply spotless|fix formatting|remove unused|pin |add jandex)|^docs\([^)]+\): (align|fix wording|add missing)|^docs: fix stale|^fix\(test\):|^fix\(ci\):|^ci: (retrigger|trigger CI|use GH_PAT|standardise|add workflow)|^chore: (retroactive issue|pin )|^Revert ")'
+  - a push to main or master must not add a merge commit;
+  - a push to main or master must be a fast-forward of what the remote has
+    (so a forced push that would rewrite published history is refused);
+  - main or master is never deleted on a remote.
 
-total=0
-candidates=0
-revert_pairs=0
+It does not judge commit messages or guess at "squash candidates". Whether a
+branch's history is fit to land is the squash review's job, recorded in
+refs/squash-reviewed/<branch> and enforced by work-end/close.py before anything
+reaches a base branch. By the time commits are pushed they have passed it.
 
-while read local_ref local_sha remote_ref remote_sha; do
-  # Skip branch deletions
-  [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue
+Pushes to any other ref are not this hook's business.
 
-  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
-    # New branch — compare to default branch
-    base=$(git rev-parse --verify origin/main 2>/dev/null || git rev-parse --verify origin/master 2>/dev/null || echo "")
-    [ -z "$base" ] && continue
-    range="$base..$local_sha"
-  else
-    range="$remote_sha..$local_sha"
-  fi
+git calls this as: pre-push <remote-name> <remote-url>, with one line per ref on
+stdin: <local ref> <local sha> <remote ref> <remote sha>. A non-zero exit
+refuses the push. Any failure inside the hook lets the push through: a broken
+guard must not stop work, and the remote still refuses a non-fast-forward.
+"""
+import subprocess
+import sys
 
-  total=$(git log --oneline "$range" 2>/dev/null | wc -l | tr -d ' ')
-  [ "$total" -eq 0 ] && continue
+BASE_REFS = ("refs/heads/main", "refs/heads/master")
+ZERO = "0" * 40
 
-  candidates=$(git log --oneline "$range" 2>/dev/null | grep -cE "$SQUASH_PATTERNS" || true)
 
-  # Check for small commits (≤ 4 lines changed, no issue ref) — harder to do in hook,
-  # approximated by looking for fixup-style prefixes not caught above
-  small=$(git log --oneline "$range" 2>/dev/null | grep -cE "^[a-f0-9]+ (fix|chore|style|docs)\([^)]+\): .{1,30}$" | grep -v "#" || true)
+def git(*args):
+    result = subprocess.run(["git", *args], capture_output=True, text=True)
+    return result.returncode, result.stdout.strip()
 
-  if [ "$candidates" -gt 0 ]; then
-    echo ""
-    echo "╔══════════════════════════════════════════════════════════╗"
-    echo "║  Squash policy check — candidates found                  ║"
-    echo "╠══════════════════════════════════════════════════════════╣"
-    echo "║  Commits in push:    $total"
-    echo "║  Squash candidates:  $candidates"
-    echo "║"
-    echo "║  Run /git-squash to review and clean history before      ║"
-    echo "║  pushing, or use --no-verify to skip this check.         ║"
-    echo "╚══════════════════════════════════════════════════════════╝"
-    echo ""
-    exit 1
-  fi
-done
 
-exit 0
+def refuse(lines):
+    print("", file=sys.stderr)
+    for line in lines:
+        print(f"pre-push: {line}", file=sys.stderr)
+    print("", file=sys.stderr)
+    return 1
+
+
+def main():
+    remote = sys.argv[1] if len(sys.argv) > 1 else "origin"
+    for line in sys.stdin:
+        parts = line.split()
+        if len(parts) != 4:
+            continue
+        _local_ref, local_sha, remote_ref, remote_sha = parts
+        if remote_ref not in BASE_REFS:
+            continue
+        branch = remote_ref[len("refs/heads/"):]
+
+        if set(local_sha) == {"0"}:
+            return refuse([f"refusing to delete {branch} on {remote}."])
+
+        if set(remote_sha) != {"0"}:
+            code, _ = git("merge-base", "--is-ancestor", remote_sha, local_sha)
+            if code == 1:
+                return refuse([
+                    f"this would rewrite {branch} on {remote}: what it has now is not part of",
+                    "what you are pushing. A base branch only ever fast-forwards.",
+                    "Bring the remote's commits in first:",
+                    "  python3 ~/.claude/skills/project/canonical_sync.py publish <repo>",
+                ])
+            if code != 0:
+                continue                    # the remote's commit is unknown here; let git decide
+            new_commits = f"{remote_sha}..{local_sha}"
+            code, merges = git("rev-list", "--merges", new_commits)
+        else:
+            # A new branch on the remote: everything it does not already have.
+            code, merges = git("rev-list", "--merges", local_sha, "--not", f"--remotes={remote}")
+        if code != 0 or not merges:
+            continue
+        shown = []
+        for sha in merges.splitlines()[:5]:
+            _, subject = git("log", "-1", "--format=%h %s", sha)
+            shown.append(f"  {subject}")
+        count = len(merges.splitlines())
+        return refuse([
+            f"{count} merge commit(s) would be added to {branch} on {remote}:",
+            *shown,
+            "A base branch is linear. Land work with `work end`, which rebases and",
+            "fast-forwards, instead of merging into the base branch.",
+        ])
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception:
+        sys.exit(0)
